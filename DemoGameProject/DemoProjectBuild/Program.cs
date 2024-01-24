@@ -4,7 +4,9 @@
 	{
 		static void Main(string[] args)
 		{
-			BEngineCore.Window.Main(AppDomain.CurrentDomain.BaseDirectory + "DemoProjectAssembly.dll");
+			BEngineCore.Window.Initialize(AppDomain.CurrentDomain.BaseDirectory + "DemoProjectAssembly.dll");
+			BEngineCore.Window window = new BEngineCore.Window();
+			window.Run();
 		}
 	}
 }

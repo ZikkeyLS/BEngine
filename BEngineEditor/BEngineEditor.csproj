@@ -12,13 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BEngineCore\BEngineCore.csproj" />
     <ProjectReference Include="..\BEngineScripting\BEngineScripting.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="BEngineCore">
-      <HintPath>..\BEngineCore\bin\Release\net8.0\BEngineCore.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

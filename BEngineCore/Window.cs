@@ -4,6 +4,7 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Desktop;
 using System;
 using System.Reflection;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BEngineCore
 {
@@ -63,8 +64,11 @@ namespace BEngineCore
 			_window.Run();
 		}
 
-		public static void Main(string basePath)
+		public static void Initialize(string basePath)
 		{
+			string saveCurDir = Directory.GetCurrentDirectory();
+			Directory.SetCurrentDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Binary"));
+
 			var dll = Assembly.LoadFile(basePath);
 			foreach (Type type in dll.GetExportedTypes())
 			{

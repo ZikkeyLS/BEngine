@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Binary\glfw3.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Costura.Fody" Version="5.7.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -47,9 +51,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Binary\glfw3.dll">
+    <Content Include="Binary\glfw3.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Binary\OpenTK.Audio.OpenAL.dll">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>

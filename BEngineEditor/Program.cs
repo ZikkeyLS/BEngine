@@ -13,7 +13,7 @@ namespace BEngine
 			});
 			thread.Start();
 
-			BEngineCore.Window.Main(@"D:\Projects\CSharp\BEngine\DemoGameProject\DemoProjectAssembly\bin\Release\net8.0\DemoProjectAssembly.dll");
+			BEngineCore.Window.Initialize(@"D:\Projects\CSharp\BEngine\DemoGameProject\DemoProjectAssembly\bin\Release\net8.0\DemoProjectAssembly.dll");
 
 			BEngineCore.Window window = new BEngineCore.Window();
 			window.OnRenderUI += () =>
