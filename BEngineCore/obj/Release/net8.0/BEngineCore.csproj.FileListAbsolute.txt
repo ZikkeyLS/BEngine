@@ -1,0 +1,13 @@
+D:\Projects\CSharp\BEngine\BEngineCore\bin\Release\net8.0\BEngineCore.deps.json
+D:\Projects\CSharp\BEngine\BEngineCore\bin\Release\net8.0\BEngineCore.dll
+D:\Projects\CSharp\BEngine\BEngineCore\bin\Release\net8.0\BEngineCore.pdb
+D:\Projects\CSharp\BEngine\BEngineCore\obj\Release\net8.0\BEngineCore.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\CSharp\BEngine\BEngineCore\obj\Release\net8.0\BEngineCore.AssemblyInfoInputs.cache
+D:\Projects\CSharp\BEngine\BEngineCore\obj\Release\net8.0\BEngineCore.AssemblyInfo.cs
+D:\Projects\CSharp\BEngine\BEngineCore\obj\Release\net8.0\BEngineCore.csproj.CoreCompileInputs.cache
+D:\Projects\CSharp\BEngine\BEngineCore\obj\Release\net8.0\BEngineCore.dll
+D:\Projects\CSharp\BEngine\BEngineCore\obj\Release\net8.0\refint\BEngineCore.dll
+D:\Projects\CSharp\BEngine\BEngineCore\obj\Release\net8.0\BEngineCore.pdb
+D:\Projects\CSharp\BEngine\BEngineCore\obj\Release\net8.0\ref\BEngineCore.dll
+D:\Projects\CSharp\BEngine\BEngineCore\obj\Release\net8.0\BEngineCore.csproj.AssemblyReference.cache
+D:\Projects\CSharp\BEngine\BEngineCore\obj\Release\net8.0\BEngineCore.csproj.Fody.CopyLocal.cache

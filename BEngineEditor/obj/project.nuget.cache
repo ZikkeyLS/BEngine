@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "cLFnC7NBpPik2aXSqEDGaTNuG18oycucZ1tYl9gxATf6yScRSHuu0s5Jwb+OQKGkl8w9FBCYfKo7+euq1scT1w==",
+  "success": true,
+  "projectFilePath": "D:\\Projects\\CSharp\\BEngine\\BEngineEditor\\BEngineEditor.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Sergey\\.nuget\\packages\\imgui.net\\1.90.1.1\\imgui.net.1.90.1.1.nupkg.sha512",
+    "C:\\Users\\Sergey\\.nuget\\packages\\system.buffers\\4.4.0\\system.buffers.4.4.0.nupkg.sha512",
+    "C:\\Users\\Sergey\\.nuget\\packages\\system.numerics.vectors\\4.4.0\\system.numerics.vectors.4.4.0.nupkg.sha512",
+    "C:\\Users\\Sergey\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\4.4.0\\system.runtime.compilerservices.unsafe.4.4.0.nupkg.sha512"
+  ],
+  "logs": []
+}

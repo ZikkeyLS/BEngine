@@ -1,0 +1,14 @@
+D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\bin\Release\net8.0\BEnginePostCoreBuild.exe
+D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\bin\Release\net8.0\BEnginePostCoreBuild.deps.json
+D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\bin\Release\net8.0\BEnginePostCoreBuild.runtimeconfig.json
+D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\bin\Release\net8.0\BEnginePostCoreBuild.dll
+D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\bin\Release\net8.0\BEnginePostCoreBuild.pdb
+D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\obj\Release\net8.0\BEnginePostCoreBuild.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\obj\Release\net8.0\BEnginePostCoreBuild.AssemblyInfoInputs.cache
+D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\obj\Release\net8.0\BEnginePostCoreBuild.AssemblyInfo.cs
+D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\obj\Release\net8.0\BEnginePostCoreBuild.csproj.CoreCompileInputs.cache
+D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\obj\Release\net8.0\BEnginePostCoreBuild.dll
+D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\obj\Release\net8.0\refint\BEnginePostCoreBuild.dll
+D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\obj\Release\net8.0\BEnginePostCoreBuild.pdb
+D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\obj\Release\net8.0\BEnginePostCoreBuild.genruntimeconfig.cache
+D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\obj\Release\net8.0\ref\BEnginePostCoreBuild.dll
