@@ -11,3 +11,4 @@ D:\Projects\CSharp\BEngine\BEngineCore\obj\Release\net8.0\BEngineCore.pdb
 D:\Projects\CSharp\BEngine\BEngineCore\obj\Release\net8.0\ref\BEngineCore.dll
 D:\Projects\CSharp\BEngine\BEngineCore\obj\Release\net8.0\BEngineCore.csproj.AssemblyReference.cache
 D:\Projects\CSharp\BEngine\BEngineCore\obj\Release\net8.0\BEngineCore.csproj.Fody.CopyLocal.cache
+D:\Projects\CSharp\BEngine\BEngineCore\obj\Release\net8.0\BEngineCore.sourcelink.json

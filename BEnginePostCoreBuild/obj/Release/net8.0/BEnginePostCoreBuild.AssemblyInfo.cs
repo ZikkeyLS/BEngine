@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BEnginePostCoreBuild")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+10749bf4f96b4817809fd999d6f06ae3d183d44a")]
 [assembly: System.Reflection.AssemblyProductAttribute("BEnginePostCoreBuild")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BEnginePostCoreBuild")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

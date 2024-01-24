@@ -31,3 +31,4 @@ D:\Projects\CSharp\BEngine\BEngineScripting\obj\Release\net8.0\BEngineScripting.
 D:\Projects\CSharp\BEngine\BEngineScripting\obj\Release\net8.0\refint\BEngineScripting.dll
 D:\Projects\CSharp\BEngine\BEngineScripting\obj\Release\net8.0\BEngineScripting.pdb
 D:\Projects\CSharp\BEngine\BEngineScripting\obj\Release\net8.0\ref\BEngineScripting.dll
+D:\Projects\CSharp\BEngine\BEngineScripting\obj\Release\net8.0\BEngineScripting.sourcelink.json

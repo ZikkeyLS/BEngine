@@ -24,3 +24,4 @@ D:\Projects\CSharp\BEngine\BEngineEditor\bin\Release\net8.0\runtimes\osx\native\
 D:\Projects\CSharp\BEngine\BEngineEditor\bin\Release\net8.0\runtimes\win-arm64\native\cimgui.dll
 D:\Projects\CSharp\BEngine\BEngineEditor\bin\Release\net8.0\runtimes\win-x64\native\cimgui.dll
 D:\Projects\CSharp\BEngine\BEngineEditor\bin\Release\net8.0\runtimes\win-x86\native\cimgui.dll
+D:\Projects\CSharp\BEngine\BEngineEditor\obj\Release\net8.0\BEngineEditor.sourcelink.json

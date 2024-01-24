@@ -12,3 +12,4 @@ D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\obj\Release\net8.0\refint\BEngin
 D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\obj\Release\net8.0\BEnginePostCoreBuild.pdb
 D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\obj\Release\net8.0\BEnginePostCoreBuild.genruntimeconfig.cache
 D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\obj\Release\net8.0\ref\BEnginePostCoreBuild.dll
+D:\Projects\CSharp\BEngine\BEnginePostCoreBuild\obj\Release\net8.0\BEnginePostCoreBuild.sourcelink.json
