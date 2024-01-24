@@ -1,3 +1,6 @@
+.vs/
+obj/
+bin/
 
 #Visual Studio files
 *.[Oo]bj
