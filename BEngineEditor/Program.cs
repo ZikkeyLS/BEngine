@@ -1,6 +1,4 @@
 ﻿
-using ImGuiNET;
-
 namespace BEngine
 {
 	internal class Program
@@ -15,12 +13,7 @@ namespace BEngine
 
 			BEngineCore.Window.Initialize(@"D:\Projects\CSharp\BEngine\DemoGameProject\DemoProjectAssembly\bin\Release\net8.0\DemoProjectAssembly.dll");
 
-			BEngineCore.Window window = new BEngineCore.Window();
-			window.OnRenderUI += () =>
-			{
-				ImGui.DockSpaceOverViewport();
-				ImGui.ShowDemoWindow();
-			};
+			BEngineCore.EditorWindow window = new BEngineCore.EditorWindow();
 			window.Run();
 		}
 	}

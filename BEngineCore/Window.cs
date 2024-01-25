@@ -1,21 +1,12 @@
-﻿using Dear_ImGui_Sample;
-using ImGuiNET;
-using OpenTK.Graphics.OpenGL4;
+﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Desktop;
-using System;
 using System.Reflection;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace BEngineCore
 {
 	public class Window
 	{
-		private GameWindow _window;
-		private ImGuiController _controller;
-
-		private double time = 0;
-
-		public Action OnRenderUI;
+		protected GameWindow _window;
 
 		public Window()
 		{
@@ -26,37 +17,31 @@ namespace BEngineCore
 			_window.RenderFrame += OnRenderFrame;
 		}
 
+		protected virtual void OnResize() { }
+		protected virtual void OnLoad() { }
+		protected virtual void OnPreRender(float time) { }
+		protected virtual void OnRender() { }
+		protected virtual void OnPostRender() { }
+
 		private void OnResize(OpenTK.Windowing.Common.ResizeEventArgs obj)
 		{
 			GL.Viewport(0, 0, _window.ClientSize.X, _window.ClientSize.Y);
-			_controller.WindowResized(_window.ClientSize.X, _window.ClientSize.Y);
-		}
 
-		private void OnLoad()
-		{
-			_controller = new ImGuiController(_window.ClientSize.X, _window.ClientSize.Y);
+			OnResize();
 		}
 
 		private void OnRenderFrame(OpenTK.Windowing.Common.FrameEventArgs obj)
 		{
-			_controller.Update(_window, (float)obj.Time);
+			OnPreRender((float)obj.Time);
 
 			GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
 
-			if (OnRenderUI.GetInvocationList().Length != 0)
-				OnRenderUI.Invoke();
+			OnRender();
 
-			_controller.Render();
-			ImGuiController.CheckGLError("End of frame");
+			OnPostRender();
 
 			_window.SwapBuffers();
-		}
-
-		public void SubscribeToRender(Action action)
-		{
-			_window.RenderFrame += (e) => 
-			{ time = e.Time; action.Invoke(); };
 		}
 
 		public void Run()
