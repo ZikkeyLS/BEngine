@@ -57,6 +57,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BEngineScripting\BEngineScripting.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Binary\OpenTK.Audio.OpenAL.dll">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>

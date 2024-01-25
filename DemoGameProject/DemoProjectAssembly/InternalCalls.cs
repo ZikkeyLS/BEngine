@@ -1,4 +1,6 @@
-﻿namespace DemoProjectAssembly
+﻿using BEngineScripting;
+
+namespace DemoProjectAssembly
 {
 	public class InternalCalls
 	{
@@ -6,5 +8,10 @@
 		{
 			BEngine.InternalCalls.Log("Demo message from Scripting");
 		}
+	}
+
+	public class TestScript : Script
+	{
+
 	}
 }

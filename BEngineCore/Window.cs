@@ -1,6 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Desktop;
-using System.Reflection;
 
 namespace BEngineCore
 {
@@ -47,22 +46,6 @@ namespace BEngineCore
 		public void Run()
 		{
 			_window.Run();
-		}
-
-		public static void Initialize(string basePath)
-		{
-			string saveCurDir = Directory.GetCurrentDirectory();
-			Directory.SetCurrentDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Binary"));
-
-			var dll = Assembly.LoadFile(basePath);
-			foreach (Type type in dll.GetExportedTypes())
-			{
-				if (type.Name == nameof(InternalCalls))
-				{
-					var c = Activator.CreateInstance(type);
-					type.InvokeMember("Test", BindingFlags.InvokeMethod, null, c, null);
-				}
-			}
 		}
 	}
 }

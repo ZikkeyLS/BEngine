@@ -11,7 +11,8 @@ namespace BEngine
 			});
 			thread.Start();
 
-			BEngineCore.Window.Initialize(@"D:\Projects\CSharp\BEngine\DemoGameProject\DemoProjectAssembly\bin\Release\net8.0\DemoProjectAssembly.dll");
+			BEngineCore.Scripting scripting = new BEngineCore.Scripting();
+			scripting.Initialize(@"D:\Projects\CSharp\BEngine\DemoGameProject\DemoProjectAssembly\bin\Release\net8.0\DemoProjectAssembly.dll");
 
 			BEngineCore.EditorWindow window = new BEngineCore.EditorWindow();
 			window.Run();
