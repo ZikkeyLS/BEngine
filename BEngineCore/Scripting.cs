@@ -55,8 +55,8 @@ namespace BEngineCore
 
 		public void Initialize(string path)
 		{
-			string currentDirectory = Directory.GetCurrentDirectory();
-			Directory.SetCurrentDirectory(Path.Combine(currentDirectory, "Binary"));
+			// string currentDirectory = Directory.GetCurrentDirectory();
+			// Directory.SetCurrentDirectory(Path.Combine(currentDirectory, "Binary"));
 
 			ReadScriptingAssembly(path);
 		}
