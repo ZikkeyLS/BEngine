@@ -5,6 +5,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,10 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="BEngineCore">
-      <HintPath>..\BEngineCore\bin\Release\net8.0\BEngineCore.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <ProjectReference Include="..\BEngineCore\BEngineCore.csproj" />
   </ItemGroup>
 
 </Project>

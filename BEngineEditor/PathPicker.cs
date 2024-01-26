@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using ImGuiNET;
 using System.Runtime.InteropServices;
 
-namespace Eq2k.FileDialog.Example.UI
+namespace BEngineEditor
 {
     public class PathPicker
     {

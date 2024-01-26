@@ -1,5 +1,5 @@
 ﻿
-namespace BEngine
+namespace BEngineEditor
 {
 	internal class Program
 	{
@@ -14,7 +14,7 @@ namespace BEngine
 			BEngineCore.Scripting scripting = new BEngineCore.Scripting();
 			scripting.Initialize(@"D:\Projects\CSharp\BEngine\DemoGameProject\DemoProjectAssembly\bin\Release\net8.0\DemoProjectAssembly.dll");
 
-			BEngineCore.EditorWindow window = new BEngineCore.EditorWindow("BEngine - Editor");
+			EditorWindow window = new EditorWindow("BEngine - Editor");
 			window.Run();
 		}
 	}

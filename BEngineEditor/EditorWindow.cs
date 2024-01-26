@@ -1,6 +1,4 @@
 ﻿using BEngineCore;
-using Dear_ImGui_Sample;
-using Eq2k.FileDialog.Example.UI;
 using ImGuiNET;
 using OpenTK.Windowing.Common;
 using System.Numerics;
