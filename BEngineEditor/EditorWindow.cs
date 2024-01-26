@@ -80,6 +80,7 @@ namespace BEngineEditor
 				if (ImGui.Button("Create Project", new Vector2(150, 50)))
 				{
 					_projectContext.CreateProject();
+					_projectContext.UpdateCreationPathValid(_projectContext.AssembledTempProjectPath);
 				}
 			}
 			else
