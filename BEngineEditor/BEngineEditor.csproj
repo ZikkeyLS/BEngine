@@ -14,14 +14,19 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="ImGui.NET" Version="1.90.1.1" />
+    <PackageReference Include="OpenTK" Version="4.8.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BEngineCore\BEngineCore.csproj">
+    <ProjectReference Include="..\BEngineScripting\BEngineScripting.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="BEngineCore">
+      <HintPath>..\BEngineCore\bin\Release\net8.0\BEngineCore.dll</HintPath>
       <Private>True</Private>
-      <CopyLocalSatelliteAssemblies>True</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>True</ReferenceOutputAssembly>
-    </ProjectReference>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
   </ItemGroup>
 
 </Project>

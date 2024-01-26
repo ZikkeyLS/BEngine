@@ -6,6 +6,9 @@ namespace DemoProjectBuild
 	{
 		static void Main(string[] args)
 		{
+			string currentDirectory = Directory.GetCurrentDirectory();
+			Directory.SetCurrentDirectory(Path.Combine(currentDirectory, "Data"));
+
 			Scripting scripting = new Scripting();
 			scripting.Initialize(Path.Combine(Directory.GetCurrentDirectory(), "DemoProjectAssembly.dll"));
 
