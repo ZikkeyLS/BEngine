@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using ImGuiNET;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Desktop;
 
 namespace BEngineCore
@@ -7,15 +8,24 @@ namespace BEngineCore
 	{
 		protected GameWindow _window;
 
-		public Window()
+		public Window(string title = "Window", int x = 1280, int y = 720)
 		{
-			_window = new GameWindow(GameWindowSettings.Default, NativeWindowSettings.Default);
+			GameWindowSettings gameSettings = GameWindowSettings.Default;
+			NativeWindowSettings nativeWindowSettings = NativeWindowSettings.Default;
+			nativeWindowSettings.Title = title;
+			nativeWindowSettings.ClientSize = new OpenTK.Mathematics.Vector2i(x, y);
 
+			_window = new GameWindow(gameSettings, nativeWindowSettings);
+
+			_window.MouseWheel += MouseWheel;
+			_window.TextInput += OnTextInput;
 			_window.Load += OnLoad;
 			_window.Resize += OnResize;
 			_window.RenderFrame += OnRenderFrame;
 		}
 
+		protected virtual void MouseWheel(OpenTK.Windowing.Common.MouseWheelEventArgs obj) { }
+		protected virtual void OnTextInput(OpenTK.Windowing.Common.TextInputEventArgs obj) { }
 		protected virtual void OnResize() { }
 		protected virtual void OnLoad() { }
 		protected virtual void OnPreRender(float time) { }

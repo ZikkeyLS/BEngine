@@ -1,5 +1,6 @@
 ﻿using BEngineScripting;
 using System.Reflection;
+using System.Runtime.Loader;
 
 namespace BEngineCore
 {
@@ -64,12 +65,16 @@ namespace BEngineCore
 		{
 			_scripts.Clear();
 
-			var dll = Assembly.LoadFile(path);
+			AssemblyLoadContext context = new AssemblyLoadContext(name: "ReadScripts", isCollectible: true);
+
+			Assembly dll = context.LoadFromAssemblyPath(path);
 			foreach (Type type in dll.GetExportedTypes())
 			{
 				if (type.IsSubclassOf(typeof(Script)))
 					_scripts.Add(new CachedScript(type));
 			}
+
+			context.Unload();
 		}
 	}
 }
