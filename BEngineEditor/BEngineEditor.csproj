@@ -12,7 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BEngineCore\BEngineCore.csproj" />
+    <Reference Include="BEngineCore">
+      <HintPath>..\BEngineCore\bin\Release\net8.0\BEngineCore.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -1,9 +1,11 @@
-﻿using Dear_ImGui_Sample;
+﻿using BEngineCore;
+using Dear_ImGui_Sample;
 using Eq2k.FileDialog.Example.UI;
 using ImGuiNET;
 using OpenTK.Windowing.Common;
+using System.Numerics;
 
-namespace BEngineCore
+namespace BEngineEditor
 {
 	public class EditorWindow : Window
 	{
@@ -11,9 +13,7 @@ namespace BEngineCore
 		private PathPicker _projectCreator;
 		private PathPicker _projectSelector;
 
-		private string _tempProjectPath = ""; 
-		private string _tempProjectName = "NewProject";
-		private string _currentProjectPath;
+		private ProjectContext _projectContext;
 
 		public EditorWindow(string title = "Window", int x = 1280, int y = 720) : base(title, x, y)
 		{
@@ -26,9 +26,11 @@ namespace BEngineCore
 			_projectCreator = new PathPicker() { Mode = PathPicker.PickerMode.Folder };
 			_projectSelector = new PathPicker() { Mode = PathPicker.PickerMode.File, AllowedFiles = ["*.sln"] };
 
-			_tempProjectPath = Directory.GetCurrentDirectory();
-		}
+			_projectContext = new ProjectContext();
 
+			_projectContext.TempProjectPath = Directory.GetCurrentDirectory();
+			_projectContext.UpdateCreationPathValid(_projectContext.AssembledTempProjectPath);
+		}
 
 		protected override void MouseWheel(MouseWheelEventArgs obj)
 		{
@@ -54,31 +56,42 @@ namespace BEngineCore
 		{
 			// Enable Docking
 			ImGui.DockSpaceOverViewport();
+
 			ImGui.Begin("Project Loader");
 
-			ImGui.InputText("New Project Name", ref _tempProjectName, 128);
+			if (ImGui.InputText("New Project Name", ref _projectContext.TempProjectName, 128))
+			{
+				_projectContext.UpdateCreationPathValid(_projectContext.AssembledTempProjectPath);
+			}
 
-
-			if (ImGui.Button("Select Folder", new System.Numerics.Vector2(100, 25)))
+			if (ImGui.Button("Select Folder", new Vector2(100, 25)))
 			{
 				_projectCreator.ShowModal(Directory.GetCurrentDirectory());
 			}
 
 			if (_projectCreator.Render() && !_projectCreator.Cancelled)
 			{
-				_tempProjectPath = _projectCreator.SelectedFolder;
+				_projectContext.TempProjectPath = _projectCreator.SelectedFolder;
+				_projectContext.UpdateCreationPathValid(_projectContext.AssembledTempProjectPath);
 			}
 
-			ImGui.Text($@"Project will be generated in {_tempProjectPath}\{_tempProjectName}");
+			ImGui.Text("Project will be generated in " + _projectContext.AssembledTempProjectPath);
 
-			if (ImGui.Button("Create Project", new System.Numerics.Vector2(150, 50))) 
+			if (_projectContext.ValidTempProjectPath)
 			{
-				// Create Project
+				if (ImGui.Button("Create Project", new Vector2(150, 50)))
+				{
+					_projectContext.CreateProject();
+				}
+			}
+			else
+			{
+				ImGui.TextColored(new Vector4(1, 0, 0, 1), "Invalid path: This directory already exists or name is empty!");
 			}
 
 			ImGui.Separator();
 
-			if (ImGui.Button("Load project", new System.Numerics.Vector2(150, 50)))
+			if (ImGui.Button("Load project", new Vector2(150, 50)))
 			{
 				_projectSelector.ShowModal(Directory.GetCurrentDirectory());
 			}
@@ -89,7 +102,7 @@ namespace BEngineCore
 			}
 
 			ImGui.End();
-			
+
 			_controller.Render();
 			ImGuiController.CheckGLError("End of frame");
 		}
