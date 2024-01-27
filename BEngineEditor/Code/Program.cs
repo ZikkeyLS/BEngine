@@ -11,9 +11,6 @@ namespace BEngineEditor
 			});
 			thread.Start();
 
-			BEngineCore.Scripting scripting = new BEngineCore.Scripting();
-			scripting.Initialize(@"D:\Projects\CSharp\BEngine\DemoGameProject\DemoProjectAssembly\bin\Release\net8.0\DemoProjectAssembly.dll");
-
 			EditorWindow window = new EditorWindow("BEngine - Editor");
 			window.Run();
 		}

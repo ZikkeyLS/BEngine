@@ -17,8 +17,9 @@ namespace BEngineEditor
 		public string TempProjectName = "NewProject";
 		public bool ValidTempProjectPath => !Directory.Exists(AssembledTempProjectPath);
 		public string AssembledTempProjectPath => $@"{TempProjectPath}\{TempProjectName}";
+		public bool ProjectLoaded => _currentProject != null;
 
-		private Project _currentProject;
+		private Project _currentProject = null;
 
 		public void CreateProject() 
 		{
@@ -36,8 +37,10 @@ namespace BEngineEditor
 		public void LoadProject(string slnPath)
 		{
 			_currentProject = new Project(Path.GetFileNameWithoutExtension(slnPath), Path.GetDirectoryName(slnPath));
-			Console.WriteLine(_currentProject.Name + " " + _currentProject.Path);
-			Utils.OpenWithDefaultProgram(slnPath);
+			// Utils.OpenWithDefaultProgram(_currentProject.SolutionPath);
+
+			// BEngineCore.Scripting scripting = new BEngineCore.Scripting();
+			// scripting.Initialize(@"D:\Projects\CSharp\BEngine\DemoGameProject\DemoProjectAssembly\bin\Release\net8.0\DemoProjectAssembly.dll");
 		}
 	}
 }
