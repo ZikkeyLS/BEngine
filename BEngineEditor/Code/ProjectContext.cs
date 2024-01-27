@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BEngineCore;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -18,6 +19,8 @@ namespace BEngineEditor
 		public bool ValidTempProjectPath => !Directory.Exists(AssembledTempProjectPath);
 		public string AssembledTempProjectPath => $@"{TempProjectPath}\{TempProjectName}";
 		public bool ProjectLoaded => _currentProject != null;
+		public Project CurrentProject => _currentProject;
+
 
 		private Project _currentProject = null;
 
@@ -41,8 +44,9 @@ namespace BEngineEditor
 			_currentProject = new Project(Path.GetFileNameWithoutExtension(slnPath), Path.GetDirectoryName(slnPath));
 			SearchingProject = false;
 
-			// Utils.OpenWithDefaultProgram(_currentProject.SolutionPath);
+			_currentProject.LoadProjectData();
 
+			// Utils.OpenWithDefaultProgram(_currentProject.SolutionPath);
 			// BEngineCore.Scripting scripting = new BEngineCore.Scripting();
 			// scripting.Initialize(@"D:\Projects\CSharp\BEngine\DemoGameProject\DemoProjectAssembly\bin\Release\net8.0\DemoProjectAssembly.dll");
 		}

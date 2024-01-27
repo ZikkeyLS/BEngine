@@ -16,7 +16,7 @@ namespace BEngineEditor
 		{
 			ImGui.BeginMainMenuBar();
 
-			if (ImGui.Button("Load Project", new System.Numerics.Vector2(100, 50)))
+			if (ImGui.Button("Load Project"))
 				_projectContext.SearchingProject = true;
 
 			ImGui.EndMainMenuBar();

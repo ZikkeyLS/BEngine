@@ -30,7 +30,8 @@ namespace BEngineEditor
 			solutionFile.Rename(projectName + ".sln");
 			File.WriteAllText(solutionFile.FullName, File.ReadAllText(solutionFile.FullName)
 				.Replace("ProjectAssembly", $"{projectName}Assembly")
-				.Replace("Project", $"{projectName}"));
+				.Replace("ProjectBuild", $"{projectName}Build")
+				.Replace($"{projectName}BuildProject", $"{projectName}"));
 
 			// Assembly
 			DirectoryInfo assemblyDirectory = new DirectoryInfo(path + "/ProjectAssembly");

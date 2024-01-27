@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace BEngineEditor
 {
-	internal class Project
+	public class Project
 	{
-		public string Name { get; private set; }
-		public string Path { get; private set; }
+		public string Name { get; private set; } = string.Empty;
+		public string Path { get; private set; } = string.Empty;
 
-		public string SolutionPath => $"{Path}/{Name}.sln";
-		public string ProjectAssemblyDirectory => $"{Path}/{Name}Assembly";
-		public string ProjectBuildDirectory => $"{Path}/{Name}Build";
-
-		public bool EditorAssemblyExists => File.Exists(ProjectAssemblyDirectory + $"/bin/Debug/net8.0/{Name}Assembly.dll");
+		public string SolutionPath => $@"{Path}\{Name}.sln";
+		public string ProjectAssemblyDirectory => $@"{Path}\{Name}Assembly";
+		public string ProjectBuildDirectory => $@"{Path}\{Name}Build";
+		public string ProjectAssemblyPath => ProjectAssemblyDirectory + $@"\bin\Debug\net8.0\{Name}Assembly.dll";
+		public bool EditorAssemblyExists => File.Exists(ProjectAssemblyPath);
 
 		public Project(string name, string path)
 		{
@@ -26,16 +21,34 @@ namespace BEngineEditor
 
 		public void CompileScriptAssembly(bool debug = true)
 		{
-			Process console = new Process();
-			console.Exited += CompileAssemblyReady;
-			console.StartInfo.FileName = @"cmd.exe";
-			console.EnableRaisingEvents = true;
-			console.Start();
+			try
+			{
+				string mode = debug ? "Debug" : "Release";
 
-			string mode = debug ? "Debug" : "Release";
-			console.StandardInput.WriteLine($"dotnet build -c {mode}");
-			console.StandardInput.Flush();
-			console.StandardInput.Close();
+				Thread thread = new Thread(() =>
+				{
+					Process console = new Process();
+					console.StartInfo.FileName = "cmd.exe";
+					console.EnableRaisingEvents = true;
+					console.Exited += CompileAssemblyReady;
+					console.StartInfo.RedirectStandardInput = true;
+					console.StartInfo.RedirectStandardOutput = true;
+					console.StartInfo.CreateNoWindow = true;
+					console.StartInfo.UseShellExecute = false;
+					console.Start();
+
+					console.StandardInput.WriteLine($"dotnet build {ProjectAssemblyDirectory} -c {mode}");
+					console.StandardInput.Flush();
+					console.StandardInput.Close();
+					console.WaitForExit();
+					Console.WriteLine(console.StandardOutput.ReadToEnd());
+				});
+				thread.Start();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
 		}
 
 		private void CompileAssemblyReady(object? sender, EventArgs e)
@@ -46,6 +59,14 @@ namespace BEngineEditor
 		public void CompileBuild(bool debug = false)
 		{
 
+		}
+
+		public void LoadProjectData()
+		{
+			CompileScriptAssembly();
+
+			
+			// Get files and etc.
 		}
 	}
 }
