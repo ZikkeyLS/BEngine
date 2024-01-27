@@ -23,27 +23,38 @@ namespace BEngineEditor
 			}
 		}
 
-		public static void PrepareProjectStructure(string path, string projectName)
+		public static void PrepareProjectStructure(string path, string projectName, string coreDllPath, string scriptDllPath)
 		{
 			// Root
 			FileInfo solutionFile = new FileInfo(path + "/Project.sln");
 			solutionFile.Rename(projectName + ".sln");
-
-			string solutionFilePath = path + "/" + projectName + ".sln";
-			File.WriteAllText(solutionFilePath, File.ReadAllText(solutionFilePath).Replace("ProjectAssembly", $"{projectName}Assembly"));
-			File.WriteAllText(solutionFilePath, File.ReadAllText(solutionFilePath).Replace("ProjectBuild", $"{projectName}Build"));
+			File.WriteAllText(solutionFile.FullName, File.ReadAllText(solutionFile.FullName)
+				.Replace("ProjectAssembly", $"{projectName}Assembly")
+				.Replace("ProjectBuild", $"{projectName}Build"));
 
 			// Assembly
 			DirectoryInfo assemblyDirectory = new DirectoryInfo(path + "/ProjectAssembly");
 			assemblyDirectory.Rename($"{projectName}Assembly");
 
+			FileInfo assemblyFile = new FileInfo(assemblyDirectory.FullName + "/ProjectAssembly.csproj");
+			assemblyFile.Rename(projectName + "Assembly.csproj");
+			File.WriteAllText(assemblyFile.FullName, File.ReadAllText(assemblyFile.FullName)
+				.Replace("BEngineScriptingDLLPath", scriptDllPath));
 
 			// Build
 			DirectoryInfo buildDirectory = new DirectoryInfo(path + "/ProjectBuild");
 			buildDirectory.Rename($"{projectName}Build");
 
-			string projectBuildFilePath = path + "/" + projectName + ".sln";
-			File.WriteAllText(projectBuildFilePath, File.ReadAllText(projectBuildFilePath).Replace("ProjectAssembly", $"{projectName}Assembly"));
+			FileInfo buildFile = new FileInfo(buildDirectory.FullName + "/ProjectBuild.csproj");
+			buildFile.Rename(projectName + "Build.csproj");
+			File.WriteAllText(buildFile.FullName, File.ReadAllText(buildFile.FullName)
+				.Replace("ProjectAssembly", $"{projectName}Assembly")
+				.Replace("BEngineCoreDLLPath", coreDllPath));
+
+			FileInfo programFile = new FileInfo(buildDirectory.FullName + "/Program.cs");
+			File.WriteAllText(programFile.FullName, File.ReadAllText(programFile.FullName)
+				.Replace("ProjectAssembly", $"{projectName}Assembly")
+				.Replace("ProjectBuild", $"{projectName}Build"));
 		}
 	}
 }

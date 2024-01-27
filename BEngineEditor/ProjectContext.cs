@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -22,7 +24,13 @@ namespace BEngineEditor
 		{
 			Utils.CopyDirectory(TemplateProjectDirectory, AssembledTempProjectPath);
 			ProjectBuilder.RemoveTempMarker(AssembledTempProjectPath);
-			ProjectBuilder.PrepareProjectStructure(AssembledTempProjectPath, TempProjectName);
+
+			ProjectBuilder.PrepareProjectStructure(
+				AssembledTempProjectPath, TempProjectName,
+				Directory.GetCurrentDirectory() + @"\BEngineCore.dll", 
+				Directory.GetCurrentDirectory() + @"\BEngineScripting.dll");
+
+			Utils.OpenWithDefaultProgram(AssembledTempProjectPath + @$"\{TempProjectName}.sln");
 		}
 
 		public void LoadProject()

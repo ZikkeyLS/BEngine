@@ -1,4 +1,6 @@
-﻿namespace BEngineEditor
+﻿using System.Diagnostics;
+
+namespace BEngineEditor
 {
 	internal static class Utils
 	{
@@ -10,6 +12,15 @@
 		public static void Rename(this DirectoryInfo directoryInfo, string newName)
 		{
 			directoryInfo.MoveTo(directoryInfo.Parent.FullName + "\\" + newName);
+		}
+
+		public static void OpenWithDefaultProgram(string path)
+		{
+			using Process fileopener = new Process();
+
+			fileopener.StartInfo.FileName = "explorer";
+			fileopener.StartInfo.Arguments = "\"" + path + "\"";
+			fileopener.Start();
 		}
 
 		public static void CopyDirectory(string sourceDirectory, string destinationDirectory, bool recursive = true)
