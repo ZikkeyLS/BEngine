@@ -91,7 +91,7 @@ namespace BEngineEditor
 
 			if (_projectSelector.Render() && !_projectSelector.Cancelled)
 			{
-				// Load Project
+				_projectContext.LoadProject(_projectSelector.SelectedFile);
 			}
 
 			ImGui.End();

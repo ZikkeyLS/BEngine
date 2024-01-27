@@ -30,12 +30,14 @@ namespace BEngineEditor
 				Directory.GetCurrentDirectory() + @"\BEngineCore.dll", 
 				Directory.GetCurrentDirectory() + @"\BEngineScripting.dll");
 
-			Utils.OpenWithDefaultProgram(AssembledTempProjectPath + @$"\{TempProjectName}.sln");
+			LoadProject(AssembledTempProjectPath + @$"\{TempProjectName}.sln");
 		}
 
-		public void LoadProject()
+		public void LoadProject(string slnPath)
 		{
-
+			_currentProject = new Project(Path.GetFileNameWithoutExtension(slnPath), Path.GetDirectoryName(slnPath));
+			Console.WriteLine(_currentProject.Name + " " + _currentProject.Path);
+			Utils.OpenWithDefaultProgram(slnPath);
 		}
 	}
 }
