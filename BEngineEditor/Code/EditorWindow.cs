@@ -1,7 +1,6 @@
 ﻿using BEngineCore;
 using ImGuiNET;
 using OpenTK.Windowing.Common;
-using System.Numerics;
 
 namespace BEngineEditor
 {
@@ -11,8 +10,9 @@ namespace BEngineEditor
 
 		public ProjectContext ProjectContext { get; private set; }
 
-		private ProjectLoaderScreen _projectLoaderScreen = new();
+		private ProjectLoaderScreen _projectLoader = new();
 		private MenuBarScreen _menuBar = new();
+		private AssemblyStatusScreen _assemblyStatus = new();
 
 		public EditorWindow(string title = "Window", int x = 1280, int y = 720) : base(title, x, y)
 		{
@@ -24,8 +24,9 @@ namespace BEngineEditor
 			_controller = new ImGuiController(_window.ClientSize.X, _window.ClientSize.Y);
 			ProjectContext = new();
 
-			_projectLoaderScreen.Initialize(this);
+			_projectLoader.Initialize(this);
 			_menuBar.Initialize(this);
+			_assemblyStatus.Initialize(this);
 		}
 
 		protected override void MouseWheel(MouseWheelEventArgs obj)
@@ -54,8 +55,11 @@ namespace BEngineEditor
 
 			_menuBar.Display();
 
+			if (ProjectContext.ProjectLoaded && ProjectContext.CurrentProject.AssemblyLoaded)
+				_assemblyStatus.Display();
+
 			if (ProjectContext.SearchingProject)
-				_projectLoaderScreen.Display();
+				_projectLoader.Display();
 
 			_controller.Render();
 			ImGuiController.CheckGLError("End of frame");

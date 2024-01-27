@@ -4,36 +4,33 @@ namespace BEngineEditor
 {
 	public class ProjectCompiler
 	{
-		public  void CompileScriptAssembly(string directory, bool debug = true, EventHandler? onReady = null)
+		public bool Compiling { get; private set; } = false;
+		public bool CompileAfterwards { get; private set; } = false;
+
+		Process _assemblyCompilation;
+
+		public void CompileScriptAssembly(string directory, bool debug = true, DataReceivedEventHandler? onOutput = null)
 		{
-			try
-			{
-				string mode = debug ? "Debug" : "Release";
+			string mode = debug ? "Debug" : "Release";
 
-				Thread thread = new(() =>
-				{
-					Process console = new Process();
-					console.StartInfo.FileName = "cmd.exe";
-					console.EnableRaisingEvents = true;
-					console.Exited += onReady;
-					console.StartInfo.RedirectStandardInput = true;
-					console.StartInfo.RedirectStandardOutput = true;
-					console.StartInfo.CreateNoWindow = true;
-					console.StartInfo.UseShellExecute = false;
-					console.Start();
+			if (_assemblyCompilation != null)
+				_assemblyCompilation.Close();
 
-					console.StandardInput.WriteLine($"dotnet build {directory} -c {mode}");
-					console.StandardInput.Flush();
-					console.StandardInput.Close();
-					console.WaitForExit();
-					Console.WriteLine(console.StandardOutput.ReadToEnd());
-				});
-				thread.Start();
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex.Message);
-			}
+			_assemblyCompilation = new Process();
+			_assemblyCompilation.StartInfo.FileName = "cmd.exe";
+			_assemblyCompilation.EnableRaisingEvents = true;
+			_assemblyCompilation.OutputDataReceived += onOutput;
+			_assemblyCompilation.StartInfo.RedirectStandardInput = true;
+			_assemblyCompilation.StartInfo.RedirectStandardOutput = true;
+			_assemblyCompilation.StartInfo.CreateNoWindow = true;
+			_assemblyCompilation.StartInfo.UseShellExecute = false;
+
+			_assemblyCompilation.Start();
+			_assemblyCompilation.BeginOutputReadLine();
+
+			_assemblyCompilation.StandardInput.WriteLine($"dotnet build {directory} -c {mode}");
+			_assemblyCompilation.StandardInput.Flush();
+			_assemblyCompilation.StandardInput.Close();
 		}
 
 		public void CompileBuild(bool debug = false)
