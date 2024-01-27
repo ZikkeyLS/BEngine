@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using BEngineCore;
+using System.Diagnostics;
 
 namespace BEngineEditor
 {
@@ -13,60 +14,49 @@ namespace BEngineEditor
 		public string ProjectAssemblyPath => ProjectAssemblyDirectory + $@"\bin\Debug\net8.0\{Name}Assembly.dll";
 		public bool EditorAssemblyExists => File.Exists(ProjectAssemblyPath);
 
+		private Scripting _scripting = new Scripting();
+		private ProjectCompiler _compiler = new ProjectCompiler();
+
 		public Project(string name, string path)
 		{
 			Name = name;
 			Path = path;
 		}
-
-		public void CompileScriptAssembly(bool debug = true)
+	
+		private void Console_Exited(object? sender, EventArgs e)
 		{
-			try
-			{
-				string mode = debug ? "Debug" : "Release";
+			throw new NotImplementedException();
+		}
 
-				Thread thread = new Thread(() =>
-				{
-					Process console = new Process();
-					console.StartInfo.FileName = "cmd.exe";
-					console.EnableRaisingEvents = true;
-					console.Exited += CompileAssemblyReady;
-					console.StartInfo.RedirectStandardInput = true;
-					console.StartInfo.RedirectStandardOutput = true;
-					console.StartInfo.CreateNoWindow = true;
-					console.StartInfo.UseShellExecute = false;
-					console.Start();
+		public void LoadProjectData()
+		{
+			CompileScripts();
 
-					console.StandardInput.WriteLine($"dotnet build {ProjectAssemblyDirectory} -c {mode}");
-					console.StandardInput.Flush();
-					console.StandardInput.Close();
-					console.WaitForExit();
-					Console.WriteLine(console.StandardOutput.ReadToEnd());
-				});
-				thread.Start();
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex.Message);
-			}
+			// Get files and etc.
+		}
+
+		private void CompileScripts()
+		{
+			_compiler.CompileScriptAssembly(ProjectAssemblyDirectory, true, CompileAssemblyReady);
 		}
 
 		private void CompileAssemblyReady(object? sender, EventArgs e)
 		{
 			Console.WriteLine("Assembly compiled sucessfully!");
+
+			_scripting.ReadScriptAssembly(ProjectAssemblyPath);
+			StartWatchOnScripts();
 		}
 
-		public void CompileBuild(bool debug = false)
+		private void StartWatchOnScripts()
 		{
-
-		}
-
-		public void LoadProjectData()
-		{
-			CompileScriptAssembly();
-
-			
-			// Get files and etc.
+			FileSystemWatcher scriptsWatcher = new(ProjectAssemblyDirectory, "*.cs");
+			scriptsWatcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
+					   | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+			scriptsWatcher.EnableRaisingEvents = true;
+			scriptsWatcher.Changed += (e, a) => CompileScripts();
+			scriptsWatcher.Renamed += (e, a) => CompileScripts();
+			scriptsWatcher.Deleted += (e, a) => CompileScripts();
 		}
 	}
 }
