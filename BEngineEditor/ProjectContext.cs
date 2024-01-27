@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,24 +13,16 @@ namespace BEngineEditor
 
 		public string TempProjectPath = "";
 		public string TempProjectName = "NewProject";
-		public bool ValidTempProjectPath { get; private set; } = true;
+		public bool ValidTempProjectPath => !Directory.Exists(AssembledTempProjectPath);
 		public string AssembledTempProjectPath => $@"{TempProjectPath}\{TempProjectName}";
 
 		private Project _currentProject;
 
-		public bool IsCreationPathValid(string directory)
-		{
-			return !Directory.Exists(directory);
-		}
-
-		public void UpdateCreationPathValid(string directory)
-		{
-			ValidTempProjectPath = !Directory.Exists(directory);
-		}
-
 		public void CreateProject() 
 		{
 			Utils.CopyDirectory(TemplateProjectDirectory, AssembledTempProjectPath);
+			ProjectBuilder.RemoveTempMarker(AssembledTempProjectPath);
+			ProjectBuilder.PrepareProjectStructure(AssembledTempProjectPath, TempProjectName);
 		}
 
 		public void LoadProject()

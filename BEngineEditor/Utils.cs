@@ -1,13 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BEngineEditor
+﻿namespace BEngineEditor
 {
 	internal static class Utils
 	{
+		public static void Rename(this FileInfo fileInfo, string newName)
+		{
+			fileInfo.MoveTo(fileInfo.Directory.FullName + "\\" + newName);
+		}
+
+		public static void Rename(this DirectoryInfo directoryInfo, string newName)
+		{
+			directoryInfo.MoveTo(directoryInfo.Parent.FullName + "\\" + newName);
+		}
+
 		public static void CopyDirectory(string sourceDirectory, string destinationDirectory, bool recursive = true)
 		{
 			// Get information about the source directory

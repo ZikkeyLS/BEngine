@@ -27,7 +27,6 @@ namespace BEngineEditor
 			_projectContext = new ProjectContext();
 
 			_projectContext.TempProjectPath = Directory.GetCurrentDirectory();
-			_projectContext.UpdateCreationPathValid(_projectContext.AssembledTempProjectPath);
 		}
 
 		protected override void MouseWheel(MouseWheelEventArgs obj)
@@ -57,10 +56,7 @@ namespace BEngineEditor
 
 			ImGui.Begin("Project Loader");
 
-			if (ImGui.InputText("New Project Name", ref _projectContext.TempProjectName, 128))
-			{
-				_projectContext.UpdateCreationPathValid(_projectContext.AssembledTempProjectPath);
-			}
+			ImGui.InputText("New Project Name", ref _projectContext.TempProjectName, 128);
 
 			if (ImGui.Button("Select Folder", new Vector2(100, 25)))
 			{
@@ -70,7 +66,6 @@ namespace BEngineEditor
 			if (_projectCreator.Render() && !_projectCreator.Cancelled)
 			{
 				_projectContext.TempProjectPath = _projectCreator.SelectedFolder;
-				_projectContext.UpdateCreationPathValid(_projectContext.AssembledTempProjectPath);
 			}
 
 			ImGui.Text("Project will be generated in " + _projectContext.AssembledTempProjectPath);
@@ -80,7 +75,6 @@ namespace BEngineEditor
 				if (ImGui.Button("Create Project", new Vector2(150, 50)))
 				{
 					_projectContext.CreateProject();
-					_projectContext.UpdateCreationPathValid(_projectContext.AssembledTempProjectPath);
 				}
 			}
 			else

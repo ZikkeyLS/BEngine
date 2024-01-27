@@ -9,6 +9,40 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ProjectTemplate\DemoProjectAssembly\**" />
+    <Compile Remove="ProjectTemplate\DemoProjectBuild\**" />
+    <EmbeddedResource Remove="ProjectTemplate\DemoProjectAssembly\**" />
+    <EmbeddedResource Remove="ProjectTemplate\DemoProjectBuild\**" />
+    <None Remove="ProjectTemplate\DemoProjectAssembly\**" />
+    <None Remove="ProjectTemplate\DemoProjectBuild\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ProjectTemplate\DemoGameProject.sln.temp" />
+    <None Remove="ProjectTemplate\Project.sln.temp" />
+    <None Remove="ProjectTemplate\ProjectAssembly\DemoProjectAssembly.csproj.temp" />
+    <None Remove="ProjectTemplate\ProjectAssembly\ProjectAssembly.csproj.temp" />
+    <None Remove="ProjectTemplate\ProjectBuild\DemoProjectBuild.csproj.temp" />
+    <None Remove="ProjectTemplate\ProjectBuild\Program.cs.temp" />
+    <None Remove="ProjectTemplate\ProjectBuild\ProjectBuild.csproj.temp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ProjectTemplate\Project.sln.temp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ProjectTemplate\ProjectAssembly\ProjectAssembly.csproj.temp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ProjectTemplate\ProjectBuild\Program.cs.temp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ProjectTemplate\ProjectBuild\ProjectBuild.csproj.temp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Costura.Fody" Version="5.7.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
