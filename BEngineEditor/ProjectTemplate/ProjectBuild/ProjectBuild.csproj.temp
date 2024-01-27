@@ -8,12 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DemoProjectAssembly\DemoProjectAssembly.csproj" />
+    <ProjectReference Include="..\ProjectAssembly\ProjectAssembly.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="BEngineCore">
-      <HintPath>{BEngineCoreDLLPath}</HintPath>
+      <HintPath>BEngineCoreDLLPath</HintPath>
     </Reference>
   </ItemGroup>
 

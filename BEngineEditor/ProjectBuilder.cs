@@ -25,6 +25,7 @@ namespace BEngineEditor
 
 		public static void PrepareProjectStructure(string path, string projectName)
 		{
+			// Root
 			FileInfo solutionFile = new FileInfo(path + "/Project.sln");
 			solutionFile.Rename(projectName + ".sln");
 
@@ -32,11 +33,17 @@ namespace BEngineEditor
 			File.WriteAllText(solutionFilePath, File.ReadAllText(solutionFilePath).Replace("ProjectAssembly", $"{projectName}Assembly"));
 			File.WriteAllText(solutionFilePath, File.ReadAllText(solutionFilePath).Replace("ProjectBuild", $"{projectName}Build"));
 
+			// Assembly
 			DirectoryInfo assemblyDirectory = new DirectoryInfo(path + "/ProjectAssembly");
 			assemblyDirectory.Rename($"{projectName}Assembly");
 
+
+			// Build
 			DirectoryInfo buildDirectory = new DirectoryInfo(path + "/ProjectBuild");
 			buildDirectory.Rename($"{projectName}Build");
+
+			string projectBuildFilePath = path + "/" + projectName + ".sln";
+			File.WriteAllText(projectBuildFilePath, File.ReadAllText(projectBuildFilePath).Replace("ProjectAssembly", $"{projectName}Assembly"));
 		}
 	}
 }
