@@ -30,7 +30,7 @@ namespace BEngineEditor
 			solutionFile.Rename(projectName + ".sln");
 			File.WriteAllText(solutionFile.FullName, File.ReadAllText(solutionFile.FullName)
 				.Replace("ProjectAssembly", $"{projectName}Assembly")
-				.Replace("ProjectBuild", $"{projectName}Build"));
+				.Replace("Project", $"{projectName}"));
 
 			// Assembly
 			DirectoryInfo assemblyDirectory = new DirectoryInfo(path + "/ProjectAssembly");
@@ -45,8 +45,8 @@ namespace BEngineEditor
 			DirectoryInfo buildDirectory = new DirectoryInfo(path + "/ProjectBuild");
 			buildDirectory.Rename($"{projectName}Build");
 
-			FileInfo buildFile = new FileInfo(buildDirectory.FullName + "/ProjectBuild.csproj");
-			buildFile.Rename(projectName + "Build.csproj");
+			FileInfo buildFile = new FileInfo(buildDirectory.FullName + "/Project.csproj");
+			buildFile.Rename(projectName + ".csproj");
 			File.WriteAllText(buildFile.FullName, File.ReadAllText(buildFile.FullName)
 				.Replace("ProjectAssembly", $"{projectName}Assembly")
 				.Replace("BEngineCoreDLLPath", coreDllPath));

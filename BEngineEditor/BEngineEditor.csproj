@@ -24,7 +24,7 @@
     <None Remove="ProjectTemplate\ProjectAssembly\ProjectAssembly.csproj.temp" />
     <None Remove="ProjectTemplate\ProjectBuild\DemoProjectBuild.csproj.temp" />
     <None Remove="ProjectTemplate\ProjectBuild\Program.cs.temp" />
-    <None Remove="ProjectTemplate\ProjectBuild\ProjectBuild.csproj.temp" />
+    <None Remove="ProjectTemplate\ProjectBuild\Project.csproj.temp" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,7 +37,7 @@
     <Content Include="ProjectTemplate\ProjectBuild\Program.cs.temp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ProjectTemplate\ProjectBuild\ProjectBuild.csproj.temp">
+    <Content Include="ProjectTemplate\ProjectBuild\Project.csproj.temp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

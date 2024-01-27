@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BEngineEditor
 {
-	internal class ProjectContext
+	public class ProjectContext
 	{
 		private const string TemplateProjectDirectory = "ProjectTemplate";
 
@@ -20,6 +20,8 @@ namespace BEngineEditor
 		public bool ProjectLoaded => _currentProject != null;
 
 		private Project _currentProject = null;
+
+		public bool SearchingProject = true;
 
 		public void CreateProject() 
 		{
@@ -37,6 +39,8 @@ namespace BEngineEditor
 		public void LoadProject(string slnPath)
 		{
 			_currentProject = new Project(Path.GetFileNameWithoutExtension(slnPath), Path.GetDirectoryName(slnPath));
+			SearchingProject = false;
+
 			// Utils.OpenWithDefaultProgram(_currentProject.SolutionPath);
 
 			// BEngineCore.Scripting scripting = new BEngineCore.Scripting();

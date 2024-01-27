@@ -53,12 +53,7 @@ namespace BEngineCore
 
 		private List<CachedScript> _scripts = new();
 
-		public void Initialize(string path)
-		{
-			ReadScriptingAssembly(path);
-		}
-
-		public void ReadScriptingAssembly(string path)
+		public void ReadScriptAssembly(string path)
 		{
 			_scripts.Clear();
 
