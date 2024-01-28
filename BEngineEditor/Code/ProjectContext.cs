@@ -1,4 +1,5 @@
 ﻿using BEngineCore;
+using BEngineEditor.Code;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,6 +25,13 @@ namespace BEngineEditor
 		public Project CurrentProject => _currentProject;
 
 		private Project _currentProject;
+
+		public EditorWindow Window { get; private set; }
+
+		public ProjectContext(EditorWindow window)
+		{
+			Window = window;
+		}
 
 		public void CreateProject() 
 		{

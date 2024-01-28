@@ -52,13 +52,6 @@ namespace BEngineEditor
 					{
 						_compiler.CompileScripts();
 					}
-
-					if ((window.IsKeyPressed(Keys.LeftControl) || window.IsKeyPressed(Keys.RightControl))
-						&& (window.IsKeyPressed(Keys.LeftShift) || window.IsKeyPressed(Keys.RightShift)) &&
-						window.IsKeyPressed(Keys.B))
-					{
-						_compiler.CompileScripts();
-					}
 				}
 
 				if (_projectContext.CurrentProject != null && _compiler.BuildingGame == false
@@ -69,21 +62,7 @@ namespace BEngineEditor
 						_compiler.BuildGame();
 					}
 
-					if ((window.IsKeyPressed(Keys.LeftControl) || window.IsKeyPressed(Keys.RightControl))
-						&& (window.IsKeyPressed(Keys.LeftShift) || window.IsKeyPressed(Keys.RightShift)) &&
-						window.IsKeyPressed(Keys.G))
-					{
-						_compiler.BuildGame();
-					}
-
 					if (ImGui.MenuItem("Build and Run", "Ctrl+Shift+R"))
-					{
-						_compiler.BuildGame(true);
-					}
-
-					if ((window.IsKeyPressed(Keys.LeftControl) || window.IsKeyPressed(Keys.RightControl))
-						&& (window.IsKeyPressed(Keys.LeftShift) || window.IsKeyPressed(Keys.RightShift)) &&
-						window.IsKeyPressed(Keys.R))
 					{
 						_compiler.BuildGame(true);
 					}

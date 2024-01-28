@@ -1,4 +1,5 @@
 ﻿using BEngineCore;
+using BEngineEditor.Code;
 using ImGuiNET;
 using OpenTK.Windowing.Common;
 
@@ -13,6 +14,7 @@ namespace BEngineEditor
 		private ProjectLoaderScreen _projectLoader = new();
 		private MenuBarScreen _menuBar = new();
 		private AssemblyStatusScreen _assemblyStatus = new();
+		private Shortcuts _shortcuts;
 
 		public EditorWindow(string title = "Window", int x = 1280, int y = 720) : base(title, x, y)
 		{
@@ -37,7 +39,8 @@ namespace BEngineEditor
 		protected override void OnLoad()
 		{
 			_controller = new ImGuiController(_window.ClientSize.X, _window.ClientSize.Y);
-			ProjectContext = new();
+			ProjectContext = new(this);
+			_shortcuts = new Shortcuts(ProjectContext);
 
 			_projectLoader.Initialize(this);
 			_menuBar.Initialize(this);
@@ -61,6 +64,7 @@ namespace BEngineEditor
 
 		protected override void OnPreRender(float time)
 		{
+			_shortcuts.Update();
 			_controller.Update(_window, time);
 		}
 

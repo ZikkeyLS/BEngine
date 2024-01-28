@@ -71,7 +71,7 @@ namespace BEngineEditor
 			_assemblyCompilation.Start();
 			_assemblyCompilation.BeginOutputReadLine();
 
-			_assemblyCompilation.StandardInput.WriteLine($"dotnet build {_project.ProjectAssemblyDirectory} -c {mode} -m:2");
+			_assemblyCompilation.StandardInput.WriteLine($"dotnet build {_project.ProjectAssemblyDirectory} -c {mode}");
 			_assemblyCompilation.StandardInput.Flush();
 			_assemblyCompilation.StandardInput.Close();
 		}
