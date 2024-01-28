@@ -31,7 +31,7 @@ namespace BEngineEditor
 		public const string Win64 = "win-x64";
 		public const string Win86 = "win-x86";
 		public const string Linux64 = "linux-x64";
-		public const string Osx64 = "osx-64";
+		public const string Osx64 = "osx-x64";
 
 		private bool _runOnBuild = false;
 		private string _compileOS = Win64;
@@ -56,8 +56,10 @@ namespace BEngineEditor
 		{
 			string mode = debug ? "Debug" : "Release";
 
-			if (_assemblyCompilation != null)
+			if (_assemblyCompilation != null) {
+				_assemblyCompilation.Kill();
 				_assemblyCompilation.Close();
+			}
 
 			_assemblyCompilation = new Process();
 			_assemblyCompilation.StartInfo.FileName = "cmd.exe";
@@ -81,7 +83,10 @@ namespace BEngineEditor
 			string mode = debug ? "Debug" : "Release";
 
 			if (_buildCompilation != null)
+			{
+				_buildCompilation.Kill();
 				_buildCompilation.Close();
+			}
 
 			_buildCompilation = new Process();
 			_buildCompilation.StartInfo.FileName = "cmd.exe";
@@ -196,7 +201,8 @@ namespace BEngineEditor
 			DirectoryInfo directory = new DirectoryInfo($@"{_project.Directory}\Build\{_compileOS}");
 			foreach (FileInfo file in directory.GetFiles())
 			{
-				if (file.Extension != "" && file.Extension != ".so" && file.Extension != ".a" && file.Extension != ".dll" 
+				if (file.Extension != "" && file.Extension != "dylib" 
+					&& file.Extension != ".so" && file.Extension != ".a" && file.Extension != ".dll" 
 					&& file.Extension != ".exe" && (file.Extension != ".json" || file.Name.Contains("runtime") == false))
 				{
 					file.Delete();

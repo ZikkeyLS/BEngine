@@ -82,6 +82,8 @@ namespace BEngineEditor
 
 			_controller.Render();
 			ImGuiController.CheckGLError("End of frame");
+
+			ProjectContext.CurrentProject?.Logger.InsertSafeLogs();
 		}
 	}
 }

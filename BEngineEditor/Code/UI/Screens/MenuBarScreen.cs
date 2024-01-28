@@ -19,33 +19,13 @@ namespace BEngineEditor
 		{
 			ImGui.BeginMainMenuBar();
 
-			if (ImGui.Button("Load Project"))
-				_projectContext.SearchingProject = true;
-
-			if (_projectContext.CurrentProject != null && ImGui.BeginMenu("BuildOS"))
-			{
-				if (ImGui.MenuItem(ProjectCompiler.Win64, "", _compiler.IsCurrentOS(ProjectCompiler.Win64))) 
-				{ 
-					_compiler.SetCompileOS(ProjectCompiler.Win64); 
-				}
-				if (ImGui.MenuItem(ProjectCompiler.Win86, "", _compiler.IsCurrentOS(ProjectCompiler.Win86))) 
-				{ 
-					_compiler.SetCompileOS(ProjectCompiler.Win86); 
-				}
-				if (ImGui.MenuItem("Linux", "", _compiler.IsCurrentOS(ProjectCompiler.Linux64))) 
-				{ 
-					_compiler.SetCompileOS(ProjectCompiler.Linux64); 
-				}
-				if (ImGui.MenuItem("MacOS", "", _compiler.IsCurrentOS(ProjectCompiler.Osx64))) 
-				{ 
-					_compiler.SetCompileOS(ProjectCompiler.Osx64); 
-				}
-
-				ImGui.EndMenu();
-			}
-
 			if (_projectContext.CurrentProject != null && ImGui.BeginMenu("Actions"))
 			{
+				if (ImGui.MenuItem("Load Project", "Ctrl+Shift+F"))
+				{
+					_projectContext.SearchingProject = true;
+				}
+
 				if (_projectContext.CurrentProject != null && _compiler.BuildingGame == false)
 				{
 					if (ImGui.MenuItem("Reload assembly", "Ctrl+Shift+B"))
@@ -71,7 +51,27 @@ namespace BEngineEditor
 				ImGui.EndMenu();
 			}
 
+			if (_projectContext.CurrentProject != null && ImGui.BeginMenu("BuildOS"))
+			{
+				if (ImGui.MenuItem(ProjectCompiler.Win64, "", _compiler.IsCurrentOS(ProjectCompiler.Win64))) 
+				{ 
+					_compiler.SetCompileOS(ProjectCompiler.Win64); 
+				}
+				if (ImGui.MenuItem(ProjectCompiler.Win86, "", _compiler.IsCurrentOS(ProjectCompiler.Win86))) 
+				{ 
+					_compiler.SetCompileOS(ProjectCompiler.Win86); 
+				}
+				if (ImGui.MenuItem("Linux", "", _compiler.IsCurrentOS(ProjectCompiler.Linux64))) 
+				{ 
+					_compiler.SetCompileOS(ProjectCompiler.Linux64); 
+				}
+				if (ImGui.MenuItem("MacOS", "", _compiler.IsCurrentOS(ProjectCompiler.Osx64))) 
+				{ 
+					_compiler.SetCompileOS(ProjectCompiler.Osx64); 
+				}
 
+				ImGui.EndMenu();
+			}
 
 			ImGui.EndMainMenuBar();
 		}

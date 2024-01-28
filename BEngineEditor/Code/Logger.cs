@@ -6,19 +6,34 @@
 		public HashSet<string> WarningsLogs { get; private set; } = new();
 		public HashSet<string> ErrorsLogs { get; private set; } = new();
 
+		private HashSet<string> _safeMessageLogs = new();
+		private HashSet<string> _safeWarningsLogs = new();
+		private HashSet<string> _safeErrorsLogs = new();
+
+		public void InsertSafeLogs()
+		{
+			MessageLogs.UnionWith(_safeMessageLogs);
+			WarningsLogs.UnionWith(_safeWarningsLogs);
+			ErrorsLogs.UnionWith(_safeErrorsLogs);
+
+			_safeMessageLogs = new();
+			_safeWarningsLogs = new();
+			_safeErrorsLogs = new();
+		}
+
 		public void LogMessage(string message)
 		{
-			MessageLogs.Add(message);
+			_safeMessageLogs.Add(message);
 		}
 
 		public void LogWarning(string warning)
 		{
-			WarningsLogs.Add(warning);
+			_safeWarningsLogs.Add(warning);
 		}
 
 		public void LogError(string error)
 		{
-			ErrorsLogs.Add(error);
+			_safeErrorsLogs.Add(error);
 		}
 
 		public void ClearLogs()

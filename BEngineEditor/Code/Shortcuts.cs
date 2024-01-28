@@ -26,6 +26,16 @@ namespace BEngineEditor.Code
 			{
 				if ((window.IsKeyDown(Keys.LeftControl) || window.IsKeyDown(Keys.RightControl))
 					&& (window.IsKeyDown(Keys.LeftShift) || window.IsKeyDown(Keys.RightShift)) &&
+					window.IsKeyDown(Keys.F))
+				{
+					_projectContext.SearchingProject = true;
+				}
+			}
+
+			if (_projectContext.CurrentProject != null && _compiler.BuildingGame == false)
+			{
+				if ((window.IsKeyDown(Keys.LeftControl) || window.IsKeyDown(Keys.RightControl))
+					&& (window.IsKeyDown(Keys.LeftShift) || window.IsKeyDown(Keys.RightShift)) &&
 					window.IsKeyDown(Keys.B))
 				{
 					_compiler.CompileScripts();
