@@ -23,7 +23,6 @@ namespace BEngineEditor
 		public bool ProjectLoaded => _currentProject != null;
 		public Project CurrentProject => _currentProject;
 
-
 		private Project _currentProject;
 
 		public void CreateProject() 

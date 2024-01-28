@@ -4,12 +4,55 @@ namespace BEngineEditor
 {
 	public class ProjectCompiler
 	{
-		public bool Compiling { get; private set; } = false;
-		public bool CompileAfterwards { get; private set; } = false;
+		public bool AssemblyLoaded { get; private set; } = false;
+		public bool BuildingGame { get; private set; } = false;
 
-		Process _assemblyCompilation;
+		public DateTime AssemblyBuildStartTime;
+		public DateTime AssemblyBuildEndTime;
 
-		public void CompileScriptAssembly(string directory, bool debug = true, DataReceivedEventHandler? onOutput = null)
+		public DateTime BuildStartTime;
+		public DateTime BuildEndTime;
+
+		public HashSet<string> AssemblyCompileErrors { get; private set; } = new();
+		public HashSet<string> AssemblyCompileWarnings { get; private set; } = new();
+
+		private HashSet<string> _assemblyCompileErrors = new();
+		private HashSet<string> _assemblyCompileWarnings = new();
+
+		public HashSet<string> BuildCompileErrors { get; private set; } = new();
+		public HashSet<string> BuildCompileWarnings { get; private set; } = new();
+
+		private HashSet<string> _buildCompileErrors = new();
+		private HashSet<string> _buildCompileWarnings = new();
+
+		private Process _assemblyCompilation;
+		private Process _buildCompilation;
+
+		public const string Win64 = "win-x64";
+		public const string Win86 = "win-x86";
+		public const string Linux64 = "linux-x64";
+		public const string Osx64 = "osx-64";
+
+		private bool _runOnBuild = false;
+		private string _compileOS = Win64;
+		private Project _project;
+
+		public void SetCompileOS(string os)
+		{
+			_compileOS = os;
+		}
+
+		public bool IsCurrentOS(string os)
+		{
+			return _compileOS == os;
+		}
+
+		public void Initialize(Project project)
+		{
+			_project = project;
+		}
+
+		private void CompileScriptAssembly(bool debug = true, DataReceivedEventHandler? onOutput = null)
 		{
 			string mode = debug ? "Debug" : "Release";
 
@@ -28,15 +71,178 @@ namespace BEngineEditor
 			_assemblyCompilation.Start();
 			_assemblyCompilation.BeginOutputReadLine();
 
-			_assemblyCompilation.StandardInput.WriteLine($"dotnet build {directory} -c {mode}");
+			_assemblyCompilation.StandardInput.WriteLine($"dotnet build {_project.ProjectAssemblyDirectory} -c {mode} -m:2");
 			_assemblyCompilation.StandardInput.Flush();
 			_assemblyCompilation.StandardInput.Close();
 		}
 
-		public void CompileBuild(bool debug = false)
+		private void CompileBuild(bool debug = false, DataReceivedEventHandler? onOutput = null)
 		{
+			string mode = debug ? "Debug" : "Release";
 
+			if (_buildCompilation != null)
+				_buildCompilation.Close();
+
+			_buildCompilation = new Process();
+			_buildCompilation.StartInfo.FileName = "cmd.exe";
+			_buildCompilation.EnableRaisingEvents = true;
+			_buildCompilation.OutputDataReceived += onOutput;
+			_buildCompilation.StartInfo.RedirectStandardInput = true;
+			_buildCompilation.StartInfo.RedirectStandardOutput = true;
+			_buildCompilation.StartInfo.CreateNoWindow = true;
+			_buildCompilation.StartInfo.UseShellExecute = false;
+
+			_buildCompilation.Start();
+			_buildCompilation.BeginOutputReadLine();
+
+			_buildCompilation.StandardInput.WriteLine($"dotnet build {_project.ProjectBuildDirectory} -c {mode} -r {_compileOS} -m:2");
+			_buildCompilation.StandardInput.Flush();
+			_buildCompilation.StandardInput.Close();
 		}
 
+		public void CompileScripts()
+		{
+			AssemblyLoaded = false;
+			AssemblyBuildStartTime = DateTime.Now;
+			CompileScriptAssembly(true, OnAssemblyOutput);
+		}
+
+		public void BuildGame(bool run = false)
+		{
+			_runOnBuild = run;
+			BuildStartTime = DateTime.Now;
+			BuildingGame = true;
+			CompileBuild(false, OnBuildOutput);
+		}
+
+		private void OnAssemblyOutput(object? sender, DataReceivedEventArgs e)
+		{
+			if (e.Data != null)
+			{
+				string parsedMessage = e.Data.Replace($"[{_project.ProjectAssemblyPath}]", string.Empty);
+
+				if (e.Data.Contains("error") && _assemblyCompileErrors.Contains(parsedMessage) == false)
+				{
+					_assemblyCompileErrors.Add(parsedMessage);
+				}
+				else if (e.Data.Contains("warning") && _assemblyCompileWarnings.Contains(parsedMessage) == false)
+				{
+					_assemblyCompileWarnings.Add(parsedMessage);
+				}
+			}
+			else
+			{
+				AssemblyBuildEndTime = DateTime.Now;
+				OnAssemblyCompleted();
+			}
+		}
+
+		private void OnAssemblyCompleted()
+		{
+			AssemblyCompileWarnings = _assemblyCompileWarnings;
+			AssemblyCompileErrors = _assemblyCompileErrors;
+			AssemblyLoaded = true;
+			_assemblyCompileErrors = new();
+			_assemblyCompileWarnings = new();
+
+			if (AssemblyCompileErrors.Count == 0)
+			{
+				_project.Logger.LogMessage($"Working clear, no errors found! (Build in " +
+					$"{AssemblyBuildEndTime.ToString("HH:mm:ss")}, " +
+					$"{Math.Round((AssemblyBuildEndTime -
+					AssemblyBuildStartTime).TotalSeconds, 1)} sec)");
+			}
+			else
+			{
+				AssemblyCompileErrors.Add($"Assembly load is failed. See following errors... (Failed in " +
+					$"{AssemblyBuildEndTime.ToString("HH:mm:ss")}, " +
+					$"{Math.Round((AssemblyBuildEndTime -
+					AssemblyBuildStartTime).TotalSeconds, 1)} sec)");
+			}
+		}
+
+		private void OnBuildOutput(object? sender, DataReceivedEventArgs e)
+		{
+			if (e.Data != null)
+			{
+				string parsedMessage = e.Data.Replace($"[{_project.ProjectAssemblyPath}]", string.Empty);
+
+				if (e.Data.Contains("error") && _buildCompileErrors.Contains(parsedMessage) == false)
+				{
+					_buildCompileErrors.Add(parsedMessage);
+				}
+				else if (e.Data.Contains("warning") && _buildCompileWarnings.Contains(parsedMessage) == false)
+				{
+					_buildCompileWarnings.Add(parsedMessage);
+				}
+			}
+			else
+			{
+				BuildEndTime = DateTime.Now;
+				OnBuildCompleted();
+			}
+		}
+
+		private void OnBuildCompleted()
+		{
+			BuildCompileErrors = _buildCompileErrors;
+			BuildCompileWarnings = _buildCompileWarnings;
+			_buildCompileErrors = new();
+			_buildCompileWarnings = new();
+
+			// copy files to build path
+			Utils.CopyDirectory($@"{_project.ProjectBuildBinaryDirectory}\{_compileOS}", $@"{_project.Directory}\Build\{_compileOS}");
+
+			DirectoryInfo directory = new DirectoryInfo($@"{_project.Directory}\Build\{_compileOS}");
+			foreach (FileInfo file in directory.GetFiles())
+			{
+				if (file.Extension != "" && file.Extension != ".so" && file.Extension != ".a" && file.Extension != ".dll" 
+					&& file.Extension != ".exe" && (file.Extension != ".json" || file.Name.Contains("runtime") == false))
+				{
+					file.Delete();
+				}
+			}
+
+			if (Directory.Exists(directory.FullName + @"\Data") == false)
+				directory.CreateSubdirectory("Data");
+
+			foreach (FileInfo file in directory.GetFiles())
+			{
+				if (file.Extension == ".dll" && file.Name != "BEngineCore.dll" && file.Name != $"{_project.Name}.dll")
+				{
+					file.MoveTo(directory.FullName + @$"\Data\{file.Name}", true);
+				}
+			}
+
+			Utils.CopyDirectory($@"runtimes\{_compileOS}\native", $@"{_project.Directory}\Build\{_compileOS}\Data");
+
+			if (BuildCompileErrors.Count == 0)
+			{
+				_project.Logger.LogMessage($"Build is completed! (Build in " +
+					$"{BuildEndTime.ToString("HH:mm:ss")}, " +
+					$"{Math.Round((BuildEndTime -
+					BuildStartTime).TotalSeconds, 1)} sec)");
+			}
+			else
+			{
+				_project.Logger.LogError($"Build is failed. See following errors... (Failed in" +
+					$"{BuildEndTime.ToString("HH:mm:ss")}, " +
+					$"{Math.Round((BuildEndTime -
+					BuildStartTime).TotalSeconds, 1)} sec)");
+			}
+
+			BuildingGame = false;
+
+			if (_runOnBuild && File.Exists($@"{_project.Directory}\Build\{_compileOS}\{_project.Name}.exe"))
+			{
+				ProcessStartInfo startInfo = new ProcessStartInfo
+				{
+					WorkingDirectory = $@"{_project.Directory}\Build\{_compileOS}\",
+					FileName = $@"{_project.Directory}\Build\{_compileOS}\{_project.Name}.exe"
+				};
+
+				Process.Start(startInfo);
+			}
+		}
 	}
 }

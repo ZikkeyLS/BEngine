@@ -19,6 +19,21 @@ namespace BEngineEditor
 
 		}
 
+		public bool IsKeyDown(OpenTK.Windowing.GraphicsLibraryFramework.Keys key)
+		{
+			return _window.IsKeyDown(key);
+		}
+
+		public bool IsKeyPressed(OpenTK.Windowing.GraphicsLibraryFramework.Keys key)
+		{
+			return _window.IsKeyPressed(key);
+		}
+
+		public bool IsKeyUp(OpenTK.Windowing.GraphicsLibraryFramework.Keys key)
+		{
+			return _window.IsKeyReleased(key);
+		}
+
 		protected override void OnLoad()
 		{
 			_controller = new ImGuiController(_window.ClientSize.X, _window.ClientSize.Y);

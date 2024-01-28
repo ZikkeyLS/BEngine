@@ -67,6 +67,8 @@ namespace BEngineEditor
 
             SetPerFrameImGuiData(1f / 60f);
 
+            ImGui.StyleColorsDark();
+
             ImGui.NewFrame();
             _frameBegun = true;
         }
