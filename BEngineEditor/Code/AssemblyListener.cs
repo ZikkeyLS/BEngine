@@ -10,7 +10,7 @@
 
 		public Action<List<string>> OnScriptsChanged;
 
-		private const int MSDelay = 1000;
+		private const int MSDelay = 500;
 
 		public void StartWatchOnScripts(Project project)
 		{

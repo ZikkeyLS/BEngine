@@ -8,6 +8,7 @@ namespace BEngineEditor
 		private ProjectContext _projectContext;
 
 		private List<string> _compileErrors => _projectContext.CurrentProject.CompileErrors;
+		private List<string> _compileWarnings => _projectContext.CurrentProject.CompileWarnings;
 
 		protected override void Setup()
 		{
@@ -27,6 +28,15 @@ namespace BEngineEditor
 				return;
 			}
 
+			int logID = 0;
+			DisplayErrors(ref logID);
+			DisplayWarnings(ref logID);
+			
+			ImGui.End();
+		}
+
+		private void DisplayErrors(ref int logID)
+		{
 			if (_compileErrors.Count == 0)
 			{
 				ImGui.Text($"Working clear, no errors found! (Build in " +
@@ -40,7 +50,7 @@ namespace BEngineEditor
 			{
 				Vector4 red = new Vector4(1, 0, 0, 1);
 				string data = _compileErrors[i];
-				ImGui.PushID(i);
+				ImGui.PushID(logID);
 				ImGui.PushItemWidth(ImGui.GetWindowSize().X);
 				ImGui.PushStyleColor(ImGuiCol.FrameBg, Vector4.Zero);
 				ImGui.PushStyleColor(ImGuiCol.Text, red);
@@ -49,9 +59,27 @@ namespace BEngineEditor
 				ImGui.PopStyleColor();
 				ImGui.PopItemWidth();
 				ImGui.PopID();
+				logID += 1;
 			}
+		}
 
-			ImGui.End();
+		private void DisplayWarnings(ref int logID)
+		{
+			for (int i = 0; i < _compileWarnings.Count; i++)
+			{
+				Vector4 yellow = new Vector4(1, 1, 0, 1);
+				string data = _compileWarnings[i];
+				ImGui.PushID(logID);
+				ImGui.PushItemWidth(ImGui.GetWindowSize().X);
+				ImGui.PushStyleColor(ImGuiCol.FrameBg, Vector4.Zero);
+				ImGui.PushStyleColor(ImGuiCol.Text, yellow);
+				ImGui.InputText(string.Empty, ref data, 1024, ImGuiInputTextFlags.ReadOnly);
+				ImGui.PopStyleColor();
+				ImGui.PopStyleColor();
+				ImGui.PopItemWidth();
+				ImGui.PopID();
+				logID += 1;
+			}
 		}
 	}
 }

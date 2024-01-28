@@ -25,7 +25,9 @@ namespace BEngineEditor
 		private AssemblyListener _assemblyListener = new AssemblyListener();
 
 		public List<string> CompileErrors { get; private set; } = new List<string>();
+		public List<string> CompileWarnings { get; private set; } = new List<string>();
 		public List<string> TempCompileErrors { get; private set; } = new List<string>();
+		public List<string> TempCompileWarnings { get; private set; } = new List<string>();
 
 		public Project(string name, string path)
 		{
@@ -49,6 +51,7 @@ namespace BEngineEditor
 
 		private void CompileScripts()
 		{
+			AssemblyLoaded = false;
 			AssemblyBuildStartTime = DateTime.Now;
 			_compiler.CompileScriptAssembly(ProjectAssemblyDirectory, true, OnAssemblyOutput);
 		}
@@ -59,10 +62,15 @@ namespace BEngineEditor
 			{
 				// Console.WriteLine(e.Data);
 
-				string parsedError = e.Data.Replace($"[{ProjectAssemblyPath}]", string.Empty);
-				if (e.Data.Contains("error") && TempCompileErrors.Contains(parsedError) == false)
+				string parsedMessage = e.Data.Replace($"[{ProjectAssemblyPath}]", string.Empty);
+
+				if (e.Data.Contains("error") && TempCompileErrors.Contains(parsedMessage) == false)
 				{
-					TempCompileErrors.Add(parsedError);
+					TempCompileErrors.Add(parsedMessage);
+				}
+				else if (e.Data.Contains("warning") && TempCompileWarnings.Contains(parsedMessage) == false)
+				{
+					TempCompileWarnings.Add(parsedMessage);
 				}
 			}
 			else
@@ -74,9 +82,11 @@ namespace BEngineEditor
 
 		private void OnAssemblyCompleted()
 		{
+			CompileWarnings = TempCompileWarnings;
 			CompileErrors = TempCompileErrors;
 			AssemblyLoaded = true;
 			TempCompileErrors = new();
+			TempCompileWarnings = new();
 		} 
 	}
 }
