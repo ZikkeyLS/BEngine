@@ -10,6 +10,9 @@ namespace BEngineEditor
 		public string Path { get; private set; } = string.Empty;
 		public bool AssemblyLoaded { get; private set; } = false;
 
+		public DateTime AssemblyBuildStartTime;
+		public DateTime AssemblyBuildEndTime;
+
 		public string SolutionPath => $@"{Path}\{Name}.sln";
 		public string ProjectAssemblyDirectory => $@"{Path}\{Name}Assembly";
 		public string ProjectBuildDirectory => $@"{Path}\{Name}Build";
@@ -46,6 +49,7 @@ namespace BEngineEditor
 
 		private void CompileScripts()
 		{
+			AssemblyBuildStartTime = DateTime.Now;
 			_compiler.CompileScriptAssembly(ProjectAssemblyDirectory, true, OnAssemblyOutput);
 		}
 
@@ -63,6 +67,7 @@ namespace BEngineEditor
 			}
 			else
 			{
+				AssemblyBuildEndTime = DateTime.Now;
 				OnAssemblyCompleted();
 			}
 		}

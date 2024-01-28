@@ -16,15 +16,15 @@ namespace BEngineEditor
 
 		public string TempProjectPath = "";
 		public string TempProjectName = "NewProject";
+		public bool SearchingProject = true;
+
 		public bool ValidTempProjectPath => !Directory.Exists(AssembledTempProjectPath);
 		public string AssembledTempProjectPath => $@"{TempProjectPath}\{TempProjectName}";
 		public bool ProjectLoaded => _currentProject != null;
 		public Project CurrentProject => _currentProject;
 
 
-		private Project _currentProject = null;
-
-		public bool SearchingProject = true;
+		private Project _currentProject;
 
 		public void CreateProject() 
 		{

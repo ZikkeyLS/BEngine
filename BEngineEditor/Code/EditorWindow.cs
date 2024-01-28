@@ -55,7 +55,7 @@ namespace BEngineEditor
 
 			_menuBar.Display();
 
-			if (ProjectContext.ProjectLoaded && ProjectContext.CurrentProject.AssemblyLoaded)
+			if (ProjectContext.ProjectLoaded)
 				_assemblyStatus.Display();
 
 			if (ProjectContext.SearchingProject)
