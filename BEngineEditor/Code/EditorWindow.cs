@@ -9,6 +9,7 @@ namespace BEngineEditor
 	public class EditorWindow : Window
 	{
 		private ImGuiController _controller;
+		private Shortcuts _shortcuts;
 
 		public ProjectContext ProjectContext { get; private set; }
 		public EditorSettings Settings { get; private set; }
@@ -16,7 +17,7 @@ namespace BEngineEditor
 		private ProjectLoaderScreen _projectLoader = new();
 		private MenuBarScreen _menuBar = new();
 		private AssemblyStatusScreen _assemblyStatus = new();
-		private Shortcuts _shortcuts;
+		private ProjectExplorerScreen _projectExplorer = new();
 
 		public EditorWindow(string title = "Window", int x = 1280, int y = 720) : base(title, x, y)
 		{
@@ -54,6 +55,7 @@ namespace BEngineEditor
 			_projectLoader.Initialize(this);
 			_menuBar.Initialize(this);
 			_assemblyStatus.Initialize(this);
+			_projectExplorer.Initialize(this);
 		}
 
 		protected override void MouseWheel(MouseWheelEventArgs obj)
@@ -81,18 +83,26 @@ namespace BEngineEditor
 		{
 			ImGui.DockSpaceOverViewport();
 
+			DisplayUI();
+
+			_controller.Render();
+			ImGuiController.CheckGLError("End of frame");
+
+			ProjectContext.CurrentProject?.Logger.InsertSafeLogs();
+		}
+
+		private void DisplayUI()
+		{
 			_menuBar.Display();
+
+			if (ProjectContext.ProjectLoaded)
+				_projectExplorer.Display();
 
 			if (ProjectContext.ProjectLoaded)
 				_assemblyStatus.Display();
 
 			if (ProjectContext.SearchingProject)
 				_projectLoader.Display();
-
-			_controller.Render();
-			ImGuiController.CheckGLError("End of frame");
-
-			ProjectContext.CurrentProject?.Logger.InsertSafeLogs();
 		}
 
 		protected override void OnClose(CancelEventArgs obj)

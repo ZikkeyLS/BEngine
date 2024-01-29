@@ -4,9 +4,10 @@ namespace BEngineEditor
 {
 	public class Project
 	{
-		private Scripting _scripting = new Scripting();
-		private ProjectCompiler _compiler = new ProjectCompiler();
-		private AssemblyListener _assemblyListener = new AssemblyListener();
+		private Scripting _scripting;
+		private AssetWorker _assets;
+		private ProjectCompiler _compiler;
+		private AssemblyListener _assemblyListener;
 		private Logger _logger = new Logger();
 
 		public string Name { get; private set; } = string.Empty;
@@ -22,6 +23,7 @@ namespace BEngineEditor
 		public string ProjectBuildBinaryDirectory => $@"{ProjectBuildDirectory}\bin\Release\net8.0\";
 		public string ProjectAssemblyPath => $@"{ProjectAssemblyDirectory}\{Name}Assembly.csproj";
 		public string AssemblyBinaryPath =>  $@"{ProjectAssemblyDirectory}\bin\Debug\net8.0\{Name}Assembly.dll";
+		public string AssetsDirectory => $@"{Directory}\Assets";
 		public bool EditorAssemblyExists => File.Exists(AssemblyBinaryPath);
 
 		public Project(string name, string directory)
@@ -39,10 +41,14 @@ namespace BEngineEditor
 
 		public void LoadProjectData()
 		{
-			_compiler.Initialize(this);
+			_compiler = new ProjectCompiler(this);
 			_compiler.CompileScripts();
+
+			_assemblyListener = new();
 			_assemblyListener.StartWatchOnScripts(this);
 			_assemblyListener.OnScriptsChanged += (e) => _compiler.CompileScripts();
+
+			_assets = new AssetWorker(this);
 
 			// Get files and etc.
 		}

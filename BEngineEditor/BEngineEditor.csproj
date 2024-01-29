@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Fonts\ArialRegular.ttf" />
     <None Remove="imgui.ini" />
     <None Remove="ProjectTemplate\DemoGameProject.sln.temp" />
     <None Remove="ProjectTemplate\Project.sln.temp" />
@@ -29,6 +30,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Fonts\ArialRegular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="imgui.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

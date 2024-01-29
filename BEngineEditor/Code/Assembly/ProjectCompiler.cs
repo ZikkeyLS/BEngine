@@ -36,14 +36,14 @@ namespace BEngineEditor
 		private bool _runOnBuild = false;
 		private Project _project;
 
+		public ProjectCompiler(Project project)
+		{
+			_project = project;
+		}
+
 		public bool IsCurrentOS(string os)
 		{
 			return _project.Settings.BuildOS == os;
-		}
-
-		public void Initialize(Project project)
-		{
-			_project = project;
 		}
 
 		private void CompileScriptAssembly(bool debug = true, DataReceivedEventHandler? onOutput = null)
