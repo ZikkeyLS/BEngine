@@ -98,6 +98,7 @@ namespace BEngineEditor
 		protected override void OnClose(CancelEventArgs obj)
 		{
 			Settings.Save();
+			ProjectContext.CurrentProject?.Settings.Save();
 		}
 	}
 }

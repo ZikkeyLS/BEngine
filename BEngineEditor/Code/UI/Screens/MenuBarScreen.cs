@@ -8,6 +8,7 @@ namespace BEngineEditor
 		private ProjectContext _projectContext;
 
 		private ProjectCompiler _compiler => _projectContext.CurrentProject.Compiler;
+		private ProjectSettings _settings => _projectContext.CurrentProject.Settings;
 
 		protected override void Setup()
 		{
@@ -55,19 +56,19 @@ namespace BEngineEditor
 			{
 				if (ImGui.MenuItem(ProjectCompiler.Win64, "", _compiler.IsCurrentOS(ProjectCompiler.Win64))) 
 				{ 
-					_compiler.SetCompileOS(ProjectCompiler.Win64); 
+					_settings.BuildOS = ProjectCompiler.Win64;
 				}
 				if (ImGui.MenuItem(ProjectCompiler.Win86, "", _compiler.IsCurrentOS(ProjectCompiler.Win86))) 
 				{ 
-					_compiler.SetCompileOS(ProjectCompiler.Win86); 
+					_settings.BuildOS = ProjectCompiler.Win86;
 				}
 				if (ImGui.MenuItem("Linux", "", _compiler.IsCurrentOS(ProjectCompiler.Linux64))) 
 				{ 
-					_compiler.SetCompileOS(ProjectCompiler.Linux64); 
+					_settings.BuildOS = ProjectCompiler.Linux64;
 				}
 				if (ImGui.MenuItem("MacOS", "", _compiler.IsCurrentOS(ProjectCompiler.Osx64))) 
 				{ 
-					_compiler.SetCompileOS(ProjectCompiler.Osx64); 
+					_settings.BuildOS = ProjectCompiler.Osx64;
 				}
 
 				ImGui.EndMenu();

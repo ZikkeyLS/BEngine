@@ -9,10 +9,9 @@ namespace BEngineEditor
 		private AssemblyListener _assemblyListener = new AssemblyListener();
 		private Logger _logger = new Logger();
 
-		private EditorSettings _editorSettings;
-
 		public string Name { get; private set; } = string.Empty;
 		public string Directory { get; private set; } = string.Empty;
+		public ProjectSettings Settings { get; private set; }
 
 		public ProjectCompiler Compiler => _compiler;
 		public Logger Logger => _logger;
@@ -28,7 +27,14 @@ namespace BEngineEditor
 		public Project(string name, string directory)
 		{
 			Name = name;
-			Directory = directory;;
+			Directory = directory;
+			Settings = new(this);
+
+			ProjectSettings? settings = Settings.Load();
+			if (settings != null)
+				Settings = settings;
+
+			Settings.UpdateResultPath(this);
 		}
 
 		public void LoadProjectData()

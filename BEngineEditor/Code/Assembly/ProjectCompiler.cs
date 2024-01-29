@@ -34,17 +34,11 @@ namespace BEngineEditor
 		public const string Osx64 = "osx-x64";
 
 		private bool _runOnBuild = false;
-		private string _compileOS = Win64;
 		private Project _project;
-
-		public void SetCompileOS(string os)
-		{
-			_compileOS = os;
-		}
 
 		public bool IsCurrentOS(string os)
 		{
-			return _compileOS == os;
+			return _project.Settings.BuildOS == os;
 		}
 
 		public void Initialize(Project project)
@@ -100,7 +94,7 @@ namespace BEngineEditor
 			_buildCompilation.Start();
 			_buildCompilation.BeginOutputReadLine();
 
-			_buildCompilation.StandardInput.WriteLine($"dotnet build {_project.ProjectBuildDirectory} -c {mode} -r {_compileOS} -m:2");
+			_buildCompilation.StandardInput.WriteLine($"dotnet build {_project.ProjectBuildDirectory} -c {mode} -r {_project.Settings.BuildOS} -m:2");
 			_buildCompilation.StandardInput.Flush();
 			_buildCompilation.StandardInput.Close();
 		}
@@ -196,9 +190,9 @@ namespace BEngineEditor
 			_buildCompileWarnings = new();
 
 			// copy files to build path
-			Utils.CopyDirectory($@"{_project.ProjectBuildBinaryDirectory}\{_compileOS}", $@"{_project.Directory}\Build\{_compileOS}");
+			Utils.CopyDirectory($@"{_project.ProjectBuildBinaryDirectory}\{_project.Settings.BuildOS}", $@"{_project.Directory}\Build\{_project.Settings.BuildOS}");
 
-			DirectoryInfo directory = new DirectoryInfo($@"{_project.Directory}\Build\{_compileOS}");
+			DirectoryInfo directory = new DirectoryInfo($@"{_project.Directory}\Build\{_project.Settings.BuildOS}");
 			foreach (FileInfo file in directory.GetFiles())
 			{
 				if (file.Extension != "" && file.Extension != "dylib" 
@@ -220,7 +214,7 @@ namespace BEngineEditor
 				}
 			}
 
-			Utils.CopyDirectory($@"runtimes\{_compileOS}\native", $@"{_project.Directory}\Build\{_compileOS}\Data");
+			Utils.CopyDirectory($@"runtimes\{_project.Settings.BuildOS}\native", $@"{_project.Directory}\Build\{_project.Settings.BuildOS}\Data");
 
 			if (BuildCompileErrors.Count == 0)
 			{
@@ -239,12 +233,12 @@ namespace BEngineEditor
 
 			BuildingGame = false;
 
-			if (_runOnBuild && File.Exists($@"{_project.Directory}\Build\{_compileOS}\{_project.Name}.exe"))
+			if (_runOnBuild && File.Exists($@"{_project.Directory}\Build\{_project.Settings.BuildOS}\{_project.Name}.exe"))
 			{
 				ProcessStartInfo startInfo = new ProcessStartInfo
 				{
-					WorkingDirectory = $@"{_project.Directory}\Build\{_compileOS}\",
-					FileName = $@"{_project.Directory}\Build\{_compileOS}\{_project.Name}.exe"
+					WorkingDirectory = $@"{_project.Directory}\Build\{_project.Settings.BuildOS}\",
+					FileName = $@"{_project.Directory}\Build\{_project.Settings.BuildOS}\{_project.Name}.exe"
 				};
 
 				Process.Start(startInfo);

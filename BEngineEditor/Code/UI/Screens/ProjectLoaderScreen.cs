@@ -82,7 +82,14 @@ namespace BEngineEditor
 				{
 					if (ImGui.Button(project.Name, new Vector2(150, 25)))
 					{
-						_projectContext.LoadProject(project.SolutionPath);
+						if (File.Exists(project.SolutionPath))
+						{
+							_projectContext.LoadProject(project.SolutionPath);
+						}
+						else
+						{
+							window.Settings.ProjectHistory.Remove(project);
+						}			
 					}
 				}
 			}
