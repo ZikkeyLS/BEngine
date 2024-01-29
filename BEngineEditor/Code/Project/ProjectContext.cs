@@ -51,11 +51,10 @@ namespace BEngineEditor
 			_currentProject = new Project(Path.GetFileNameWithoutExtension(slnPath), Path.GetDirectoryName(slnPath));
 			SearchingProject = false;
 
-			_currentProject.LoadProjectData();
+			Window.Settings.ProjectHistory.Remove(new LastProject(_currentProject.Name, _currentProject.Directory));
+			Window.Settings.ProjectHistory.Add(new LastProject(_currentProject.Name, _currentProject.Directory));
 
-			// Utils.OpenWithDefaultProgram(_currentProject.SolutionPath);
-			// BEngineCore.Scripting scripting = new BEngineCore.Scripting();
-			// scripting.Initialize(@"D:\Projects\CSharp\BEngine\DemoGameProject\DemoProjectAssembly\bin\Release\net8.0\DemoProjectAssembly.dll");
+			_currentProject.LoadProjectData();
 		}
 	}
 }

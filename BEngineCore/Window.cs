@@ -21,6 +21,7 @@ namespace BEngineCore
 			_window.Load += OnLoad;
 			_window.Resize += OnResize;
 			_window.RenderFrame += OnRenderFrame;
+			_window.Closing += OnClose;
 		}
 
 		protected virtual void MouseWheel(OpenTK.Windowing.Common.MouseWheelEventArgs obj) { }
@@ -30,6 +31,7 @@ namespace BEngineCore
 		protected virtual void OnPreRender(float time) { }
 		protected virtual void OnRender() { }
 		protected virtual void OnPostRender() { }
+		protected virtual void OnClose(System.ComponentModel.CancelEventArgs obj) { }
 
 		private void OnResize(OpenTK.Windowing.Common.ResizeEventArgs obj)
 		{

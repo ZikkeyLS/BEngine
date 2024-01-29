@@ -9,6 +9,8 @@ namespace BEngineEditor
 		private AssemblyListener _assemblyListener = new AssemblyListener();
 		private Logger _logger = new Logger();
 
+		private EditorSettings _editorSettings;
+
 		public string Name { get; private set; } = string.Empty;
 		public string Directory { get; private set; } = string.Empty;
 
@@ -23,10 +25,10 @@ namespace BEngineEditor
 		public string AssemblyBinaryPath =>  $@"{ProjectAssemblyDirectory}\bin\Debug\net8.0\{Name}Assembly.dll";
 		public bool EditorAssemblyExists => File.Exists(AssemblyBinaryPath);
 
-		public Project(string name, string path)
+		public Project(string name, string directory)
 		{
 			Name = name;
-			Directory = path;
+			Directory = directory;;
 		}
 
 		public void LoadProjectData()

@@ -2,6 +2,7 @@
 using BEngineEditor.Code;
 using ImGuiNET;
 using OpenTK.Windowing.Common;
+using System.ComponentModel;
 
 namespace BEngineEditor
 {
@@ -10,6 +11,7 @@ namespace BEngineEditor
 		private ImGuiController _controller;
 
 		public ProjectContext ProjectContext { get; private set; }
+		public EditorSettings Settings { get; private set; }
 
 		private ProjectLoaderScreen _projectLoader = new();
 		private MenuBarScreen _menuBar = new();
@@ -39,7 +41,14 @@ namespace BEngineEditor
 		protected override void OnLoad()
 		{
 			_controller = new ImGuiController(_window.ClientSize.X, _window.ClientSize.Y);
+
 			ProjectContext = new(this);
+
+			Settings = new EditorSettings();
+			EditorSettings? editorSettings = Settings.Load();
+			if (editorSettings != null)
+				Settings = editorSettings;
+
 			_shortcuts = new Shortcuts(ProjectContext);
 
 			_projectLoader.Initialize(this);
@@ -84,6 +93,11 @@ namespace BEngineEditor
 			ImGuiController.CheckGLError("End of frame");
 
 			ProjectContext.CurrentProject?.Logger.InsertSafeLogs();
+		}
+
+		protected override void OnClose(CancelEventArgs obj)
+		{
+			Settings.Save();
 		}
 	}
 }

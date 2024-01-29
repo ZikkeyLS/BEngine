@@ -27,6 +27,13 @@ namespace BEngineEditor
 
 			ImGui.Begin("Project Loader");
 
+			if (ImGui.Button("Cancel", new Vector2(100, 25)))
+			{
+				_projectContext.SearchingProject = false;
+			}
+
+			ImGui.Separator();
+
 			ImGui.InputText("New Project Name", ref _projectContext.TempProjectName, 128);
 
 			if (ImGui.Button("Select Folder", new Vector2(100, 25)))
@@ -67,9 +74,17 @@ namespace BEngineEditor
 
 			ImGui.Separator();
 
-			if (ImGui.Button("Cancel", new Vector2(100, 25)))
+			ImGui.Text("Last opened projects:");
+
+			foreach (LastProject project in window.Settings.ProjectHistory.AsEnumerable().Reverse())
 			{
-				_projectContext.SearchingProject = false;
+				if (project.Directory != string.Empty)
+				{
+					if (ImGui.Button(project.Name, new Vector2(150, 25)))
+					{
+						_projectContext.LoadProject(project.SolutionPath);
+					}
+				}
 			}
 
 			ImGui.End();
