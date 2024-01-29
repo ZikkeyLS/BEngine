@@ -1,4 +1,5 @@
 ﻿using ImGuiNET;
+using System.Collections.Immutable;
 using System.Numerics;
 
 namespace BEngineEditor
@@ -29,6 +30,16 @@ namespace BEngineEditor
 		private string _rootAssemblyDirectory => _projectContext.CurrentProject.ProjectAssemblyDirectory;
 
 		private Logger _logger => _projectContext.CurrentProject.Logger;
+
+		private const string _moveEntryExplorer = "MoveEntryExplorer";
+
+		private struct Entry
+		{
+			public string EntryPath;
+			public string EntryName;
+			public bool IsFile;
+		}
+
 
 		protected override void Setup()
 		{
@@ -105,20 +116,24 @@ namespace BEngineEditor
 			int maxElementsInLine = ((int)ImGui.GetWindowSize().X - BothSideSpacing - leftOffset) / (itemSide + Spacing);
 			int currentElementsInLine = 0;
 
-			foreach (DirectoryInfo directory in assetsFolder.GetDirectories())
+			lock (assetsFolder)
 			{
-				if (assetsConfiguration == false && (directory.Name == "obj" || directory.Name == "bin"))
-					continue;
+				foreach (DirectoryInfo directory in assetsFolder.GetDirectories().ToImmutableArray())
+				{
+					if (assetsConfiguration == false && (directory.Name == "obj" || directory.Name == "bin"))
+						continue;
 
-				CreateExplorerItem(directory.Name, directory.FullName, false, itemSide);
+					CreateExplorerItem(directory.Name, directory.FullName, false, itemSide);
 
-				ImGui.SameLine(0, Spacing);
+					ImGui.SameLine(0, Spacing);
 
-				currentElementsInLine += 1;
+					currentElementsInLine += 1;
 
-				if (currentElementsInLine == maxElementsInLine)
-					ImGui.NewLine();
+					if (currentElementsInLine == maxElementsInLine)
+						ImGui.NewLine();
+				}
 			}
+
 
 
 			foreach (FileInfo file in assetsFolder.GetFiles())
@@ -242,7 +257,6 @@ namespace BEngineEditor
 				}
 			}
 
-
 			ImGui.EndGroup();
 
 			if (ImGui.BeginPopupContextItem(entryPath, ImGuiPopupFlags.MouseButtonRight))
@@ -268,17 +282,67 @@ namespace BEngineEditor
 			}
 
 			ImGui.PopID();
+
+			DragAndDrop(entryPath, entryName, isFile);
+		}
+
+		private unsafe void DragAndDrop(string entryPath, string entryName, bool isFile)
+		{
+			if (ImGui.BeginDragDropSource())
+			{
+				Entry entry = new Entry() { EntryPath = entryPath, EntryName = entryName, IsFile = isFile };
+				ImGui.SetDragDropPayload(_moveEntryExplorer, (IntPtr)(&entry), (uint)sizeof(Entry));
+				ImGui.Text(isFile ? "File" : "Directory");
+				ImGui.Text(entryName);
+				ImGui.EndDragDropSource();
+			}
+
+			Drop(entryPath, isFile);
+		}
+
+		private unsafe void Drop(string entryPath, bool isFile)
+		{
+			if (ImGui.BeginDragDropTarget())
+			{
+				var payload = ImGui.AcceptDragDropPayload(_moveEntryExplorer);
+
+				if (payload.NativePtr != null)
+				{
+					var entryPointer = (Entry*)payload.Data;
+					Entry entry = entryPointer[0];
+
+					if (entry.IsFile)
+					{
+						if (isFile == false && entry.EntryPath != entryPath + @"\" + entry.EntryName)
+							File.Move(entry.EntryPath, entryPath + @"\" + entry.EntryName, true);
+					}
+					else
+					{
+						if (isFile == false && entry.EntryPath != entryPath + @"\" + entry.EntryName)
+							Utils.CopyDirectory(entry.EntryPath, entryPath + @"\" + entry.EntryName, true);
+					}
+				}
+
+				ImGui.EndDragDropTarget();
+			}
 		}
 
 		private void ShowFoldersRecursively(string directory, string root, bool ignoreAssemblyData = false)
 		{
-			string[] directories = Directory.GetDirectories(directory);
 
-			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.OpenOnArrow;
-			if (directories.Length == 0)
-				flags |= ImGuiTreeNodeFlags.Leaf;
+			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.OpenOnArrow;
+			string[] directories = Array.Empty<string>();
 
-			if (ImGui.TreeNodeEx(directory.Substring(directory.LastIndexOf(@"\") + 1), flags))
+			lock (new object())
+			{
+				directories = Directory.GetDirectories(directory); 
+				if (directories.Length == 0)
+					flags |= ImGuiTreeNodeFlags.Leaf;
+			}
+
+			bool open = ImGui.TreeNodeEx(directory.Substring(directory.LastIndexOf(@"\") + 1), flags);
+
+			if (open)
 			{
 				if (ImGui.IsItemClicked())
 				{
@@ -293,7 +357,15 @@ namespace BEngineEditor
 						_currentDirectoryOpened = directory.Replace(root + @"\", string.Empty);
 					}
 				}
+			}
 
+			if (directory != _rootAssetsDirectory && directory != _rootAssemblyDirectory)
+				DragAndDrop(directory, new DirectoryInfo(directory).Name, false);
+			else
+				Drop(directory, false);
+
+			if (open)
+			{
 				for (int i = 0; i < directories.Length; i++)
 				{
 					string leftPath = directories[i].Replace(root + @"\", string.Empty);
