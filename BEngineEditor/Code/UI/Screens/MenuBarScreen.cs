@@ -27,6 +27,11 @@ namespace BEngineEditor
 					_projectContext.SearchingProject = true;
 				}
 
+				if (ImGui.MenuItem("Open Code Editor", "Ctrl+Shift+Q"))
+				{
+					Utils.OpenWithDefaultProgram(_projectContext.CurrentProject.SolutionPath);
+				}
+
 				if (_projectContext.CurrentProject != null && _compiler.BuildingGame == false)
 				{
 					if (ImGui.MenuItem("Reload assembly", "Ctrl+Shift+B"))

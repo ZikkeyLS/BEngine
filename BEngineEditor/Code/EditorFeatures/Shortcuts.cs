@@ -15,6 +15,8 @@ namespace BEngineEditor.Code
 		protected EditorWindow window => _projectContext.Window;
 		private ProjectCompiler _compiler => _projectContext.CurrentProject.Compiler;
 
+		private DateTime _lastOpenedEditor = DateTime.Now;
+
 		public Shortcuts(ProjectContext context)
 		{
 			_projectContext = context;
@@ -29,6 +31,20 @@ namespace BEngineEditor.Code
 					window.IsKeyDown(Keys.F))
 				{
 					_projectContext.SearchingProject = true;
+				}
+			}
+
+			if (_projectContext.CurrentProject != null && _compiler.BuildingGame == false)
+			{
+				if ((window.IsKeyDown(Keys.LeftControl) || window.IsKeyDown(Keys.RightControl))
+					&& (window.IsKeyDown(Keys.LeftShift) || window.IsKeyDown(Keys.RightShift)) &&
+					window.IsKeyDown(Keys.Q))
+				{
+					if ((DateTime.Now - _lastOpenedEditor).TotalSeconds >= 1)
+					{
+						_lastOpenedEditor = DateTime.Now;
+						Utils.OpenWithDefaultProgram(_projectContext.CurrentProject.SolutionPath);
+					}
 				}
 			}
 

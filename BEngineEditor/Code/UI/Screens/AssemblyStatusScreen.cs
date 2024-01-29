@@ -15,7 +15,7 @@ namespace BEngineEditor
 
 		private HashSet<string> _logErrors => _projectContext.CurrentProject.Logger.ErrorsLogs;
 		private HashSet<string> _logWarnings => _projectContext.CurrentProject.Logger.WarningsLogs;
-		private HashSet<string> _logMessages => _projectContext.CurrentProject.Logger.MessageLogs;
+		private List<string> _logMessages => _projectContext.CurrentProject.Logger.MessageLogs;
 
 		private Vector4 _white = new Vector4(1, 1, 1, 1);
 		private Vector4 _black = new Vector4(0, 0, 0, 1);

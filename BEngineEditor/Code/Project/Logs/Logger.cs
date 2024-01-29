@@ -2,17 +2,17 @@
 {
 	public class Logger
 	{
-		public HashSet<string> MessageLogs { get; private set; } = new();
+		public List<string> MessageLogs { get; private set; } = new();
 		public HashSet<string> WarningsLogs { get; private set; } = new();
 		public HashSet<string> ErrorsLogs { get; private set; } = new();
 
-		private HashSet<string> _safeMessageLogs = new();
+		private List<string> _safeMessageLogs = new();
 		private HashSet<string> _safeWarningsLogs = new();
 		private HashSet<string> _safeErrorsLogs = new();
 
 		public void InsertSafeLogs()
 		{
-			MessageLogs.UnionWith(_safeMessageLogs);
+			MessageLogs.AddRange(_safeMessageLogs);
 			WarningsLogs.UnionWith(_safeWarningsLogs);
 			ErrorsLogs.UnionWith(_safeErrorsLogs);
 
