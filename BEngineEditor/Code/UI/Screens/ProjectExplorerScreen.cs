@@ -1,5 +1,4 @@
 ﻿using ImGuiNET;
-using System.Collections.Immutable;
 using System.Numerics;
 
 namespace BEngineEditor
@@ -116,25 +115,21 @@ namespace BEngineEditor
 			int maxElementsInLine = ((int)ImGui.GetWindowSize().X - BothSideSpacing - leftOffset) / (itemSide + Spacing);
 			int currentElementsInLine = 0;
 
-			lock (assetsFolder)
+
+			foreach (DirectoryInfo directory in assetsFolder.GetDirectories())
 			{
-				foreach (DirectoryInfo directory in assetsFolder.GetDirectories().ToImmutableArray())
-				{
-					if (assetsConfiguration == false && (directory.Name == "obj" || directory.Name == "bin"))
-						continue;
+				if (assetsConfiguration == false && (directory.Name == "obj" || directory.Name == "bin"))
+					continue;
 
-					CreateExplorerItem(directory.Name, directory.FullName, false, itemSide);
+				CreateExplorerItem(directory.Name, directory.FullName, false, itemSide);
 
-					ImGui.SameLine(0, Spacing);
+				ImGui.SameLine(0, Spacing);
 
-					currentElementsInLine += 1;
+				currentElementsInLine += 1;
 
-					if (currentElementsInLine == maxElementsInLine)
-						ImGui.NewLine();
-				}
+				if (currentElementsInLine == maxElementsInLine)
+					ImGui.NewLine();
 			}
-
-
 
 			foreach (FileInfo file in assetsFolder.GetFiles())
 			{
@@ -319,7 +314,9 @@ namespace BEngineEditor
 					else
 					{
 						if (isFile == false && entry.EntryPath != entryPath + @"\" + entry.EntryName)
-							Utils.CopyDirectory(entry.EntryPath, entryPath + @"\" + entry.EntryName, true);
+						{
+							Utils.MoveDirectory(entry.EntryPath, entryPath + @"\" + entry.EntryName, true);
+						}
 					}
 				}
 
@@ -329,33 +326,25 @@ namespace BEngineEditor
 
 		private void ShowFoldersRecursively(string directory, string root, bool ignoreAssemblyData = false)
 		{
-
 			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.OpenOnArrow;
-			string[] directories = Array.Empty<string>();
+			string[] directories = Directory.GetDirectories(directory);
 
-			lock (new object())
-			{
-				directories = Directory.GetDirectories(directory); 
-				if (directories.Length == 0)
-					flags |= ImGuiTreeNodeFlags.Leaf;
-			}
+			if (directories.Length == 0)
+				flags |= ImGuiTreeNodeFlags.Leaf;
 
 			bool open = ImGui.TreeNodeEx(directory.Substring(directory.LastIndexOf(@"\") + 1), flags);
 
-			if (open)
+			if (ImGui.IsItemClicked())
 			{
-				if (ImGui.IsItemClicked())
-				{
-					_activeTargetDirectory = root == _rootAssetsDirectory ? _rootAssetsDirectory : _rootAssemblyDirectory;
+				_activeTargetDirectory = root == _rootAssetsDirectory ? _rootAssetsDirectory : _rootAssemblyDirectory;
 
-					if (directory == root)
-					{
-						_currentDirectoryOpened = string.Empty;
-					}
-					else
-					{
-						_currentDirectoryOpened = directory.Replace(root + @"\", string.Empty);
-					}
+				if (directory == root)
+				{
+					_currentDirectoryOpened = string.Empty;
+				}
+				else
+				{
+					_currentDirectoryOpened = directory.Replace(root + @"\", string.Empty);
 				}
 			}
 
