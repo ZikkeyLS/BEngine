@@ -4,8 +4,9 @@ namespace BEngineScripting
 	public class Entety
 	{
 		private Script[] _scripts;
-
-		public void CallEvent(EventID id, bool runtime = true)
+		private List<Script> _scriptCopy = new List<Script>();
+	
+		public void CallEvent(EventID id)
 		{
 			switch (id)
 			{
@@ -23,17 +24,32 @@ namespace BEngineScripting
 					break;
 				case EventID.EditorStart:
 					for (int i = 0; i < _scripts.Length; i++)
-						_scripts[i].OnStart();
+						_scripts[i].OnEditorStart();
 					break;
 				case EventID.EditorUpdate:
 					for (int i = 0; i < _scripts.Length; i++)
-						_scripts[i].OnUpdate();
+						_scripts[i].OnEditorUpdate();
 					break;
 				case EventID.EditorDestroy:
 					for (int i = 0; i < _scripts.Length; i++)
-						_scripts[i].OnDestroy();
+						_scripts[i].OnEditorDestroy();
+					break;
+				case EventID.EditorSelected:
+					for (int i = 0; i < _scripts.Length; i++)
+						_scripts[i].OnEditorSelected();
 					break;
 			}
+		}
+
+		public void MakeScriptsCopy()
+		{
+			for (int i = 0; i < _scripts.Length; i++)
+				_scriptCopy.Add((Script)_scripts[i].Clone());
+		}
+
+		public void LoadScriptsCopy()
+		{
+			_scripts = _scriptCopy.ToArray();
 		}
 	}
 }

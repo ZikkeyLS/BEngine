@@ -9,10 +9,11 @@ namespace BEngineScripting
 
 		EditorStart = 100,
 		EditorUpdate,
-		EditorDestroy
+		EditorDestroy,
+		EditorSelected
 	}
 
-	public class Script
+	public class Script : ICloneable
 	{
 		public virtual void OnStart()
 		{
@@ -43,6 +44,16 @@ namespace BEngineScripting
 		public virtual void OnEditorDestroy()
 		{
 
+		}
+
+		public virtual void OnEditorSelected()
+		{
+
+		}
+
+		public object Clone()
+		{
+			return MemberwiseClone();
 		}
 	}
 }
