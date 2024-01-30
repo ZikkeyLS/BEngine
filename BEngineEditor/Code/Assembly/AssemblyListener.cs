@@ -17,12 +17,13 @@
 			_project = project;
 
 			_scriptWatcher = new FileSystemWatcher(_project.ProjectAssemblyDirectory, "*.cs");
+			_scriptWatcher.EnableRaisingEvents = true;
 			_scriptWatcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-								   | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+								   | NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.Size | NotifyFilters.CreationTime;
 			_scriptWatcher.Created += (a, e) => OnFileChanged(e.FullPath);
 			_scriptWatcher.Deleted += (a, e) => OnFileChanged(e.FullPath);
 			_scriptWatcher.Changed += (a, e) => OnFileChanged(e.FullPath);
-			_scriptWatcher.EnableRaisingEvents = true;
+			_scriptWatcher.Renamed += (a, e) => OnFileChanged(e.FullPath);
 
 			_timer = new Timer((e) => OnTimerCallback(), null, 0, MSDelay);
 		}

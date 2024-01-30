@@ -1,4 +1,5 @@
 ﻿using ImGuiNET;
+using System.IO;
 using System.Numerics;
 
 namespace BEngineEditor
@@ -115,8 +116,19 @@ namespace BEngineEditor
 			int maxElementsInLine = ((int)ImGui.GetWindowSize().X - BothSideSpacing - leftOffset) / (itemSide + Spacing);
 			int currentElementsInLine = 0;
 
+			DirectoryInfo[] directories = Array.Empty<DirectoryInfo>();
 
-			foreach (DirectoryInfo directory in assetsFolder.GetDirectories())
+			try
+			{
+				directories = assetsFolder.GetDirectories();
+			}
+			catch
+			{
+				return;
+			}
+
+
+			foreach (DirectoryInfo directory in directories)
 			{
 				if (assetsConfiguration == false && (directory.Name == "obj" || directory.Name == "bin"))
 					continue;
@@ -181,7 +193,10 @@ namespace BEngineEditor
 						else
 						{
 							DirectoryInfo cutDirectory = new DirectoryInfo(_cutPath);
-							File.Move(_cutPath, _activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + cutDirectory.Name, true);
+							if (_copyPath != _activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + cutDirectory.Name &&
+								((_activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + cutDirectory.Name).Contains(_cutPath) == false ||
+								(_activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + cutDirectory.Name).Length < _cutPath.Length))
+								Utils.MoveDirectory(_cutPath, _activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + cutDirectory.Name, true);
 						}
 
 						_cutPath = string.Empty;
@@ -313,7 +328,8 @@ namespace BEngineEditor
 					}
 					else
 					{
-						if (isFile == false && entry.EntryPath != entryPath + @"\" + entry.EntryName)
+						if (isFile == false && entry.EntryPath != entryPath + @"\" + entry.EntryName
+							&& (entryPath.Contains(entry.EntryPath) == false || entry.EntryPath.Length > entryPath.Length))
 						{
 							Utils.MoveDirectory(entry.EntryPath, entryPath + @"\" + entry.EntryName, true);
 						}
@@ -327,9 +343,19 @@ namespace BEngineEditor
 		private void ShowFoldersRecursively(string directory, string root, bool ignoreAssemblyData = false)
 		{
 			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.OpenOnArrow;
-			string[] directories = Directory.GetDirectories(directory);
 
-			if (directories.Length == 0)
+			string[] directories = Array.Empty<string>();
+
+			try
+			{
+				directories = Directory.GetDirectories(directory);
+			}
+			catch
+			{
+				return;
+			}
+
+			if (directories.Length == 0 && directory != root)
 				flags |= ImGuiTreeNodeFlags.Leaf;
 
 			bool open = ImGui.TreeNodeEx(directory.Substring(directory.LastIndexOf(@"\") + 1), flags);
