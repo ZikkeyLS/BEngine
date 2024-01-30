@@ -39,6 +39,8 @@
 				_scriptWatcher.Renamed += (a, e) => OnFileChanged(e.FullPath);
 				_scriptWatcher.Error += (a, e) => DeleteListnerDirectory(directory);
 				_scriptWatcher.Disposed += (a, e) => DeleteListnerDirectory(directory);
+
+				_listeners.Add(directory, _scriptWatcher);
 			}
 
 			try
