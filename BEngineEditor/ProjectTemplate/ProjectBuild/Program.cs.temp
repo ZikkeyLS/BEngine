@@ -14,7 +14,7 @@ namespace ProjectBuild
 			Scripting scripting = new Scripting();
 			scripting.ReadScriptAssembly(Path.Combine(Directory.GetCurrentDirectory(), "ProjectAssembly.dll"));
 
-			Window window = new();
+			ClientWindow window = new();
 			window.Run();
 		}
 	}

@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace BEngineEditor
 {
-	public class EditorWindow : Window
+	public class EditorWindow : EngineWindow
 	{
 		private ImGuiController _controller;
 		private Shortcuts _shortcuts;
