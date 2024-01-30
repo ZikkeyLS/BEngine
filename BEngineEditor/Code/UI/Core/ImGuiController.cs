@@ -57,7 +57,7 @@ namespace BEngineEditor
             IntPtr context = ImGui.CreateContext();
             ImGui.SetCurrentContext(context);
             var io = ImGui.GetIO();
-            io.Fonts.AddFontFromFileTTF("Fonts/ArialRegular.ttf", 16, null, io.Fonts.GetGlyphRangesCyrillic());
+            io.Fonts.AddFontFromFileTTF("Fonts/ArialRegular.ttf", 14, null, io.Fonts.GetGlyphRangesCyrillic());
 
             io.BackendFlags |= ImGuiBackendFlags.RendererHasVtxOffset;
             // Enable Docking

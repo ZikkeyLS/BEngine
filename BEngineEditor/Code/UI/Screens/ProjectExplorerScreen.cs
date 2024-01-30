@@ -212,9 +212,9 @@ namespace BEngineEditor
 					Utils.CreateDirectory(_activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + "New Folder");
 				}
 
-				if (_activeTargetDirectory.Contains(_rootAssemblyDirectory) && ImGui.Selectable("Create Script"))
+				if (_activeTargetDirectory == _rootAssemblyDirectory && ImGui.Selectable("Create Script"))
 				{
-					File.Create(_rootAssemblyDirectory + @"\" + _currentDirectoryOpened + @"\" + "Empty Script.cs");
+					Utils.CreateFile(_rootAssemblyDirectory + @"\" + _currentDirectoryOpened + @"\" + "Empty Script.cs");
 				}
 
 				ImGui.EndPopup();
