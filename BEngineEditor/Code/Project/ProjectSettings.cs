@@ -2,9 +2,13 @@
 
 namespace BEngineEditor
 {
+
 	public class ProjectSettings
 	{
 		public string BuildOS = ProjectCompiler.Win64;
+
+		public List<AssetData> Assets = new List<AssetData>();
+		public List<AssetData> LostAssets = new List<AssetData>();
 
 		private string _settingsFilePath = "ProjectSettings.xml";
 

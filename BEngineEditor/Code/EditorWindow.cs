@@ -91,7 +91,6 @@ namespace BEngineEditor
 			ImGuiController.CheckGLError("End of frame");
 
 			ProjectContext.CurrentProject?.Logger.InsertSafeLogs();
-			ProjectContext.CurrentProject?.AssemblyListener.UpdateScriptWatch();
 		}
 
 		private void DisplayUI()

@@ -36,20 +36,19 @@ namespace BEngineEditor
 				subWatcher.EnableRaisingEvents = true;
 				subWatcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
 									   | NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.Size | NotifyFilters.CreationTime;
-				subWatcher.Created += (a, e) => Created.Invoke(e.FullPath);
-				subWatcher.Deleted += (a, e) => Deleted.Invoke(e.FullPath);
-				subWatcher.Changed += (a, e) => Changed.Invoke(e.FullPath);
-				subWatcher.Renamed += (a, e) => Renamed.Invoke(e.FullPath);
+				subWatcher.Created += (a, e) => Created?.Invoke(e.FullPath);
+				subWatcher.Deleted += (a, e) => Deleted?.Invoke(e.FullPath);
+				subWatcher.Changed += (a, e) => Changed?.Invoke(e.FullPath);
+				subWatcher.Renamed += (a, e) => Renamed?.Invoke(e.FullPath);
 				subWatcher.Error += (a, e) => 
 				{ 
 					DeleteListenerDirectory(directory);  
-					Error.Invoke(e.GetException().Message); 
+					Error?.Invoke(e.GetException().Message); 
 				};
-
 				subWatcher.Disposed += (a, e) =>
 				{
 					DeleteListenerDirectory(directory);
-					Disposed.Invoke();
+					Disposed?.Invoke();
 				};
 
 				_listeners.Add(directory, subWatcher);
