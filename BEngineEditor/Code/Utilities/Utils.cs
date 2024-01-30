@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO;
 
 namespace BEngineEditor
 {
@@ -89,6 +90,37 @@ namespace BEngineEditor
 			}
 
 			dir.Delete(true);
+		}
+
+		public static void CreateFile(string path, int current = 1)
+		{
+			string resultPath = current <= 1 ? path :
+				Path.GetDirectoryName(path) + @"\" + Path.GetFileNameWithoutExtension(path) + $" ({current})" + Path.GetExtension(path);
+
+			if (File.Exists(resultPath) == false)
+			{
+				File.Create(resultPath);
+			}
+			else
+			{
+				current += 1;
+				CreateFile(path, current);
+			}
+		}
+
+		public static void CreateDirectory(string directory, int current = 1)
+		{
+			string resultDirectory = current <= 1 ? directory : directory + $" ({current})";
+
+			if (Directory.Exists(resultDirectory) == false)
+			{
+				Directory.CreateDirectory(resultDirectory);
+			}
+			else
+			{
+				current += 1;
+				CreateDirectory(directory, current);
+			}
 		}
 	}
 }

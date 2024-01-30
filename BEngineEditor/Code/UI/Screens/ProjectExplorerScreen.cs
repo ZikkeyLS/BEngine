@@ -202,11 +202,14 @@ namespace BEngineEditor
 						_cutPath = string.Empty;
 					}
 
+				if (ImGui.Selectable("Create Text File"))
+				{
+					Utils.CreateFile(_activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + "New Text.txt");
+				}
+
 				if (ImGui.Selectable("Create Folder"))
 				{
-					DirectoryInfo directory = new DirectoryInfo(_activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + "New Folder");
-					if (directory.Exists == false)
-						directory.Create();
+					Utils.CreateDirectory(_activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + "New Folder");
 				}
 
 				if (_activeTargetDirectory.Contains(_rootAssemblyDirectory) && ImGui.Selectable("Create Script"))
@@ -229,7 +232,7 @@ namespace BEngineEditor
 				{
 					_currentDirectoryOpened = entryPath.Replace(_activeTargetDirectory + @"\", string.Empty);
 				}
-				else if (entryName.Contains(".cs"))
+				else if (Path.GetExtension(entryName) == ".cs")
 				{
 					Utils.OpenWithDefaultProgram(_projectContext.CurrentProject.SolutionPath);
 				}

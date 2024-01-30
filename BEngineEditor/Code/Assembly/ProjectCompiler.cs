@@ -189,7 +189,6 @@ namespace BEngineEditor
 			_buildCompileErrors = new();
 			_buildCompileWarnings = new();
 
-			// copy files to build path
 			Utils.CopyDirectory($@"{_project.ProjectBuildBinaryDirectory}\{_project.Settings.BuildOS}", $@"{_project.Directory}\Build\{_project.Settings.BuildOS}");
 
 			DirectoryInfo directory = new DirectoryInfo($@"{_project.Directory}\Build\{_project.Settings.BuildOS}");
