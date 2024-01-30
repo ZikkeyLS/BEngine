@@ -235,7 +235,9 @@ namespace BEngineEditor
 				}
 				else
 				{
-					// show in inspector
+					Utils.OpenWithDefaultProgram(entryPath);
+
+					// show in inspector certain types
 				}
 			}
 
@@ -295,6 +297,9 @@ namespace BEngineEditor
 
 			DragAndDrop(entryPath, entryName, isFile);
 		}
+
+		private Vector2 _startPos;
+		private Vector2 _endPos;
 
 		private unsafe void DragAndDrop(string entryPath, string entryName, bool isFile)
 		{

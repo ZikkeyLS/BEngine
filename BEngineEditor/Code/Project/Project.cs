@@ -14,6 +14,7 @@ namespace BEngineEditor
 		public string Directory { get; private set; } = string.Empty;
 		public ProjectSettings Settings { get; private set; }
 
+		public AssemblyListener AssemblyListener => _assemblyListener;
 		public ProjectCompiler Compiler => _compiler;
 		public Logger Logger => _logger;
 
@@ -45,7 +46,7 @@ namespace BEngineEditor
 			_compiler.CompileScripts();
 
 			_assemblyListener = new();
-			_assemblyListener.StartWatchOnScripts(this);
+			_assemblyListener.InitializeScriptWatch(this);
 			_assemblyListener.OnScriptsChanged += (e) => _compiler.CompileScripts();
 
 			_assets = new AssetWorker(this);
