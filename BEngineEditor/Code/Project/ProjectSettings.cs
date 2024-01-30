@@ -27,7 +27,7 @@ namespace BEngineEditor
 		{
 			XmlSerializer xmlSerializer = new XmlSerializer(typeof(ProjectSettings));
 
-			using (FileStream fs = new FileStream(_settingsFilePath, FileMode.OpenOrCreate))
+			using (FileStream fs = new FileStream(_settingsFilePath, FileMode.Create))
 			{
 				xmlSerializer.Serialize(fs, this);
 			}

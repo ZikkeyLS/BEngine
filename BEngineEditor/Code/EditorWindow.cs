@@ -41,6 +41,8 @@ namespace BEngineEditor
 
 		protected override void OnLoad()
 		{
+			Scripting.LoadInternalScriptingAPI();
+
 			_controller = new ImGuiController(_window.ClientSize.X, _window.ClientSize.Y);
 
 			ProjectContext = new(this);

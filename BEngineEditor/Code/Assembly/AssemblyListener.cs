@@ -47,7 +47,11 @@
 			{
 				string[] directories = Directory.GetDirectories(directory);
 				for (int i = 0; i < directories.Length; i++)
-					RecursiveListenersAttach(directories[i]);
+				{
+					DirectoryInfo current = new DirectoryInfo(directories[i]);
+					if (current.Name != "bin" && current.Name != "obj")
+						RecursiveListenersAttach(directories[i]);
+				}
 			}
 			catch
 			{

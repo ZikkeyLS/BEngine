@@ -1,19 +1,29 @@
 ﻿using System.Reflection;
+using System.Runtime.Loader;
 
 namespace BEngine
 {
 	public class InternalCalls
 	{
-		public static void Log(string message)
+		private static Type _internalCalls;
+
+		public static void LoadInternalCallsAPI()
 		{
-			var dll = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + "BEngineCore.dll");
+			AssemblyLoadContext context = new AssemblyLoadContext(name: "ReadInternalCalls", isCollectible: true);
+
+			Assembly dll = context.LoadFromAssemblyPath(AppDomain.CurrentDomain.BaseDirectory + "BEngineCore.dll");
 			foreach (Type type in dll.GetExportedTypes())
 			{
 				if (type.Name == nameof(InternalCalls))
-				{
-					type.GetMethod("Log")?.Invoke(null, new object[] { message });
-				}
+					_internalCalls = type;
 			}
+
+			context.Unload();
+		}
+
+		public static void Log(string message)
+		{
+			_internalCalls.GetMethod("Log")?.Invoke(null, new object[] { message });
 		}
 	}
 }
