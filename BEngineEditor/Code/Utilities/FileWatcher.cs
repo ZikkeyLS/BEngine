@@ -12,7 +12,7 @@ namespace BEngineEditor
 		public Action<string> Created;
 		public Action<string> Deleted;
 		public Action<string> Changed;
-		public Action<string> Renamed;
+		public Action<string, string> Renamed;
 		public Action<string> Error;
 		public Action Disposed;
 
@@ -39,7 +39,7 @@ namespace BEngineEditor
 				subWatcher.Created += (a, e) => Created?.Invoke(e.FullPath);
 				subWatcher.Deleted += (a, e) => Deleted?.Invoke(e.FullPath);
 				subWatcher.Changed += (a, e) => Changed?.Invoke(e.FullPath);
-				subWatcher.Renamed += (a, e) => Renamed?.Invoke(e.FullPath);
+				subWatcher.Renamed += (a, e) => Renamed?.Invoke(e.OldFullPath, e.FullPath);
 				subWatcher.Error += (a, e) => 
 				{ 
 					DeleteListenerDirectory(directory);  

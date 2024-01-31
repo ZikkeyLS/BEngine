@@ -167,6 +167,16 @@
 			return files;
 		}
 
+		public void RenameAsset(string oldPath, string newPath)
+		{
+			AssetData? data = _project.Settings.Assets.Find((asset) => asset.Path == oldPath);
+
+			if (data != null)
+			{
+				data.Path = newPath;
+			}
+		}
+
 		public void AddAsset(string path)
 		{
 			uint id = GenerateID();

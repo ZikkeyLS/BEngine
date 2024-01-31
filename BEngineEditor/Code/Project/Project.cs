@@ -17,6 +17,7 @@ namespace BEngineEditor
 		public AssemblyListener AssemblyListener => _assemblyListener;
 		public ProjectCompiler Compiler => _compiler;
 		public Logger Logger => _logger;
+		public AssetWorker AssetWorker => _assets;
 
 		public string SolutionPath => $@"{Directory}\{Name}.sln";
 		public string ProjectAssemblyDirectory => $@"{Directory}\{Name}Assembly";

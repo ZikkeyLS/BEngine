@@ -12,7 +12,6 @@ namespace BEngineEditor
 		protected override void Setup()
 		{
 			_projectContext = window.ProjectContext;
-
 		}
 
 		public override void Display()

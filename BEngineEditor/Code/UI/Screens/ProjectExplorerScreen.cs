@@ -168,8 +168,14 @@ namespace BEngineEditor
 							if (File.Exists(_copyPath) == false)
 								_copyPath = string.Empty;
 
-							if (_copyPath != _activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + Path.GetFileName(_copyPath))
-								File.Copy(_copyPath, _activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + Path.GetFileName(_copyPath), true);
+							string fileCopyPath = _activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + Path.GetFileName(_copyPath);
+
+							if (_copyPath != fileCopyPath)
+							{
+								File.Copy(_copyPath, fileCopyPath, true);
+								_projectContext.CurrentProject.AssetWorker.RenameAsset(_copyPath, fileCopyPath);
+							}
+								
 						}
 						else
 						{
@@ -188,7 +194,13 @@ namespace BEngineEditor
 					{
 						if (_cutFile)
 						{
-							File.Move(_cutPath, _activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + Path.GetFileName(_cutPath), true);
+							string fileCutPath = _activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + Path.GetFileName(_copyPath);
+
+							if (_copyPath != fileCutPath)
+							{
+								File.Move(_cutPath, fileCutPath, true);
+								_projectContext.CurrentProject.AssetWorker.RenameAsset(_copyPath, fileCutPath);
+							}
 						}
 						else
 						{
@@ -263,7 +275,10 @@ namespace BEngineEditor
 					if (isFile)
 					{
 						if (_lastSavePath.Contains('.'))
+						{
 							new FileInfo(entryPath).Rename(_lastSavePath);
+							_projectContext.CurrentProject.AssetWorker.RenameAsset(entryPath, _lastSavePath);
+						}
 					}
 					else if (_lastSavePath.EndsWith('.') == false)
 					{
@@ -288,10 +303,17 @@ namespace BEngineEditor
 				}
 				if (ImGui.Selectable("Delete"))
 				{
-					if (isFile)
-						File.Delete(entryPath);
-					else
-						Directory.Delete(entryPath, true);
+					try
+					{
+						if (isFile)
+							File.Delete(entryPath);
+						else
+							Directory.Delete(entryPath, true);
+					}
+					catch
+					{
+
+					}
 				}
 				ImGui.EndPopup();
 			}
@@ -332,7 +354,14 @@ namespace BEngineEditor
 					if (entry.IsFile)
 					{
 						if (isFile == false && entry.EntryPath != entryPath + @"\" + entry.EntryName)
-							File.Move(entry.EntryPath, entryPath + @"\" + entry.EntryName, true);
+						{
+
+							string fileCopyPath = entryPath + @"\" + entry.EntryName;
+
+							File.Move(entry.EntryPath, fileCopyPath, true);
+							_projectContext.CurrentProject.AssetWorker.RenameAsset(_copyPath, fileCopyPath);
+						}
+	
 					}
 					else
 					{

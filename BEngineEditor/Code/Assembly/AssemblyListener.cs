@@ -19,7 +19,7 @@
 			_scriptWatcher.Created += OnFileChanged;
 			_scriptWatcher.Deleted += OnFileChanged;
 			_scriptWatcher.Changed += OnFileChanged;
-			_scriptWatcher.Renamed += OnFileChanged;
+			_scriptWatcher.Renamed += (o, n) => OnFileChanged(n);
 		}
 
 		private void OnTimerCallback()
