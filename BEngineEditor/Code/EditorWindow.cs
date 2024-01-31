@@ -42,6 +42,8 @@ namespace BEngineEditor
 			io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;
 			ImGui.LoadIniSettingsFromDisk(UIConfigName);
 
+			ImGui.StyleColorsClassic();
+
 			ProjectContext = new(this);
 
 			Settings = new EditorSettings();

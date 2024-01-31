@@ -194,7 +194,7 @@ namespace BEngineEditor
 					{
 						if (_cutFile)
 						{
-							string fileCutPath = _activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + Path.GetFileName(_copyPath);
+							string fileCutPath = _activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + Path.GetFileName(_cutPath);
 
 							if (_copyPath != fileCutPath)
 							{
@@ -244,15 +244,15 @@ namespace BEngineEditor
 				{
 					_currentDirectoryOpened = entryPath.Replace(_activeTargetDirectory + @"\", string.Empty);
 				}
-				else if (Path.GetExtension(entryName) == ".cs")
+				else 
 				{
-					Utils.OpenWithDefaultProgram(_projectContext.CurrentProject.SolutionPath);
-				}
-				else
-				{
-					Utils.OpenWithDefaultProgram(entryPath);
+					if (Path.GetExtension(entryName) == ".cs")
+						Utils.OpenWithDefaultProgram(_projectContext.CurrentProject.SolutionPath);
+					else
+						Utils.OpenWithDefaultProgram(entryPath);
 
-					// show in inspector certain types
+					if (_projectContext.CurrentProject.AssetWorker.HasAsset(entryPath) == false)
+						_projectContext.CurrentProject.AssetWorker.AddAsset(entryPath);
 				}
 			}
 

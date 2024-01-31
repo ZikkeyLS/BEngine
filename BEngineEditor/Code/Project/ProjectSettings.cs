@@ -30,7 +30,6 @@ namespace BEngineEditor
 		public void Save()
 		{
 			XmlSerializer xmlSerializer = new XmlSerializer(typeof(ProjectSettings));
-
 			using (FileStream fs = new FileStream(_settingsFilePath, FileMode.Create))
 			{
 				xmlSerializer.Serialize(fs, this);

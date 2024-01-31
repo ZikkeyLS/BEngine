@@ -8,7 +8,7 @@ namespace BEngineEditor
 		public string Path = string.Empty;
 		public uint InternalID = 0;
 
-		private AssetData()
+		public AssetData()
 		{
 
 		}

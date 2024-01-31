@@ -9,6 +9,7 @@ namespace BEngineCore
 	{
 		protected IWindow window;
 		protected IInputContext input;
+
 		protected GL gl;
 
 		public EngineWindow(string title = "Window", int x = 1280, int y = 720)
