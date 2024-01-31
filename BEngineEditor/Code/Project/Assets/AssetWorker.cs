@@ -39,6 +39,21 @@ namespace BEngineEditor
 		{
 			try
 			{
+				List<AssetData> removeData = new List<AssetData>();
+				
+				for (int i = 0; i < _project.Settings.Assets.Count; i++)
+				{
+					if (File.Exists(_project.Settings.Assets[i].Path) == false)
+					{
+						removeData.Add(_project.Settings.Assets[i]);
+					}
+				}
+				
+				for (int i = 0; i < removeData.Count; i++)
+				{
+					_project.Settings.Assets.Remove(removeData[i]);
+				}
+
 				_project.Settings.Save();
 			}
 			catch
