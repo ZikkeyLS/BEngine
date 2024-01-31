@@ -1,5 +1,4 @@
 ﻿using ImGuiNET;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace BEngineEditor
 {
@@ -59,13 +58,9 @@ namespace BEngineEditor
 
 			if (_projectContext.CurrentProject != null && ImGui.BeginMenu("BuildOS"))
 			{
-				if (ImGui.MenuItem(ProjectCompiler.Win64, "", _compiler.IsCurrentOS(ProjectCompiler.Win64))) 
+				if (ImGui.MenuItem("Windows", "", _compiler.IsCurrentOS(ProjectCompiler.Win64))) 
 				{ 
 					_settings.BuildOS = ProjectCompiler.Win64;
-				}
-				if (ImGui.MenuItem(ProjectCompiler.Win86, "", _compiler.IsCurrentOS(ProjectCompiler.Win86))) 
-				{ 
-					_settings.BuildOS = ProjectCompiler.Win86;
 				}
 				if (ImGui.MenuItem("Linux", "", _compiler.IsCurrentOS(ProjectCompiler.Linux64))) 
 				{ 

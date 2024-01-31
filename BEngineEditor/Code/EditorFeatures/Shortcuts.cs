@@ -1,12 +1,9 @@
-﻿using ImGuiNET;
-using OpenTK.Windowing.GraphicsLibraryFramework;
-using System;
-using System.Collections.Generic;
+﻿using Silk.NET.Input;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BEngineEditor.Code
+namespace BEngineEditor
 {
 	public class Shortcuts
 	{
@@ -26,9 +23,9 @@ namespace BEngineEditor.Code
 		{
 			if (_projectContext.CurrentProject != null && _compiler.BuildingGame == false)
 			{
-				if ((window.IsKeyDown(Keys.LeftControl) || window.IsKeyDown(Keys.RightControl))
-					&& (window.IsKeyDown(Keys.LeftShift) || window.IsKeyDown(Keys.RightShift)) &&
-					window.IsKeyDown(Keys.F))
+				if ((window.IsKeyPressed(Key.ControlLeft) || window.IsKeyPressed(Key.ControlRight))
+					&& (window.IsKeyPressed(Key.ShiftLeft) || window.IsKeyPressed(Key.ShiftRight)) &&
+					window.IsKeyPressed(Key.F))
 				{
 					_projectContext.SearchingProject = true;
 				}
@@ -36,9 +33,9 @@ namespace BEngineEditor.Code
 
 			if (_projectContext.CurrentProject != null && _compiler.BuildingGame == false)
 			{
-				if ((window.IsKeyDown(Keys.LeftControl) || window.IsKeyDown(Keys.RightControl))
-					&& (window.IsKeyDown(Keys.LeftShift) || window.IsKeyDown(Keys.RightShift)) &&
-					window.IsKeyDown(Keys.Q))
+				if ((window.IsKeyPressed(Key.ControlLeft) || window.IsKeyPressed(Key.ControlRight))
+					&& (window.IsKeyPressed(Key.ShiftLeft) || window.IsKeyPressed(Key.ShiftRight)) &&
+					window.IsKeyPressed(Key.Q))
 				{
 					if ((DateTime.Now - _lastOpenedEditor).TotalSeconds >= 1)
 					{
@@ -50,9 +47,9 @@ namespace BEngineEditor.Code
 
 			if (_projectContext.CurrentProject != null && _compiler.BuildingGame == false)
 			{
-				if ((window.IsKeyDown(Keys.LeftControl) || window.IsKeyDown(Keys.RightControl))
-					&& (window.IsKeyDown(Keys.LeftShift) || window.IsKeyDown(Keys.RightShift)) &&
-					window.IsKeyDown(Keys.B))
+				if ((window.IsKeyPressed(Key.ControlLeft) || window.IsKeyPressed(Key.ControlRight))
+					&& (window.IsKeyPressed(Key.ShiftLeft) || window.IsKeyPressed(Key.ShiftRight)) &&
+					window.IsKeyPressed(Key.B))
 				{
 					_compiler.CompileScripts();
 				}
@@ -61,16 +58,16 @@ namespace BEngineEditor.Code
 			if (_projectContext.CurrentProject != null && _compiler.BuildingGame == false
 				&& _compiler.AssemblyLoaded && _compiler.AssemblyCompileErrors.Count == 0)
 			{
-				if ((window.IsKeyDown(Keys.LeftControl) || window.IsKeyDown(Keys.RightControl))
-					&& (window.IsKeyDown(Keys.LeftShift) || window.IsKeyDown(Keys.RightShift)) &&
-					window.IsKeyDown(Keys.G))
+				if ((window.IsKeyPressed(Key.ControlLeft) || window.IsKeyPressed(Key.ControlRight))
+					&& (window.IsKeyPressed(Key.ShiftLeft) || window.IsKeyPressed(Key.ShiftRight)) &&
+					window.IsKeyPressed(Key.G))
 				{
 					_compiler.BuildGame();
 				}
 
-				if ((window.IsKeyDown(Keys.LeftControl) || window.IsKeyDown(Keys.RightControl))
-					&& (window.IsKeyDown(Keys.LeftShift) || window.IsKeyDown(Keys.RightShift)) &&
-					window.IsKeyDown(Keys.R))
+				if ((window.IsKeyPressed(Key.ControlLeft) || window.IsKeyPressed(Key.ControlRight))
+					&& (window.IsKeyPressed(Key.ShiftLeft) || window.IsKeyPressed(Key.ShiftRight)) &&
+					window.IsKeyPressed(Key.R))
 				{
 					_compiler.BuildGame(true);
 				}

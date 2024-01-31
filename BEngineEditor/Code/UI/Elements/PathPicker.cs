@@ -258,7 +258,7 @@ namespace BEngineEditor
             ImGui.InputText("###file-path", ref _selectedFolder, 300, ImGuiInputTextFlags.ReadOnly);
             ImGui.Spacing();
 
-            if (ImGui.BeginChild(1, new Vector2(200, size.Y - 100), ImGuiChildFlags.None))
+            if (ImGui.BeginChild(1, new Vector2(200, size.Y - 100)))
             {
                 var specialFolders = GetSpecialFolders();
                 foreach (var specialFolder in specialFolders)
@@ -273,7 +273,7 @@ namespace BEngineEditor
             }
 
             ImGui.SameLine();
-            if (ImGui.BeginChild(2, new Vector2(size.X - 224, size.Y - 100), ImGuiChildFlags.None))
+            if (ImGui.BeginChild(2, new Vector2(size.X - 224, size.Y - 100)))
             {
                 var directoryInfo = new DirectoryInfo(_selectedFolder);
                 if (directoryInfo.Parent != null)

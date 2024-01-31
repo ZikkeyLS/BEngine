@@ -29,7 +29,6 @@ namespace BEngineEditor
 		private Process _buildCompilation;
 
 		public const string Win64 = "win-x64";
-		public const string Win86 = "win-x86";
 		public const string Linux64 = "linux-x64";
 		public const string Osx64 = "osx-x64";
 

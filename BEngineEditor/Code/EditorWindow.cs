@@ -1,12 +1,11 @@
 ﻿using BEngineCore;
-using BEngineEditor.Code;
 using ImGuiNET;
-using OpenTK.Windowing.Common;
-using System.ComponentModel;
+using Silk.NET.Input;
+using Silk.NET.OpenGL.Extensions.ImGui;
 
 namespace BEngineEditor
 {
-	public class EditorWindow : Window
+	public class EditorWindow : EngineWindow
 	{
 		private ImGuiController _controller;
 		private Shortcuts _shortcuts;
@@ -19,31 +18,29 @@ namespace BEngineEditor
 		private AssemblyStatusScreen _assemblyStatus = new();
 		private ProjectExplorerScreen _projectExplorer = new();
 
+		private const string UIConfigName = "BEngineEditorUI.ini";
+
 		public EditorWindow(string title = "Window", int x = 1280, int y = 720) : base(title, x, y)
 		{
 
 		}
 
-		public bool IsKeyDown(OpenTK.Windowing.GraphicsLibraryFramework.Keys key)
+		public bool IsKeyPressed(Key key)
 		{
-			return _window.IsKeyDown(key);
-		}
-
-		public bool IsKeyPressed(OpenTK.Windowing.GraphicsLibraryFramework.Keys key)
-		{
-			return _window.IsKeyPressed(key);
-		}
-
-		public bool IsKeyUp(OpenTK.Windowing.GraphicsLibraryFramework.Keys key)
-		{
-			return _window.IsKeyReleased(key);
+			return input.Keyboards[0].IsKeyPressed(key);
 		}
 
 		protected override void OnLoad()
 		{
+			base.OnLoad();
+
 			Scripting.LoadInternalScriptingAPI();
 
-			_controller = new ImGuiController(_window.ClientSize.X, _window.ClientSize.Y);
+			_controller = new ImGuiController(gl, window, input);
+			ImGuiIOPtr io = ImGui.GetIO();
+			io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
+			io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;
+			ImGui.LoadIniSettingsFromDisk(UIConfigName);
 
 			ProjectContext = new(this);
 
@@ -60,37 +57,23 @@ namespace BEngineEditor
 			_projectExplorer.Initialize(this);
 		}
 
-		protected override void MouseWheel(MouseWheelEventArgs obj)
-		{
-			_controller.MouseScroll(obj.Offset);
-		}
-
-		protected override void OnTextInput(TextInputEventArgs obj)
-		{
-			_controller.PressChar((char)obj.Unicode);
-		}
-
-		protected override void OnResize()
-		{
-			_controller.WindowResized(_window.ClientSize.X, _window.ClientSize.Y);
-		}
-
-		protected override void OnPreRender(float time)
+		protected override void OnRender(double time)
 		{
 			_shortcuts.Update();
-			_controller.Update(_window, time);
-		}
+			_controller.Update((float)time);
 
-		protected override void OnPostRender()
-		{
 			ImGui.DockSpaceOverViewport();
 
 			DisplayUI();
 
 			_controller.Render();
-			ImGuiController.CheckGLError("End of frame");
 
 			ProjectContext.CurrentProject?.Logger.InsertSafeLogs();
+		}
+
+		protected override void OnUpdate(double time)
+		{
+
 		}
 
 		private void DisplayUI()
@@ -107,10 +90,12 @@ namespace BEngineEditor
 				_projectLoader.Display();
 		}
 
-		protected override void OnClose(CancelEventArgs obj)
+		protected override void OnClose()
 		{
 			Settings.Save();
 			ProjectContext.CurrentProject?.Settings.Save();
+
+			ImGui.SaveIniSettingsToDisk(UIConfigName);
 		}
 	}
 }
