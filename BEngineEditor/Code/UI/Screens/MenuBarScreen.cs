@@ -1,5 +1,4 @@
 ﻿using ImGuiNET;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace BEngineEditor
 {

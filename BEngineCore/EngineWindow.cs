@@ -1,40 +1,44 @@
-﻿
-using Silk.NET.Input;
+﻿using Silk.NET.Input;
 using Silk.NET.Maths;
+using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 
 namespace BEngineCore
 {
 	public class EngineWindow
 	{
-		protected IWindow _window;
-		protected IInputContext _inputs;
+		protected IWindow window;
+		protected IInputContext input;
+		protected GL gl;
 
 		public EngineWindow(string title = "Window", int x = 1280, int y = 720)
 		{
 			WindowOptions options = WindowOptions.Default;
 			options.Title = title;
 			options.Size = new Vector2D<int>(x, y);
-			_window = Window.Create(options);
+			window = Window.Create(options);
 
-			_window.Load += OnLoad;
-			_window.Render += OnRender;
-			_window.Update += OnUpdate;
-			_window.Resize += OnResize;
-			_window.Closing += OnClose;
+			window.Load += OnLoad;
+			window.Render += OnRender;
+			window.Update += OnUpdate;
+			window.Resize += OnResize;
+			window.FramebufferResize += OnFramebufferResize;
+			window.Closing += OnClose;
 		}
 
 		public void Run()
 		{
-			_window.Run();
+			window.Run();
 		}
 
 		protected virtual void OnLoad() 
 		{
-			_inputs = _window.CreateInput();
+			input = window.CreateInput();
 
-			_inputs.Keyboards[0].KeyChar += OnTextInput;
-			_inputs.Mice[0].Scroll += OnScroll;
+			input.Keyboards[0].KeyChar += OnTextInput;
+			input.Mice[0].Scroll += OnScroll;
+
+			gl = window.CreateOpenGL();
 		}
 
 		protected virtual void OnRender(double time) { }
@@ -42,6 +46,11 @@ namespace BEngineCore
 		protected virtual void OnUpdate(double time) { }
 
 		protected virtual void OnResize(Vector2D<int> size) { }
+
+		private void OnFramebufferResize(Vector2D<int> obj)
+		{
+			gl.Viewport(obj);
+		}
 
 		protected virtual void OnClose() { }
 

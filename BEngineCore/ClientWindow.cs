@@ -13,7 +13,7 @@ namespace BEngineCore
 		protected override void OnRender(double time)
 		{
 			base.OnRender(time);
-			_window.SwapBuffers();
+			window.SwapBuffers();
 		}
 	}
 }

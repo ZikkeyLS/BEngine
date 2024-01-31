@@ -33,9 +33,10 @@ namespace BEngineEditor
 
 		public override void Display()
 		{
-			ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, ImGui.GetWindowSize().Y / 5), ImGuiCond.FirstUseEver);
+			ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowViewport().Size.X, 
+				ImGui.GetWindowViewport().Size.Y / 5), ImGuiCond.FirstUseEver);
 
-			ImGui.Begin("Assembly Status", ImGuiWindowFlags.AlwaysAutoResize);
+			ImGui.Begin("Assembly Status");
 
 			if (ImGui.Button("Clear Logs"))
 			{
