@@ -23,17 +23,22 @@
 
 		public void LogMessage(string message)
 		{
-			_safeMessageLogs.Add(message);
+			_safeMessageLogs.Add(LogFormat(message));
 		}
 
 		public void LogWarning(string warning)
 		{
-			_safeWarningsLogs.Add(warning);
+			_safeWarningsLogs.Add(LogFormat(warning));
 		}
 
 		public void LogError(string error)
 		{
-			_safeErrorsLogs.Add(error);
+			_safeErrorsLogs.Add(LogFormat(error));
+		}
+
+		private string LogFormat(string input)
+		{
+			return $"[{DateTime.Now.ToString("HH:mm:ss")}] {input}";
 		}
 
 		public void ClearLogs()

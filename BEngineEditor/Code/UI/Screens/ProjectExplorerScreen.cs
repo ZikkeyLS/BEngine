@@ -118,7 +118,6 @@ namespace BEngineEditor
 				return;
 			}
 
-
 			foreach (DirectoryInfo directory in directories)
 			{
 				if (directory.Name == "obj" || directory.Name == "bin")
@@ -126,28 +125,33 @@ namespace BEngineEditor
 
 				CreateExplorerItem(directory.Name, directory.FullName, false, itemSide);
 
-				ImGui.SameLine(0, Spacing);
+				ImGui.SameLine(0, Spacing); 
 
 				currentElementsInLine += 1;
 
 				if (currentElementsInLine == maxElementsInLine)
+				{
 					ImGui.NewLine();
+					currentElementsInLine = 0;
+				}
 			}
 
 			foreach (FileInfo file in assetsFolder.GetFiles())
 			{
-				if (file.Name.Contains(".csproj"))
+				if (file.Name.Contains(".csproj") || file.Extension == ".meta")
 					continue;
 
-				if (file.Extension != ".meta")
-					CreateExplorerItem(file.Name, file.FullName, true, itemSide);
+				CreateExplorerItem(file.Name, file.FullName, true, itemSide);
 
 				ImGui.SameLine(0, Spacing);
 
 				currentElementsInLine += 1;
 
 				if (currentElementsInLine == maxElementsInLine)
+				{
 					ImGui.NewLine();
+					currentElementsInLine = 0;
+				}
 			}
 
 			if (ImGui.BeginPopupContextWindow("Explorer Menu", ImGuiPopupFlags.MouseButtonRight | ImGuiPopupFlags.NoOpenOverExistingPopup))
