@@ -38,7 +38,6 @@ namespace BEngineEditor
 			public bool IsFile;
 		}
 
-
 		protected override void Setup()
 		{
 			_projectContext = window.ProjectContext;
@@ -140,7 +139,8 @@ namespace BEngineEditor
 				if (file.Name.Contains(".csproj"))
 					continue;
 
-				CreateExplorerItem(file.Name, file.FullName, true, itemSide);
+				if (file.Extension != ".xml")
+					CreateExplorerItem(file.Name, file.FullName, true, itemSide);
 
 				ImGui.SameLine(0, Spacing);
 
@@ -164,8 +164,8 @@ namespace BEngineEditor
 
 							if (_copyPath != fileCopyPath)
 							{
-								File.Copy(_copyPath, fileCopyPath, true);
 								_projectContext.CurrentProject.AssetWorker.RenameAsset(_copyPath, fileCopyPath);
+								File.Copy(_copyPath, fileCopyPath, true);
 							}
 								
 						}
@@ -191,8 +191,8 @@ namespace BEngineEditor
 
 							if (_copyPath != fileCutPath)
 							{
-								File.Move(_cutPath, fileCutPath, true);
 								_projectContext.CurrentProject.AssetWorker.RenameAsset(_copyPath, fileCutPath);
+								File.Move(_cutPath, fileCutPath, true);
 							}
 						}
 						else
@@ -244,8 +244,7 @@ namespace BEngineEditor
 					else
 						Utils.OpenWithDefaultProgram(entryPath);
 
-					if (_projectContext.CurrentProject.AssetWorker.HasAsset(entryPath) == false)
-						_projectContext.CurrentProject.AssetWorker.AddAsset(entryPath);
+					_projectContext.CurrentProject.AssetWorker.CreateAsset(entryPath);
 				}
 			}
 
@@ -269,8 +268,8 @@ namespace BEngineEditor
 					{
 						if (_lastSavePath.Contains('.'))
 						{
-							new FileInfo(entryPath).Rename(_lastSavePath);
 							_projectContext.CurrentProject.AssetWorker.RenameAsset(entryPath, _lastSavePath);
+							new FileInfo(entryPath).Rename(_lastSavePath);
 						}
 					}
 					else if (_lastSavePath.EndsWith('.') == false)
@@ -351,8 +350,8 @@ namespace BEngineEditor
 
 							string fileCopyPath = entryPath + @"\" + entry.EntryName;
 
+							_projectContext.CurrentProject.AssetWorker.RenameAsset(entry.EntryPath, fileCopyPath);
 							File.Move(entry.EntryPath, fileCopyPath, true);
-							_projectContext.CurrentProject.AssetWorker.RenameAsset(_copyPath, fileCopyPath);
 						}
 	
 					}

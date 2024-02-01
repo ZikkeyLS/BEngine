@@ -1,22 +1,47 @@
-﻿
+﻿using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace BEngineEditor 
 {
 	[Serializable]
 	public class AssetData
 	{
-		public string Path = string.Empty;
-		public uint InternalID = 0;
+		public string GUID = string.Empty;
 
-		public AssetData()
+		private AssetData()
 		{
 
 		}
 
-		public AssetData(string path, uint id)
+		public AssetData(string guid)
 		{
-			Path = path;
-			InternalID = id;
+			GUID = guid;
+		}
+
+		public void Save(string path)
+		{
+			XmlSerializer xmlSerializer = new XmlSerializer(typeof(AssetData));
+			using (FileStream fs = new FileStream(path + @".xml", FileMode.Create))
+			{
+				xmlSerializer.Serialize(fs, this);
+			}
+		}
+
+		public static AssetData? Load(string path)
+		{
+			if (File.Exists(path + @".xml") == false)
+				return null;
+
+			XmlSerializer xmlSerializer = new XmlSerializer(typeof(AssetData));
+
+			using (FileStream fs = new FileStream(path + @".xml", FileMode.OpenOrCreate))
+			{
+				AssetData? assetData = xmlSerializer.Deserialize(fs) as AssetData;
+				if (assetData != null)
+					return assetData;
+			}
+
+			return null;
 		}
 	}
 }
