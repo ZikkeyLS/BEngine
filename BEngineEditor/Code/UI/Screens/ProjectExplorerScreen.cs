@@ -139,7 +139,7 @@ namespace BEngineEditor
 				if (file.Name.Contains(".csproj"))
 					continue;
 
-				if (file.Extension != ".xml")
+				if (file.Extension != ".meta")
 					CreateExplorerItem(file.Name, file.FullName, true, itemSide);
 
 				ImGui.SameLine(0, Spacing);

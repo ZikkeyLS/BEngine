@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Xml;
-using System.Xml.Linq;
+﻿using System.Xml;
 
 namespace BEngineEditor
 {
@@ -71,7 +69,7 @@ namespace BEngineEditor
 
 		public void RemoveAsset(string path)
 		{
-			if (path.EndsWith(".xml") || _lastMovedAsset == path)
+			if (path.EndsWith(".meta") || _lastMovedAsset == path)
 				return;
 
 			string guid = GetMetaID(path);
@@ -84,7 +82,7 @@ namespace BEngineEditor
 			if (foundAsset != null)
 			{
 				_loadedAssets.Remove(foundAsset);
-				File.Delete(path + @".xml");
+				File.Delete(path + @".meta");
 			}
 		}
 
@@ -97,7 +95,7 @@ namespace BEngineEditor
 
 			try
 			{
-				File.Move(oldPath + @".xml", newPath + @".xml", true);
+				File.Move(oldPath + @".meta", newPath + @".meta", true);
 			}
 			catch
 			{
@@ -107,7 +105,7 @@ namespace BEngineEditor
 
 		public void AddAsset(string path)
 		{
-			if (path.EndsWith(".xml") || File.Exists(path) == false)
+			if (path.EndsWith(".meta") || File.Exists(path) == false)
 				return;
 
 			AssetData? asset = AssetData.Load(path);
@@ -119,7 +117,7 @@ namespace BEngineEditor
 		{
 			foreach (var file in Directory.EnumerateFiles(directory))
 			{
-				if (file.EndsWith(".xml") == false && file.EndsWith(".csproj") == false && HasAsset(file))
+				if (file.EndsWith(".meta") == false && file.EndsWith(".csproj") == false && HasAsset(file))
 					AddAsset(file);
 			}
 
@@ -141,7 +139,7 @@ namespace BEngineEditor
 
 		public void CreateAsset(string path)
 		{
-			if (path.EndsWith(".xml") || _lastMovedAsset == path || File.Exists(path) == false || HasAsset(path))
+			if (path.EndsWith(".meta") || _lastMovedAsset == path || File.Exists(path) == false || HasAsset(path))
 				return;
 
 			AssetData asset = new AssetData(GenerateID());
@@ -153,14 +151,14 @@ namespace BEngineEditor
 		{
 			foreach (var file in Directory.EnumerateFiles(directory))
 			{
-				if (file.EndsWith(".xml") == false && file.EndsWith(".csproj") == false)
+				if (file.EndsWith(".meta") == false && file.EndsWith(".csproj") == false)
 				{
 					CreateAsset(file);
 				}
 
-				else if (file.EndsWith(".xml"))
+				else if (file.EndsWith(".meta"))
 				{
-					if (File.Exists(file.Substring(0, file.IndexOf(".xml"))) == false)
+					if (File.Exists(file.Substring(0, file.IndexOf(".meta"))) == false)
 						File.Delete(file);
 				}
 			}
@@ -187,7 +185,7 @@ namespace BEngineEditor
 
 			foreach (var file in Directory.EnumerateFiles(directory))
 			{
-				if (file.EndsWith(".xml"))
+				if (file.EndsWith(".meta"))
 				{
 					string metaID = GetMetaID(file, false);
 
@@ -218,7 +216,7 @@ namespace BEngineEditor
 		{
 			foreach (var file in Directory.EnumerateFiles(directory))
 			{
-				if (file.EndsWith(".xml"))
+				if (file.EndsWith(".meta"))
 				{
 					GetMetaID(file);
 				}
@@ -244,7 +242,7 @@ namespace BEngineEditor
 
 		private string GetMetaID(string path, bool includeXMLEnd = true)
 		{
-			string xmlEnd = includeXMLEnd ? ".xml" : string.Empty;
+			string xmlEnd = includeXMLEnd ? ".meta" : string.Empty;
 
 			try
 			{

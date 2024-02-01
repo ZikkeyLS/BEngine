@@ -21,7 +21,7 @@ namespace BEngineEditor
 		public void Save(string path)
 		{
 			XmlSerializer xmlSerializer = new XmlSerializer(typeof(AssetData));
-			using (FileStream fs = new FileStream(path + @".xml", FileMode.Create))
+			using (FileStream fs = new FileStream(path + @".meta", FileMode.Create))
 			{
 				xmlSerializer.Serialize(fs, this);
 			}
@@ -29,12 +29,12 @@ namespace BEngineEditor
 
 		public static AssetData? Load(string path)
 		{
-			if (File.Exists(path + @".xml") == false)
+			if (File.Exists(path + @".meta") == false)
 				return null;
 
 			XmlSerializer xmlSerializer = new XmlSerializer(typeof(AssetData));
 
-			using (FileStream fs = new FileStream(path + @".xml", FileMode.OpenOrCreate))
+			using (FileStream fs = new FileStream(path + @".meta", FileMode.OpenOrCreate))
 			{
 				AssetData? assetData = xmlSerializer.Deserialize(fs) as AssetData;
 				if (assetData != null)
