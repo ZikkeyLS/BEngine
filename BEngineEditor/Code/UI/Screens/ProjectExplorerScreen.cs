@@ -13,7 +13,6 @@ namespace BEngineEditor
 		private const float LeftExplorerPercentage = 20;
 		private const float ItemSidePercentage = 5.75f;
 
-		private string _activeTargetDirectory = string.Empty;
 		private string _currentDirectoryOpened = string.Empty;
 
 		private bool _cutFile = false;
@@ -27,7 +26,6 @@ namespace BEngineEditor
 		private string _lastSavePath = string.Empty;
 
 		private string _rootAssetsDirectory => _projectContext.CurrentProject.AssetsDirectory;
-		private string _rootAssemblyDirectory => _projectContext.CurrentProject.ProjectAssemblyDirectory;
 
 		private Logger _logger => _projectContext.CurrentProject.Logger;
 
@@ -48,9 +46,6 @@ namespace BEngineEditor
 
 		public override void Display()
 		{
-			if (_activeTargetDirectory == string.Empty)
-				_activeTargetDirectory = _rootAssetsDirectory;
-
 			ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, ImGui.GetWindowSize().Y / 5), ImGuiCond.FirstUseEver);
 
 			ImGui.Begin("Project");
@@ -60,8 +55,7 @@ namespace BEngineEditor
 			ImGui.Columns(2);
 			ImGui.SetColumnWidth(0, leftOffset);
 
-			ShowFoldersRecursively(_rootAssetsDirectory, _rootAssetsDirectory);
-			ShowFoldersRecursively(_rootAssemblyDirectory, _rootAssemblyDirectory, true);
+			ShowFoldersRecursively(_rootAssetsDirectory, _rootAssetsDirectory, true);
 
 			ImGui.NextColumn();
 
@@ -74,10 +68,8 @@ namespace BEngineEditor
 		{
 			int itemSide = (int)(ImGui.GetWindowSize().X / 100 * ItemSidePercentage);
 
-			bool assetsConfiguration = _activeTargetDirectory == _rootAssetsDirectory;
-
 			ImGui.PushID(0);
-			if (ImGui.Button(assetsConfiguration ? "Assets" : "Assembly"))
+			if (ImGui.Button("Assets"))
 			{
 				_currentDirectoryOpened = string.Empty;
 			}
@@ -111,7 +103,7 @@ namespace BEngineEditor
 				}
 			}
 
-			DirectoryInfo assetsFolder = new DirectoryInfo(Path.Combine(_activeTargetDirectory, _currentDirectoryOpened));
+			DirectoryInfo assetsFolder = new DirectoryInfo(Path.Combine(_rootAssetsDirectory, _currentDirectoryOpened));
 
 			int maxElementsInLine = ((int)ImGui.GetWindowSize().X - BothSideSpacing - leftOffset) / (itemSide + Spacing);
 			int currentElementsInLine = 0;
@@ -130,7 +122,7 @@ namespace BEngineEditor
 
 			foreach (DirectoryInfo directory in directories)
 			{
-				if (assetsConfiguration == false && (directory.Name == "obj" || directory.Name == "bin"))
+				if (directory.Name == "obj" || directory.Name == "bin")
 					continue;
 
 				CreateExplorerItem(directory.Name, directory.FullName, false, itemSide);
@@ -145,7 +137,7 @@ namespace BEngineEditor
 
 			foreach (FileInfo file in assetsFolder.GetFiles())
 			{
-				if (assetsConfiguration == false && file.Name.Contains(".csproj"))
+				if (file.Name.Contains(".csproj"))
 					continue;
 
 				CreateExplorerItem(file.Name, file.FullName, true, itemSide);
@@ -168,7 +160,7 @@ namespace BEngineEditor
 							if (File.Exists(_copyPath) == false)
 								_copyPath = string.Empty;
 
-							string fileCopyPath = _activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + Path.GetFileName(_copyPath);
+							string fileCopyPath = _rootAssetsDirectory + @"\" + _currentDirectoryOpened + @"\" + Path.GetFileName(_copyPath);
 
 							if (_copyPath != fileCopyPath)
 							{
@@ -183,9 +175,10 @@ namespace BEngineEditor
 								_copyPath = string.Empty;
 
 							DirectoryInfo copyDirectory = new DirectoryInfo(_copyPath);
+							string resultPath = _rootAssetsDirectory + @"\" + _currentDirectoryOpened + @"\" + copyDirectory.Name;
 
-							if (_copyPath != _activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + copyDirectory.Name)
-								Utils.CopyDirectory(_copyPath, _activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + copyDirectory.Name, true);
+							if (_copyPath != resultPath)
+								Utils.CopyDirectory(_copyPath, resultPath, true);
 						}
 					}
 
@@ -194,7 +187,7 @@ namespace BEngineEditor
 					{
 						if (_cutFile)
 						{
-							string fileCutPath = _activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + Path.GetFileName(_cutPath);
+							string fileCutPath = _rootAssetsDirectory + @"\" + _currentDirectoryOpened + @"\" + Path.GetFileName(_cutPath);
 
 							if (_copyPath != fileCutPath)
 							{
@@ -205,10 +198,10 @@ namespace BEngineEditor
 						else
 						{
 							DirectoryInfo cutDirectory = new DirectoryInfo(_cutPath);
-							if (_copyPath != _activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + cutDirectory.Name &&
-								((_activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + cutDirectory.Name).Contains(_cutPath) == false ||
-								(_activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + cutDirectory.Name).Length < _cutPath.Length))
-								Utils.MoveDirectory(_cutPath, _activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + cutDirectory.Name, true);
+							if (_copyPath != _rootAssetsDirectory + @"\" + _currentDirectoryOpened + @"\" + cutDirectory.Name &&
+								((_rootAssetsDirectory + @"\" + _currentDirectoryOpened + @"\" + cutDirectory.Name).Contains(_cutPath) == false ||
+								(_rootAssetsDirectory + @"\" + _currentDirectoryOpened + @"\" + cutDirectory.Name).Length < _cutPath.Length))
+								Utils.MoveDirectory(_cutPath, _rootAssetsDirectory + @"\" + _currentDirectoryOpened + @"\" + cutDirectory.Name, true);
 						}
 
 						_cutPath = string.Empty;
@@ -216,17 +209,17 @@ namespace BEngineEditor
 
 				if (ImGui.Selectable("Create Text File"))
 				{
-					Utils.CreateFile(_activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + "New Text.txt");
+					Utils.CreateFile(_rootAssetsDirectory + @"\" + _currentDirectoryOpened + @"\" + "New Text.txt");
 				}
 
 				if (ImGui.Selectable("Create Folder"))
 				{
-					Utils.CreateDirectory(_activeTargetDirectory + @"\" + _currentDirectoryOpened + @"\" + "New Folder");
+					Utils.CreateDirectory(_rootAssetsDirectory + @"\" + _currentDirectoryOpened + @"\" + "New Folder");
 				}
 
-				if (_activeTargetDirectory == _rootAssemblyDirectory && ImGui.Selectable("Create Script"))
+				if (ImGui.Selectable("Create Script"))
 				{
-					Utils.CreateFile(_rootAssemblyDirectory + @"\" + _currentDirectoryOpened + @"\" + "Empty Script.cs");
+					Utils.CreateFile(_rootAssetsDirectory + @"\" + _currentDirectoryOpened + @"\" + "Empty Script.cs");
 				}
 
 				ImGui.EndPopup();
@@ -242,7 +235,7 @@ namespace BEngineEditor
 			{
 				if (isFile == false)
 				{
-					_currentDirectoryOpened = entryPath.Replace(_activeTargetDirectory + @"\", string.Empty);
+					_currentDirectoryOpened = entryPath.Replace(_rootAssetsDirectory + @"\", string.Empty);
 				}
 				else 
 				{
@@ -399,8 +392,6 @@ namespace BEngineEditor
 
 			if (ImGui.IsItemClicked())
 			{
-				_activeTargetDirectory = root == _rootAssetsDirectory ? _rootAssetsDirectory : _rootAssemblyDirectory;
-
 				if (directory == root)
 				{
 					_currentDirectoryOpened = string.Empty;
@@ -411,7 +402,7 @@ namespace BEngineEditor
 				}
 			}
 
-			if (directory != _rootAssetsDirectory && directory != _rootAssemblyDirectory)
+			if (directory != _rootAssetsDirectory && directory != _rootAssetsDirectory)
 				DragAndDrop(directory, new DirectoryInfo(directory).Name, false);
 			else
 				Drop(directory, false);

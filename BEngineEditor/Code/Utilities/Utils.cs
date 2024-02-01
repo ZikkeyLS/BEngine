@@ -99,7 +99,7 @@ namespace BEngineEditor
 
 			if (File.Exists(resultPath) == false)
 			{
-				File.Create(resultPath);
+				File.Create(resultPath).Close();
 			}
 			else
 			{

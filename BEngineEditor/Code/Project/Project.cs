@@ -25,7 +25,7 @@ namespace BEngineEditor
 		public string ProjectBuildBinaryDirectory => $@"{ProjectBuildDirectory}\bin\Release\net8.0\";
 		public string ProjectAssemblyPath => $@"{ProjectAssemblyDirectory}\{Name}Assembly.csproj";
 		public string AssemblyBinaryPath =>  $@"{ProjectAssemblyDirectory}\bin\Debug\net8.0\{Name}Assembly.dll";
-		public string AssetsDirectory => $@"{Directory}\Assets";
+		public string AssetsDirectory => $@"{ProjectAssemblyDirectory}\Assets";
 		public bool EditorAssemblyExists => File.Exists(AssemblyBinaryPath);
 
 		public Project(string name, string directory)

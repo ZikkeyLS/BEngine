@@ -115,7 +115,7 @@
 		{
 			foreach (var file in Directory.EnumerateFiles(directory))
 			{
-				if (HasAsset(file) == false)
+				if (HasAsset(file) == false && file.EndsWith(".csproj") == false)
 					AddAsset(file);
 			}
 
