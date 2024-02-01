@@ -54,7 +54,12 @@ namespace BEngineEditor
 			ImGui.Columns(2);
 			ImGui.SetColumnWidth(0, leftOffset);
 
+			ImGui.BeginChild("LeftExplorer", Vector2.Zero, 
+				false, ImGuiWindowFlags.HorizontalScrollbar);
+
 			ShowFoldersRecursively(_rootAssetsDirectory, _rootAssetsDirectory, true);
+
+			ImGui.EndChild();
 
 			ImGui.NextColumn();
 
@@ -376,7 +381,6 @@ namespace BEngineEditor
 		private void ShowFoldersRecursively(string directory, string root, bool ignoreAssemblyData = false)
 		{
 			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.OpenOnArrow;
-
 			string[] directories = Array.Empty<string>();
 
 			try
