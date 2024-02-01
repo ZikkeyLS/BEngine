@@ -158,7 +158,7 @@ namespace BEngineEditor
 
 				else if (file.EndsWith(".meta"))
 				{
-					if (File.Exists(file.Substring(0, file.IndexOf(".meta"))) == false)
+					if (File.Exists(file.Substring(0, file.LastIndexOf(".meta"))) == false)
 						File.Delete(file);
 				}
 			}
@@ -218,7 +218,8 @@ namespace BEngineEditor
 			{
 				if (file.EndsWith(".meta"))
 				{
-					GetMetaID(file);
+					if (GetMetaID(file, false) ==  guid)
+						return file.Substring(0, file.LastIndexOf(".meta"));
 				}
 			}
 
@@ -229,7 +230,7 @@ namespace BEngineEditor
 					DirectoryInfo subInfo = new DirectoryInfo(subDir);
 
 					if (subInfo.Name != "bin" && subInfo.Name != "obj")
-						GetPath(subDir, guid);
+						return GetPath(subDir, guid);
 				}
 				catch
 				{
