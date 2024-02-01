@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace BEngineEditor
+﻿namespace BEngineEditor
 {
 	public class AssetWorker
 	{
@@ -40,7 +38,7 @@ namespace BEngineEditor
 			try
 			{
 				List<AssetData> removeData = new List<AssetData>();
-				
+
 				for (int i = 0; i < _project.Settings.Assets.Count; i++)
 				{
 					if (File.Exists(_project.Settings.Assets[i].Path) == false)
@@ -48,11 +46,14 @@ namespace BEngineEditor
 						removeData.Add(_project.Settings.Assets[i]);
 					}
 				}
-				
+
 				for (int i = 0; i < removeData.Count; i++)
 				{
 					_project.Settings.Assets.Remove(removeData[i]);
 				}
+
+				CreateSearchedAssets(_project.AssetsDirectory);
+				CreateSearchedAssets(_project.ProjectAssemblyDirectory);
 
 				_project.Settings.Save();
 			}
@@ -108,6 +109,30 @@ namespace BEngineEditor
 			}
 			AssetData asset = new AssetData(path, id);
 			_project.Settings.Assets.Add(asset);
+		}
+
+		private void CreateSearchedAssets(string directory)
+		{
+			foreach (var file in Directory.EnumerateFiles(directory))
+			{
+				if (HasAsset(file) == false)
+					AddAsset(file);
+			}
+
+			foreach (var subDir in Directory.EnumerateDirectories(directory))
+			{
+				try
+				{
+					DirectoryInfo subInfo = new DirectoryInfo(subDir);
+
+					if (subInfo.Name != "bin" && subInfo.Name != "obj")
+						CreateSearchedAssets(subDir);
+				}
+				catch
+				{
+
+				}
+			}
 		}
 
 		private uint GenerateID()
