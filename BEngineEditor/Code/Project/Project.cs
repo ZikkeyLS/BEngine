@@ -54,7 +54,16 @@ namespace BEngineEditor
 
 			_assets = new AssetWorker(this);
 
-			// Get files and etc.
+			Scene? scene = AssetData.Load<Scene>(Settings.LastOpenedSceneID, this);
+			if (scene != null)
+			{
+				Settings.LastOpenedSceneID = scene.GUID;
+				OpenedScene = scene;
+			}
+			else
+			{
+				Settings.LastOpenedSceneID = string.Empty;
+			}
 		}
 	}
 }

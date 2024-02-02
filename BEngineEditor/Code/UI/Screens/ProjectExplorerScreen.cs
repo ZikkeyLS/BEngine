@@ -266,6 +266,7 @@ namespace BEngineEditor
 						if (scene != null)
 						{
 							_currentProject.OpenedScene = scene;
+							_currentProject.Settings.LastOpenedSceneID = scene.GUID;
 						}
 					} 
 					else

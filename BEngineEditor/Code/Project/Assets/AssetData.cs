@@ -21,6 +21,10 @@ namespace BEngineEditor
 			_guid = guid;
 		}
 
+		public void SetForceID(string guid) => _guid = guid;
+		public void SetForceProject(Project project) => _project = project;
+
+
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 		public static void CreateTemplate<T>(string path, object[]? args = null) where T : AssetData
@@ -64,7 +68,9 @@ namespace BEngineEditor
 			// десериализуем объект
 			using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
 			{
-				object? result = xmlSerializer.Deserialize(fs);
+				T? result = (T)xmlSerializer.Deserialize(fs);
+				result.SetForceID(guid);
+				result.SetForceProject(project);	
 				return (T)result;
 			}
 		}

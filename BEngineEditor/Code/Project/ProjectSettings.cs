@@ -6,6 +6,7 @@ namespace BEngineEditor
 	public class ProjectSettings
 	{
 		public string BuildOS = ProjectCompiler.Win64;
+		public string LastOpenedSceneID = string.Empty;
 
 		private string _settingsFilePath = "ProjectSettings.xml";
 

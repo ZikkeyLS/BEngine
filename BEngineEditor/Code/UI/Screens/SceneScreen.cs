@@ -1,9 +1,4 @@
 ﻿using ImGuiNET;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BEngineEditor
 {
@@ -14,7 +9,8 @@ namespace BEngineEditor
 
 		public override void Display()
 		{
-			ImGui.Begin(_openedScene.SceneName);
+			ImGui.Begin("Scene");
+			ImGui.Text(_openedScene.SceneName);
 
 			ImGui.End();
 		}
