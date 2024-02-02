@@ -38,6 +38,7 @@ namespace BEngineEditor
 			{
 				AssetMetaData? assetData = xmlSerializer.Deserialize(fs) as AssetMetaData;
 				if (assetData != null)
+					return assetData;
 			}
 
 			return null;
