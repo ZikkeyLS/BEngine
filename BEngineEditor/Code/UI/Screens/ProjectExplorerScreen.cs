@@ -1,5 +1,4 @@
 ﻿using ImGuiNET;
-using System.IO;
 using System.Numerics;
 
 namespace BEngineEditor
@@ -25,9 +24,11 @@ namespace BEngineEditor
 		private bool _activeUsing = false;
 		private string _lastSavePath = string.Empty;
 
-		private string _rootAssetsDirectory => _projectContext.CurrentProject.AssetsDirectory;
+		private Project _currentProject => _projectContext.CurrentProject;
 
-		private Logger _logger => _projectContext.CurrentProject.Logger;
+		private string _rootAssetsDirectory => _currentProject.AssetsDirectory;
+		private Logger _logger => _currentProject.Logger;
+		private AssetWorker _assetWorker => _currentProject.AssetWorker;
 
 		private const string _moveEntryExplorer = "MoveEntryExplorer";
 
@@ -173,7 +174,7 @@ namespace BEngineEditor
 
 							if (_copyPath != fileCopyPath)
 							{
-								_projectContext.CurrentProject.AssetWorker.RenameAsset(_copyPath, fileCopyPath);
+								_assetWorker.RenameAsset(_copyPath, fileCopyPath);
 								File.Copy(_copyPath, fileCopyPath, true);
 							}
 								
@@ -200,7 +201,7 @@ namespace BEngineEditor
 
 							if (_copyPath != fileCutPath)
 							{
-								_projectContext.CurrentProject.AssetWorker.RenameAsset(_copyPath, fileCutPath);
+								_assetWorker.RenameAsset(_copyPath, fileCutPath);
 								File.Move(_cutPath, fileCutPath, true);
 							}
 						}
@@ -216,19 +217,28 @@ namespace BEngineEditor
 						_cutPath = string.Empty;
 					}
 
-				if (ImGui.Selectable("Create Text File"))
-				{
-					Utils.CreateFile(_rootAssetsDirectory + @"\" + _currentDirectoryOpened + @"\" + "New Text.txt");
-				}
 
-				if (ImGui.Selectable("Create Folder"))
+
+				if (ImGui.Selectable("Folder"))
 				{
 					Utils.CreateDirectory(_rootAssetsDirectory + @"\" + _currentDirectoryOpened + @"\" + "New Folder");
 				}
 
-				if (ImGui.Selectable("Create Script"))
+				if (ImGui.Selectable("Script"))
 				{
 					Utils.CreateFile(_rootAssetsDirectory + @"\" + _currentDirectoryOpened + @"\" + "Empty Script.cs");
+				}
+
+				if (ImGui.Selectable("Scene"))
+				{
+					string scenePath = _rootAssetsDirectory + @"\" + _currentDirectoryOpened + @"\" + "New Scene.scene";
+					string resultPath = Utils.CreateFile(scenePath);
+					AssetData.CreateTemplate<Scene>(resultPath, [Path.GetFileNameWithoutExtension(resultPath)]);
+				}
+
+				if (ImGui.Selectable("Text File"))
+				{
+					Utils.CreateFile(_rootAssetsDirectory + @"\" + _currentDirectoryOpened + @"\" + "New Text.txt");
 				}
 
 				ImGui.EndPopup();
@@ -249,11 +259,21 @@ namespace BEngineEditor
 				else 
 				{
 					if (Path.GetExtension(entryName) == ".cs")
-						Utils.OpenWithDefaultProgram(_projectContext.CurrentProject.SolutionPath);
+						Utils.OpenWithDefaultProgram(_currentProject.SolutionPath);
+					else if (Path.GetExtension(entryName) == ".scene")
+					{
+						Scene? scene = AssetData.Load<Scene>(_assetWorker.GetMetaID(entryPath), _currentProject);
+						if (scene != null)
+						{
+							_currentProject.OpenedScene = scene;
+						}
+					} 
 					else
+					{
 						Utils.OpenWithDefaultProgram(entryPath);
+					}
 
-					_projectContext.CurrentProject.AssetWorker.CreateAsset(entryPath);
+					_assetWorker.CreateAsset(entryPath);
 				}
 			}
 
@@ -277,7 +297,7 @@ namespace BEngineEditor
 					{
 						if (_lastSavePath.Contains('.'))
 						{
-							_projectContext.CurrentProject.AssetWorker.RenameAsset(entryPath, _lastSavePath);
+							_assetWorker.RenameAsset(entryPath, _lastSavePath);
 							new FileInfo(entryPath).Rename(_lastSavePath);
 						}
 					}
@@ -359,7 +379,7 @@ namespace BEngineEditor
 
 							string fileCopyPath = entryPath + @"\" + entry.EntryName;
 
-							_projectContext.CurrentProject.AssetWorker.RenameAsset(entry.EntryPath, fileCopyPath);
+							_assetWorker.RenameAsset(entry.EntryPath, fileCopyPath);
 							File.Move(entry.EntryPath, fileCopyPath, true);
 						}
 	

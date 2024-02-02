@@ -1,47 +1,72 @@
-﻿using System.Runtime.Serialization;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
-namespace BEngineEditor 
+namespace BEngineEditor
 {
-	[Serializable]
 	public class AssetData
 	{
-		public string GUID = string.Empty;
+		private string _guid;
+		private Project _project;
 
-		private AssetData()
+		public string GUID => _guid;
+		public Project Project => _project;
+
+		protected AssetData()
 		{
 
 		}
 
-		public AssetData(string guid)
+		public AssetData(Project project, string guid) 
 		{
-			GUID = guid;
+			_project = project;
+			_guid = guid;
 		}
 
-		public void Save(string path)
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+		public static void CreateTemplate<T>(string path, object[]? args = null) where T : AssetData
 		{
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(AssetData));
-			using (FileStream fs = new FileStream(path + @".meta", FileMode.Create))
+			T template = (T)Activator.CreateInstance(typeof(T), args);
+
+			XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
+
+			using (FileStream fs = new FileStream(path, FileMode.Create))
+			{
+				xmlSerializer.Serialize(fs, template);
+			}
+		}
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
+		public void Save<T>() where T : AssetData
+		{
+			string path = _project.AssetWorker.GetAssetPath(_guid);
+
+			if (path == string.Empty)
+				return;
+
+			XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
+
+			using (FileStream fs = new FileStream(path, FileMode.Create))
 			{
 				xmlSerializer.Serialize(fs, this);
 			}
 		}
 
-		public static AssetData? Load(string path)
+		public static T? Load<T>(string guid, Project project) where T : AssetData
 		{
-			if (File.Exists(path + @".meta") == false)
+			XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
+
+			string path = project.AssetWorker.GetAssetPath(guid);
+
+			if (path == string.Empty)
 				return null;
 
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(AssetData));
-
-			using (FileStream fs = new FileStream(path + @".meta", FileMode.OpenOrCreate))
+			// десериализуем объект
+			using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
 			{
-				AssetData? assetData = xmlSerializer.Deserialize(fs) as AssetData;
-				if (assetData != null)
-					return assetData;
+				object? result = xmlSerializer.Deserialize(fs);
+				return (T)result;
 			}
-
-			return null;
 		}
 	}
 }

@@ -11,9 +11,10 @@ namespace BEngineEditor
 
 		private const int MSDelay = 10000;
 
-		private List<AssetData> _loadedAssets = new();
+		private List<AssetMetaData> _loadedAssets = new();
 
 		private string _lastMovedAsset = string.Empty;
+		private string _lastCreatedAsset = string.Empty;
 
 		public AssetWorker(Project project)
 		{
@@ -34,7 +35,7 @@ namespace BEngineEditor
 
 		private void UpdateData()
 		{
-			List<AssetData> removeData = new List<AssetData>();
+			List<AssetMetaData> removeData = new List<AssetMetaData>();
 
 			for (int i = 0; i < _loadedAssets.Count; i++)
 			{
@@ -77,7 +78,7 @@ namespace BEngineEditor
 			if (guid == string.Empty)
 				return;
 
-			AssetData? foundAsset = _loadedAssets.Find((asset) => asset.GUID == guid);
+			AssetMetaData? foundAsset = _loadedAssets.Find((asset) => asset.GUID == guid);
 
 			if (foundAsset != null)
 			{
@@ -108,7 +109,7 @@ namespace BEngineEditor
 			if (path.EndsWith(".meta") || File.Exists(path) == false)
 				return;
 
-			AssetData? asset = AssetData.Load(path);
+			AssetMetaData? asset = AssetMetaData.Load(path);
 			if (asset != null)
 				_loadedAssets.Add(asset);
 		}
@@ -142,7 +143,7 @@ namespace BEngineEditor
 			if (path.EndsWith(".meta") || _lastMovedAsset == path || File.Exists(path) == false || HasAsset(path))
 				return;
 
-			AssetData asset = new AssetData(GenerateID());
+			AssetMetaData asset = new AssetMetaData(GenerateID());
 			asset.Save(path);
 			_loadedAssets.Add(asset);
 		}
@@ -179,7 +180,7 @@ namespace BEngineEditor
 			}
 		}
 
-		private string GetMetaPath(string guid, string directory)
+		public string GetMetaPath(string guid, string directory)
 		{
 			string result = string.Empty;
 
@@ -212,7 +213,12 @@ namespace BEngineEditor
 			return result;
 		}
 
-		private string GetPath(string directory, string guid)
+		public string GetAssetPath(string guid)
+		{
+			return GetAssetPath(_project.AssetsDirectory, guid);
+		}
+
+		public string GetAssetPath(string directory, string guid)
 		{
 			foreach (var file in Directory.EnumerateFiles(directory))
 			{
@@ -230,7 +236,7 @@ namespace BEngineEditor
 					DirectoryInfo subInfo = new DirectoryInfo(subDir);
 
 					if (subInfo.Name != "bin" && subInfo.Name != "obj")
-						return GetPath(subDir, guid);
+						return GetAssetPath(subDir, guid);
 				}
 				catch
 				{
@@ -241,7 +247,7 @@ namespace BEngineEditor
 			return string.Empty;
 		}
 
-		private string GetMetaID(string path, bool includeXMLEnd = true)
+		public string GetMetaID(string path, bool includeXMLEnd = true)
 		{
 			string xmlEnd = includeXMLEnd ? ".meta" : string.Empty;
 

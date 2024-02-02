@@ -10,6 +10,8 @@ namespace BEngineEditor
 		private AssemblyListener _assemblyListener;
 		private Logger _logger = new Logger();
 
+		public Scene OpenedScene;
+
 		public string Name { get; private set; } = string.Empty;
 		public string Directory { get; private set; } = string.Empty;
 		public ProjectSettings Settings { get; private set; }

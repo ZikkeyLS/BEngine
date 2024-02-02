@@ -1,23 +1,23 @@
 ﻿
 namespace BEngineEditor
 {
-	[Serializable]
-	public class Scene
+	public class Scene : AssetData
 	{
-		private string _guid = string.Empty;
-
-		public string SceneName = string.Empty;
-		// Scene GameObjectsReferences
-
+		public string SceneName = "New Scene";
 
 		public Scene()
 		{
 
 		}
 
-		public Scene(string guid)
+		public Scene(string sceneName)
 		{
-			_guid = guid;
+			SceneName = sceneName;
+		}
+
+		public Scene(string sceneName, Project project, string guid) : base(project, guid)
+		{
+			SceneName = sceneName;
 		}
 	}
 }

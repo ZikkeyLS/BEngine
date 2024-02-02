@@ -92,7 +92,7 @@ namespace BEngineEditor
 			dir.Delete(true);
 		}
 
-		public static void CreateFile(string path, int current = 1)
+		public static string CreateFile(string path, int current = 1)
 		{
 			string resultPath = current <= 1 ? path :
 				Path.GetDirectoryName(path) + @"\" + Path.GetFileNameWithoutExtension(path) + $" ({current})" + Path.GetExtension(path);
@@ -104,8 +104,10 @@ namespace BEngineEditor
 			else
 			{
 				current += 1;
-				CreateFile(path, current);
+				return CreateFile(path, current);
 			}
+
+			return resultPath;
 		}
 
 		public static void CreateDirectory(string directory, int current = 1)

@@ -17,6 +17,7 @@ namespace BEngineEditor
 		private MenuBarScreen _menuBar = new();
 		private AssemblyStatusScreen _assemblyStatus = new();
 		private ProjectExplorerScreen _projectExplorer = new();
+		private SceneScreen _scene = new();
 
 		private const string UIConfigName = "BEngineEditorUI.ini";
 
@@ -57,6 +58,7 @@ namespace BEngineEditor
 			_menuBar.Initialize(this);
 			_assemblyStatus.Initialize(this);
 			_projectExplorer.Initialize(this);
+			_scene.Initialize(this);
 		}
 
 		protected override void OnRender(double time)
@@ -90,6 +92,9 @@ namespace BEngineEditor
 
 			if (ProjectContext.SearchingProject)
 				_projectLoader.Display();
+
+			if (ProjectContext.ProjectLoaded && ProjectContext.CurrentProject.OpenedScene != null)
+				_scene.Display();
 		}
 
 		protected override void OnClose()
