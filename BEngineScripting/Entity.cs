@@ -1,7 +1,7 @@
 ﻿
 namespace BEngineScripting
 {
-	public class Entety
+	public class Entity
 	{
 		private Script[] _scripts;
 		private List<Script> _scriptCopy = new List<Script>();
