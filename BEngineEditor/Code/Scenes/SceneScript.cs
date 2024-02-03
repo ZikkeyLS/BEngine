@@ -7,14 +7,14 @@ namespace BEngineEditor
 		public string Name { get; set; }
 		public bool IsEditable { get; set; }
 		public bool IsVisible { get; set; }
-		public object Value { get; set; }
+		public object? Value { get; set; }
 
 		public SceneScriptField() { }
 	}
 
 	public class SceneScript
 	{
-		public string Namespace { get; set; }
+		public string? Namespace { get; set; }
 		public string Name { get; set; }
 		public List<SceneScriptField> Fields { get; set; } = new();
 

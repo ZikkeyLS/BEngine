@@ -22,6 +22,14 @@ namespace BEngineEditor
 			SceneName = sceneName;
 		}
 
+		public void CallEvent(EventID id)
+		{
+			foreach (SceneEntity entity in Entities)
+			{
+				entity.Entity.CallEvent(id);
+			}
+		}
+
 		public void RemoveEntity(SceneEntity entity)
 		{
 			List<SceneEntity> removeAlso = new();

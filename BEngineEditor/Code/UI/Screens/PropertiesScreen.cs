@@ -1,13 +1,20 @@
-﻿using ImGuiNET;
+﻿using BEngineCore;
+using BEngineScripting;
+using ImGuiNET;
 
 namespace BEngineEditor
 {
 	public class PropertiesScreen : Screen
 	{
 		private ProjectContext _projectContext => window.ProjectContext;
+		private Scripting _scripting => _projectContext.CurrentProject.Scripting;
+#pragma warning disable CS8603 // Possible null reference return.
 		private SelectedElement _selectedElement => _projectContext.CurrentProject.SelectedElement;
+#pragma warning restore CS8603 // Possible null reference return.
 
 		private string? _lastName = string.Empty;
+
+		private bool _showScriptSelection = false;
 
 		public override void Display()
 		{
@@ -15,19 +22,19 @@ namespace BEngineEditor
 
 			if (_selectedElement.Type == ItemTypeSelected.Entity)
 			{
-				SceneEntity tempEntity = (SceneEntity)_selectedElement.Element;
+				SceneEntity selectedEntity = (SceneEntity)_selectedElement.Element;
 
-				if (_projectContext.CurrentProject.OpenedScene.Entities.Contains(tempEntity) == false)
+				if (_projectContext.CurrentProject.OpenedScene.Entities.Contains(selectedEntity) == false)
 				{
 					_projectContext.CurrentProject.SelectedElement = null;
 					return;
 				}
 
-				string newName = tempEntity.Name;
+				string newName = selectedEntity.Name;
 
-				if (_lastName != tempEntity.GUID)
+				if (_lastName != selectedEntity.GUID)
 				{
-					_lastName = tempEntity.GUID;
+					_lastName = selectedEntity.GUID;
 					return;
 				}
 
@@ -38,13 +45,47 @@ namespace BEngineEditor
 						newName = "~";
 					}
 
-					tempEntity.Name = newName;
+					selectedEntity.Name = newName;
 				}
 
 				ImGui.Separator();
 
+				for (int i = 0; i < selectedEntity.Scripts.Count; i++)
+				{
+					ImGui.BeginGroup();
+					ImGui.Text(selectedEntity.Scripts[i].Namespace + "." + selectedEntity.Scripts[i].Name);
+					ImGui.EndGroup();
+				}
+
 				ImGui.SetCursorPosX((ImGui.GetWindowWidth() - 125) / 4);
-				ImGui.Button("Add script", new System.Numerics.Vector2(100, 60));
+				if (ImGui.Button("Add script", new System.Numerics.Vector2(100, 60))) 
+				{
+					_showScriptSelection = true;
+				}
+
+				if (_showScriptSelection)
+				{
+					if (ImGui.BeginListBox("Select Script"))
+					{
+						for (int i = 0; i < _scripting.Scripts.Count; i++)
+						{
+							if (selectedEntity.Scripts.Find((script) => script.Namespace == _scripting.Scripts[i].Namespace 
+								&& script.Name == _scripting.Scripts[i].Name) != null)
+							{
+								continue;
+							}
+
+							if (ImGui.Selectable(_scripting.Scripts[i].Fullname))
+							{
+								selectedEntity.Scripts.Add(new SceneScript() { Name = _scripting.Scripts[i].Name, Namespace = _scripting.Scripts[i].Namespace });
+								selectedEntity.Entity.Scripts.Add(_scripting.Scripts[i].CreateInstance<Script>());
+
+								_showScriptSelection = false;
+							}
+						}
+					}
+					ImGui.EndListBox();
+				}
 			}
 
 			ImGui.End();

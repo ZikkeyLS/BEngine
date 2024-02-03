@@ -1,4 +1,7 @@
-﻿namespace BEngineEditor
+﻿using BEngineScripting;
+using System.Text.Json.Serialization;
+
+namespace BEngineEditor
 {
 	public class SceneEntity
 	{
@@ -9,12 +12,16 @@
 		public List<string> Children { get; set; } = new();
 		public List<SceneScript> Scripts { get; set; } = new();
 
+		[JsonIgnore]
+		public Entity Entity { get; set; } = new();
+
 		public SceneEntity() { }
 
 		public SceneEntity(string name) 
 		{
 			GUID = Guid.NewGuid().ToString();
 			Name = name;
+			Entity.Name = name;
 		}
 	}
 }

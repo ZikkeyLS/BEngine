@@ -35,7 +35,9 @@ namespace BEngineCore
 			}
 
 #pragma warning disable CS8603 // Always not null, so ignore this warning this time.
-			public object CreateInstance(object[] args) => Activator.CreateInstance(Type, args);
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+			public T CreateInstance<T>(object[]? args = null) where T : Script => (T)Activator.CreateInstance(Type, args);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning restore CS8603
 
 			private void ReadFields()

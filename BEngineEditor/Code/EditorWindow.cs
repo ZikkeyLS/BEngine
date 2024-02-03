@@ -82,7 +82,7 @@ namespace BEngineEditor
 
 		protected override void OnUpdate(double time)
 		{
-
+			ProjectContext?.CurrentProject?.OpenedScene?.CallEvent(BEngineScripting.EventID.EditorUpdate);
 		}
 
 		private void DisplayUI()
