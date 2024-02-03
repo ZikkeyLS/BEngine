@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace BEngineEditor
 {
@@ -7,7 +8,9 @@ namespace BEngineEditor
 		private string _guid;
 		private Project _project;
 
+		[JsonIgnore]
 		public string GUID => _guid;
+		[JsonIgnore]
 		public Project Project => _project;
 
 		protected AssetData()
@@ -31,12 +34,7 @@ namespace BEngineEditor
 		{
 			T template = (T)Activator.CreateInstance(typeof(T), args);
 
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
-
-			using (FileStream fs = new FileStream(path, FileMode.Create))
-			{
-				xmlSerializer.Serialize(fs, template);
-			}
+			File.WriteAllText(path, JsonSerializer.Serialize(template));
 		}
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
@@ -48,31 +46,25 @@ namespace BEngineEditor
 			if (path == string.Empty)
 				return;
 
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
-
-			using (FileStream fs = new FileStream(path, FileMode.Create))
-			{
-				xmlSerializer.Serialize(fs, this);
-			}
+			File.WriteAllText(path, JsonSerializer.Serialize((T)this));
 		}
 
 		public static T? Load<T>(string guid, Project project) where T : AssetData
 		{
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
-
 			string path = project.AssetWorker.GetAssetPath(guid);
 
 			if (path == string.Empty)
 				return null;
 
-			// десериализуем объект
-			using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
+			T? assetData = JsonSerializer.Deserialize<T>(File.ReadAllText(path));
+			if (assetData != null)
 			{
-				T? result = (T)xmlSerializer.Deserialize(fs);
-				result.SetForceID(guid);
-				result.SetForceProject(project);	
-				return (T)result;
+				assetData.SetForceID(guid);
+				assetData.SetForceProject(project);
+				return assetData;
 			}
+
+			return null;
 		}
 	}
 }

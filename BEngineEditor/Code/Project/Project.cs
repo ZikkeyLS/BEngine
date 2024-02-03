@@ -2,6 +2,30 @@
 
 namespace BEngineEditor
 {
+	public enum ItemTypeSelected : byte
+	{
+		None = 0,
+		Asset,
+		Entity
+	}
+
+	public class SelectedElement
+	{
+		public ItemTypeSelected Type { get; set; }
+		public object Element { get; set; }
+
+		public SelectedElement()
+		{
+
+		}
+
+		public SelectedElement(ItemTypeSelected type, object element)
+		{
+			Type = type;
+			Element = element;
+		}
+	}
+
 	public class Project
 	{
 		private Scripting _scripting = new();
@@ -11,6 +35,7 @@ namespace BEngineEditor
 		private Logger _logger = new();
 
 		public Scene OpenedScene;
+		public SelectedElement? SelectedElement;
 
 		public string Name { get; private set; } = string.Empty;
 		public string Directory { get; private set; } = string.Empty;

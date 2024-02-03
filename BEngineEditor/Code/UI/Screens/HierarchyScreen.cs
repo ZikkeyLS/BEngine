@@ -1,20 +1,24 @@
 ﻿using ImGuiNET;
 
-namespace BEngineEditor 
+namespace BEngineEditor
 {
 	internal class HierarchyScreen : Screen
 	{
 		private ProjectContext _projectContext => window.ProjectContext;
-		private Scene _currentScene => _projectContext.CurrentProject.OpenedScene;
+		private Scene _scene => _projectContext.CurrentProject.OpenedScene;
+		private List<SceneEntity> _entities => _scene.Entities;
 
 		public override void Display()
 		{
 			ImGui.Begin("Hierarchy", ImGuiWindowFlags.HorizontalScrollbar);
 
-			for (int i = 0; i < _currentScene.Entities.Count; i++)
+			for (int i = 0; i < _entities.Count; i++)
 			{
-				if (_currentScene.Entities[i].Parent == null)
-					ShowEntitiesRecursively(_currentScene.Entities[i], _currentScene.Entities[i]);
+				if (_entities[i].Parent == null)
+				{
+					ShowEntitiesRecursively(_entities[i], _entities[i]);
+				}
+
 			}
 
 			ShowPopups();
@@ -25,21 +29,18 @@ namespace BEngineEditor
 		{
 			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.OpenOnArrow;
 
-			if (current.Chilren.Count == 0)
+			if (current == null)
+				return;
+
+			if (current.Children.Count == 0)
 				flags |= ImGuiTreeNodeFlags.Leaf;
 
+			ImGui.PushID(current.GUID);
 			bool open = ImGui.TreeNodeEx(current.Name, flags);
 
 			if (ImGui.IsItemClicked())
 			{
-				//if (directory == root)
-				//{
-				//	_currentDirectoryOpened = string.Empty;
-				//}
-				//else
-				//{
-				//	_currentDirectoryOpened = directory.Replace(root + @"\", string.Empty);
-				//}
+				_projectContext.CurrentProject.SelectedElement = new SelectedElement(ItemTypeSelected.Entity, current);
 			}
 
 			//if (directory != _rootAssetsDirectory && directory != _rootAssetsDirectory)
@@ -47,11 +48,26 @@ namespace BEngineEditor
 			//else
 			//	Drop(directory, false);
 
+			if (ImGui.BeginPopupContextItem(current.GUID, ImGuiPopupFlags.MouseButtonRight))
+			{
+				if (ImGui.Selectable("Create Entity"))
+				{
+					current.Children.Add(_scene.CreateEntity("New Entity", current).GUID);
+				}
+
+				if (ImGui.Selectable("Delete"))
+				{
+					_scene.RemoveEntity(current);
+				}
+				ImGui.EndPopup();
+			}
+			ImGui.PopID();
+
 			if (open)
 			{
-				for (int i = 0; i < current.Chilren.Count; i++)
+				for (int i = 0; i < current.Children.Count; i++)
 				{
-					ShowEntitiesRecursively(current.Chilren[i], root);
+					ShowEntitiesRecursively(_entities.Find((entity) => entity.GUID == current.Children[i]), root);
 				}
 
 				ImGui.TreePop();
@@ -64,17 +80,11 @@ namespace BEngineEditor
 			{
 				if (ImGui.Selectable("Create Entity"))
 				{
-					// add entity with name to list
-					_currentScene.Entities.Add(new SceneEntity("TestEntity"));
+					_scene.CreateEntity("New Entity");
 				}
 
 				ImGui.EndPopup();
 			}
-		}
-
-		private void RenderEntitiesRecursively()
-		{
-
 		}
 	}
 }

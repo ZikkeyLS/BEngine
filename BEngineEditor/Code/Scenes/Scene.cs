@@ -21,5 +21,36 @@ namespace BEngineEditor
 		{
 			SceneName = sceneName;
 		}
+
+		public void RemoveEntity(SceneEntity entity)
+		{
+			List<SceneEntity> removeAlso = new();
+			for (int i = 0; i < Entities.Count; i++)
+			{
+				if (Entities[i].Parent == entity.GUID)
+				{
+					removeAlso.Add(Entities[i]);
+				}
+
+				if (Entities[i].Children.Contains(entity.GUID))
+				{
+					Entities[i].Children.Remove(entity.GUID);
+				}
+			}
+
+			Entities.Remove(entity);
+
+			for (int i = 0; i < removeAlso.Count; i++)
+			{
+				RemoveEntity(removeAlso[i]);
+			}
+		}
+
+		public SceneEntity CreateEntity(string name, SceneEntity? parent = null)
+		{
+			SceneEntity entity = new SceneEntity(name) { Parent = parent?.GUID };
+			Entities.Add(entity);
+			return entity;
+		}
 	}
 }

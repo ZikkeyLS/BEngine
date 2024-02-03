@@ -19,6 +19,7 @@ namespace BEngineEditor
 		private ProjectExplorerScreen _projectExplorer = new();
 		private SceneScreen _scene = new();
 		private HierarchyScreen _hierarchy = new();
+		private PropertiesScreen _properties = new();
 
 		private const string UIConfigName = "BEngineEditorUI.ini";
 
@@ -61,6 +62,7 @@ namespace BEngineEditor
 			_projectExplorer.Initialize(this);
 			_scene.Initialize(this);
 			_hierarchy.Initialize(this);
+			_properties.Initialize(this);
 		}
 
 		protected override void OnRender(double time)
@@ -99,6 +101,11 @@ namespace BEngineEditor
 			{
 				_scene.Display();
 				_hierarchy.Display();
+				if (ProjectContext.CurrentProject.SelectedElement != null 
+					&& ProjectContext.CurrentProject.SelectedElement.Type != ItemTypeSelected.None)
+				{
+					_properties.Display();
+				}
 			}
 		}
 
