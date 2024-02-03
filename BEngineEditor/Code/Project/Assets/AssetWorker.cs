@@ -54,12 +54,11 @@ namespace BEngineEditor
 
 			CreateSearchedAssets(_project.AssetsDirectory);
 
-			_project.Logger.LogMessage(_loadedAssets.Count.ToString());
-			for (int i = 0; i < _loadedAssets.Count; i++)
-			{
-				_project.Logger.LogMessage(_loadedAssets[i].GUID);
-			}
-
+			//_project.Logger.LogMessage(_loadedAssets.Count.ToString());
+			//for (int i = 0; i < _loadedAssets.Count; i++)
+			//{
+			//	_project.Logger.LogMessage(_loadedAssets[i].GUID);
+			//}
 		}
 
 		public bool HasAsset(string path)
