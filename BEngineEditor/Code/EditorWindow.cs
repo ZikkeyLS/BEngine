@@ -18,6 +18,7 @@ namespace BEngineEditor
 		private AssemblyStatusScreen _assemblyStatus = new();
 		private ProjectExplorerScreen _projectExplorer = new();
 		private SceneScreen _scene = new();
+		private HierarchyScreen _hierarchy = new();
 
 		private const string UIConfigName = "BEngineEditorUI.ini";
 
@@ -59,6 +60,7 @@ namespace BEngineEditor
 			_assemblyStatus.Initialize(this);
 			_projectExplorer.Initialize(this);
 			_scene.Initialize(this);
+			_hierarchy.Initialize(this);
 		}
 
 		protected override void OnRender(double time)
@@ -94,7 +96,10 @@ namespace BEngineEditor
 				_projectLoader.Display();
 
 			if (ProjectContext.ProjectLoaded && ProjectContext.CurrentProject.OpenedScene != null)
+			{
 				_scene.Display();
+				_hierarchy.Display();
+			}
 		}
 
 		protected override void OnClose()

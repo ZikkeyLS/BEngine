@@ -4,11 +4,11 @@ namespace BEngineEditor
 {
 	public class Project
 	{
-		private Scripting _scripting;
+		private Scripting _scripting = new();
 		private AssetWorker _assets;
 		private ProjectCompiler _compiler;
 		private AssemblyListener _assemblyListener;
-		private Logger _logger = new Logger();
+		private Logger _logger = new();
 
 		public Scene OpenedScene;
 
@@ -20,6 +20,7 @@ namespace BEngineEditor
 		public ProjectCompiler Compiler => _compiler;
 		public Logger Logger => _logger;
 		public AssetWorker AssetWorker => _assets;
+		public Scripting Scripting => _scripting;
 
 		public string SolutionPath => $@"{Directory}\{Name}.sln";
 		public string ProjectAssemblyDirectory => $@"{Directory}\{Name}Assembly";

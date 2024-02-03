@@ -1,9 +1,12 @@
-﻿
+﻿using BEngineScripting;
+
 namespace BEngineEditor
 {
 	public class Scene : AssetData
 	{
 		public string SceneName = "New Scene";
+
+		public List<SceneEntity> Entities = new();
 
 		public Scene()
 		{

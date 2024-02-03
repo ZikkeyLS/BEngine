@@ -1,6 +1,7 @@
 ﻿
 namespace BEngineScripting
 {
+	[Serializable]
 	public class Entity
 	{
 		private Script[] _scripts;

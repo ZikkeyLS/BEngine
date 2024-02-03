@@ -1,19 +1,15 @@
-﻿using System.Xml.Serialization;
+﻿using System.Text.Json;
 
 namespace BEngineEditor
 {
-	[Serializable]
 	public struct LastProject
 	{
-		public string Name = string.Empty;
-		public string Directory = string.Empty;
+		public string Name { get; set; } = string.Empty;
+		public string Directory { get; set; } = string.Empty;
 
 		public string SolutionPath => $@"{Directory}\{Name}.sln";
 
-		public LastProject()
-		{
-
-		}
+		public LastProject() { }
 
 		public LastProject(string name, string directory)
 		{
@@ -26,7 +22,7 @@ namespace BEngineEditor
 	{
 		public List<LastProject> ProjectHistory = new();
 
-		private const string SettingsFileName = "EdtiorSettings.xml";
+		private const string SettingsFileName = "EdtiorSettings.json";
 
 		public EditorSettings() 
 		{
@@ -35,12 +31,7 @@ namespace BEngineEditor
 
 		public void Save()
 		{
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(EditorSettings));
-
-			using (FileStream fs = new FileStream(SettingsFileName, FileMode.Create))
-			{
-				xmlSerializer.Serialize(fs, this);
-			}
+			File.WriteAllText(SettingsFileName, JsonSerializer.Serialize(this));
 		}
 
 		public EditorSettings? Load()
@@ -48,14 +39,9 @@ namespace BEngineEditor
 			if (File.Exists(SettingsFileName) == false)
 				return null;
 
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(EditorSettings));
-
-			using (FileStream fs = new FileStream(SettingsFileName, FileMode.OpenOrCreate))
-			{
-				EditorSettings? loadedSettings = xmlSerializer.Deserialize(fs) as EditorSettings;
-				if (loadedSettings != null)
-					return loadedSettings;
-			}
+			EditorSettings? loadedSettings = JsonSerializer.Deserialize<EditorSettings>(File.ReadAllText(SettingsFileName));
+			if (loadedSettings != null)
+				return loadedSettings;
 
 			return null;
 		}

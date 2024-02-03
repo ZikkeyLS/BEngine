@@ -35,6 +35,8 @@ namespace BEngineEditor
 		private bool _runOnBuild = false;
 		private Project _project;
 
+		private const int CopyDelayInMS = 5000;
+
 		public ProjectCompiler(Project project)
 		{
 			_project = project;
@@ -145,6 +147,8 @@ namespace BEngineEditor
 
 			if (AssemblyCompileErrors.Count == 0)
 			{
+				_project.Scripting.ReadScriptAssembly(_project.AssemblyBinaryPath);
+
 				_project.Logger.LogMessage($"Working clear, no errors found! (Build in " +
 					$"{AssemblyBuildEndTime.ToString("HH:mm:ss")}, " +
 					$"{Math.Round((AssemblyBuildEndTime -

@@ -1,19 +1,26 @@
 ﻿using BEngineScripting;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Security.Principal;
 
 namespace BEngineCore
 {
 	public class Scripting
 	{
+		public class CachedField
+		{
+			public string Name;
+			public string Type;
+		}
+
 		public class CachedScript
 		{
 			public readonly Type Type;
 			public readonly string Name;
 			public readonly string? Namespace;
 			public readonly string? Fullname;
-			public readonly List<string> MembersNames = new();
-			public readonly List<string> MethodsNames = new();
+			public readonly List<CachedField> Fields = new();
+			public readonly List<string> Methods = new();
 
 			public CachedScript(Type type)
 			{
@@ -23,7 +30,7 @@ namespace BEngineCore
 				Namespace = type.Namespace;
 				Fullname = type.FullName;
 
-				ReadMembers();
+				ReadFields();
 				ReadMethods();
 			}
 
@@ -31,12 +38,12 @@ namespace BEngineCore
 			public object CreateInstance(object[] args) => Activator.CreateInstance(Type, args);
 #pragma warning restore CS8603
 
-			private void ReadMembers()
+			private void ReadFields()
 			{
-				MemberInfo[] members = Type.GetMembers();
-				for (int i = 0; i < members.Length; i++)
+				FieldInfo[] properties = Type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+				for (int i = 0; i < properties.Length; i++)
 				{
-					MethodsNames.Add(members[i].Name);
+					Fields.Add(new CachedField () { Name = properties[i].Name, Type = properties[i].FieldType.Name });
 				}
 			}
 
@@ -46,7 +53,7 @@ namespace BEngineCore
 				for (int i = 0; i < methods.Length; i++)
 				{
 					if (methods[i].Name.StartsWith('.') == false)
-						MethodsNames.Add(methods[i].Name);
+						Methods.Add(methods[i].Name);
 				}
 			}
 		}
@@ -59,18 +66,21 @@ namespace BEngineCore
 		{
 			_scripts.Clear();
 
-			AssemblyLoadContext context = new AssemblyLoadContext(name: "ReadScripts", isCollectible: true);
+			AssemblyLoadContext context = new AssemblyLoadContext("LoadScripts", true);
 
-			Assembly dll = context.LoadFromAssemblyPath(path);
-			foreach (Type type in dll.GetExportedTypes())
+			using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
 			{
-				if (type.IsSubclassOf(typeof(Script)))
-					_scripts.Add(new CachedScript(type));
+				var assembly = context.LoadFromStream(fs);
+
+				foreach (Type type in assembly.GetExportedTypes())
+				{
+					if (type.IsSubclassOf(typeof(Script)))
+						_scripts.Add(new CachedScript(type));
+				}
 			}
 
 			context.Unload();
 		}
-
 		public static void LoadInternalScriptingAPI()
 		{
 			BEngine.InternalCalls.LoadInternalCallsAPI();

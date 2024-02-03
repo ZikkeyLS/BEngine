@@ -1,16 +1,17 @@
-﻿using System.Xml.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace BEngineEditor
 {
-
 	public class ProjectSettings
 	{
-		public string BuildOS = ProjectCompiler.Win64;
-		public string LastOpenedSceneID = string.Empty;
+		public string BuildOS { get; set; } = ProjectCompiler.Win64;
+		public string LastOpenedSceneID { get; set; } = string.Empty;
 
-		private string _settingsFilePath = "ProjectSettings.xml";
+		[JsonIgnore]
+		private string _settingsFilePath = "ProjectSettings.json";
 
-		private ProjectSettings()
+		public ProjectSettings()
 		{
 
 		}
@@ -22,16 +23,12 @@ namespace BEngineEditor
 
 		public void UpdateResultPath(Project project)
 		{
-			_settingsFilePath = $@"{project.Directory}\{project.Name}Settings.xml";
+			_settingsFilePath = $@"{project.Directory}\{project.Name}Settings.json";
 		}
 
 		public void Save()
 		{
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(ProjectSettings));
-			using (FileStream fs = new FileStream(_settingsFilePath, FileMode.Create))
-			{
-				xmlSerializer.Serialize(fs, this);
-			}
+			File.WriteAllText(_settingsFilePath, JsonSerializer.Serialize(this));
 		}
 
 		public ProjectSettings? Load()
@@ -39,14 +36,9 @@ namespace BEngineEditor
 			if (File.Exists(_settingsFilePath) == false)
 				return null;
 
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(ProjectSettings));
-
-			using (FileStream fs = new FileStream(_settingsFilePath, FileMode.OpenOrCreate))
-			{
-				ProjectSettings? loadedSettings = xmlSerializer.Deserialize(fs) as ProjectSettings;
-				if (loadedSettings != null)
-					return loadedSettings;
-			}
+			ProjectSettings? loadedSettings = JsonSerializer.Deserialize<ProjectSettings>(File.ReadAllText(_settingsFilePath));
+			if (loadedSettings != null)
+				return loadedSettings;
 
 			return null;
 		}
