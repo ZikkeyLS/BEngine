@@ -4,9 +4,8 @@ namespace BEngineEditor
 {
 	public class Scene : AssetData
 	{
-		public string SceneName = "New Scene";
-
-		public List<SceneEntity> Entities = new();
+		public string SceneName { get; set; } = "New Scene";
+		public List<SceneEntity> Entities { get; set; } = new();
 
 		public Scene()
 		{

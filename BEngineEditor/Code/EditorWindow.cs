@@ -106,6 +106,7 @@ namespace BEngineEditor
 		{
 			Settings.Save();
 			ProjectContext.CurrentProject?.Settings.Save();
+			ProjectContext.CurrentProject?.OpenedScene?.Save<Scene>();
 
 			ImGui.SaveIniSettingsToDisk(UIConfigName);
 		}

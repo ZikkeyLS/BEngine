@@ -48,6 +48,7 @@ namespace BEngineEditor
 		public void LoadProject(string slnPath)
 		{
 			_currentProject?.Settings.Save();
+			_currentProject?.OpenedScene?.Save<Scene>();
 
 			_currentProject = new Project(Path.GetFileNameWithoutExtension(slnPath), Path.GetDirectoryName(slnPath));
 			SearchingProject = false;
