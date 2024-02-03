@@ -39,7 +39,8 @@ namespace BEngineEditor
 
 			Scripting.LoadInternalScriptingAPI();
 
-			_controller = new ImGuiController(gl, window, input);
+			ImGuiFontConfig fontConfig = new ImGuiFontConfig(@"Fonts\ArialRegular.ttf", 16);
+			_controller = new ImGuiController(gl, window, input, fontConfig);
 			ImGuiIOPtr io = ImGui.GetIO();
 			io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
 			io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;
