@@ -30,6 +30,14 @@ namespace BEngineEditor
 			}
 		}
 
+		public void ReloadScripts()
+		{
+			for (int i = 0; i < Entities.Count; i++)
+			{
+				Entities[i].ReloadScripts(Project.Scripting);
+			}
+		}
+
 		public void CallEvent(EventID id)
 		{
 			foreach (SceneEntity entity in Entities)

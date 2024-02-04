@@ -1,11 +1,12 @@
-﻿using static BEngineCore.Scripting;
+﻿using System.Text.Json;
+using static BEngineCore.Scripting;
 
 namespace BEngineEditor
 {
 	public class SceneScriptValue
 	{
-		public object? Value;
-		public string TypeFullName;
+		public string Value { get; set; }
+		public string TypeFullName { get; set; }
 	}
 
 	public class SceneScriptField
@@ -13,7 +14,7 @@ namespace BEngineEditor
 		public string Name { get; set; }
 		public bool IsEditable { get; set; }
 		public bool IsVisible { get; set; }
-		public object? Value { get; set; }
+		public SceneScriptValue? Value { get; set; }
 
 		public SceneScriptField() { }
 	}
@@ -83,7 +84,7 @@ namespace BEngineEditor
 			SceneScriptField? field = Fields.Find((field) => field.Name == name);
 			if (field == null)
 				Fields.Add(new SceneScriptField() { Name = name,
-					Value = value, 
+					Value = new SceneScriptValue() { Value = JsonSerializer.Serialize(value), TypeFullName = value.GetType().FullName }, 
 					IsEditable = true, IsVisible = true });
 			else
 				return false;
@@ -95,7 +96,7 @@ namespace BEngineEditor
 		{
 			SceneScriptField? field = Fields.Find((field) => field.Name == name);
 			if (field != null)
-				field.Value = value;
+				field.Value = new SceneScriptValue() { Value = JsonSerializer.Serialize(value), TypeFullName = value.GetType().FullName };
 			else
 				return false;
 

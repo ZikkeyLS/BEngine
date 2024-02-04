@@ -2,6 +2,7 @@
 using BEngineCore;
 using ImGuiNET;
 using System.Reflection;
+using System.Text.Json;
 
 namespace BEngineEditor
 {
@@ -19,7 +20,7 @@ namespace BEngineEditor
 
 		public override void Display()
 		{
-			ImGui.Begin("Properties");
+			ImGui.Begin("Properties", ImGuiWindowFlags.HorizontalScrollbar);
 
 			if (_selectedElement.Type == ItemTypeSelected.Entity)
 			{
@@ -59,27 +60,69 @@ namespace BEngineEditor
 					ImGui.BeginGroup();
 					ImGui.Text(fullName);
 
-					Script? script = selectedEntity.GetScriptInstance(selectedEntity.Scripts[i]);
+					SceneScript sceneScript = selectedEntity.Scripts[i];
+					Script? script = selectedEntity.GetScriptInstance(sceneScript);
 
 					if (script != null)
 					{
-						FieldInfo[] fields = script.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+						FieldInfo[] fields = script.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+
 						for (int j = 0; j < fields.Length; j++)
 						{
-							var field = script.GetType().GetFields()[j];
-							if (field.GetModifiedFieldType().FullName == typeof(int).FullName)
-							{
-								object? baseValue = selectedEntity.Scripts[i].Fields?.Find((field) => field.Name == field.Name)?.Value?.ToString();
-								string input = baseValue != null ? baseValue.ToString() : string.Empty;
+							FieldInfo field = fields[j];
+							SceneScriptField? sceneScriptField = selectedEntity.Scripts[i].Fields?.Find((scripField) => scripField.Name == field.Name);
+							SceneScriptValue? sceneScriptValue = sceneScriptField?.Value;
 
-								ImGui.InputText(field.Name, ref input, 128);
-								if (int.TryParse(input, out int value))
+							if (IsInClassList(field.FieldType, typeof(string), typeof(int), 
+								typeof(float), typeof(double), typeof(uint), typeof(byte), typeof(sbyte),
+								typeof(short), typeof(ushort)))
+							{
+								string input = sceneScriptValue != null ? sceneScriptValue.Value.ToString() : fields[j]?.GetValue(script)?.ToString();
+
+								if (IsInClassList(field.FieldType, typeof(string)))
 								{
-									field.SetValue(script, value);
-									if (selectedEntity.Scripts[i].ContainsField(field.Name))
-										selectedEntity.Scripts[i].ChangeField(field.Name, value);
-									else
-										selectedEntity.Scripts[i].AddField(field.Name, value);
+									input = input.Substring(1, input.Length - 2);
+								}
+
+								if (ImGui.InputText(field.Name, ref input, 128))
+								{
+									if (input == null)
+										continue;
+
+									if (input == string.Empty && IsInClassList(field.FieldType, typeof(string)) == false)
+										continue;
+
+									if (IsInClassList(field.FieldType, typeof(float), typeof(double)))
+									{
+										input = input.Replace(",", ".");
+									}
+
+									try
+									{
+										object? final = null;
+										if (field.FieldType != typeof(string))
+											final = JsonSerializer.Deserialize(input, field.FieldType);
+										else
+											final = input;
+
+										if (final != null)
+											UpdateField(field, script, sceneScript, final);
+
+									}
+									catch
+									{
+
+									}
+								}
+							}
+							else if (IsInClassList(field.FieldType, typeof(bool)))
+							{
+								bool input = sceneScriptValue != null ? bool.Parse(sceneScriptValue.Value) : (bool)field.GetValue(script);
+								bool result = input;
+
+								if (ImGui.Checkbox(field.Name, ref result))
+								{
+									UpdateField(field, script, sceneScript, result);
 								}
 							}
 						}
@@ -99,9 +142,9 @@ namespace BEngineEditor
 				}
 
 				ImGui.SetCursorPosX((ImGui.GetWindowWidth() - 125) / 4);
-				if (ImGui.Button("Add script", new System.Numerics.Vector2(100, 60))) 
+				if (ImGui.Button("Add script", new System.Numerics.Vector2(100, 60)))
 				{
-					_showScriptSelection = true;
+					_showScriptSelection = !_showScriptSelection;
 				}
 
 				if (_showScriptSelection)
@@ -112,7 +155,7 @@ namespace BEngineEditor
 						{
 							Scripting.CachedScript currentScript = _scripting.Scripts[i];
 
-							if (selectedEntity.Scripts.Find((script) => script.Namespace == currentScript.Namespace 
+							if (selectedEntity.Scripts.Find((script) => script.Namespace == currentScript.Namespace
 								&& script.Name == currentScript.Name) != null)
 							{
 								continue;
@@ -130,6 +173,38 @@ namespace BEngineEditor
 			}
 
 			ImGui.End();
+		}
+
+		private void UpdateField(FieldInfo field, Script script, SceneScript sceneScript, object final)
+		{
+			try
+			{
+				field.SetValue(script, final);
+
+				if (sceneScript.ContainsField(field.Name))
+				{
+					sceneScript.ChangeField(field.Name, final);
+				}
+				else
+				{
+					sceneScript.AddField(field.Name, final);
+				}
+			}
+			catch
+			{
+
+			}
+		}
+
+		public bool IsInClassList(Type current, params Type[] typeList)
+		{
+			for (int i = 0; i < typeList.Length; i++)
+			{
+				if (current == typeList[i])
+					return true;
+			}
+
+			return false;
 		}
 	}
 }

@@ -63,6 +63,13 @@ namespace BEngineEditor
 			return null;
 		}
 
+		public void ReloadScripts(Scripting scripting)
+		{
+			Entity.Dispose();
+			Entity = new();
+			LoadScripts(scripting);
+		}
+
 		public void LoadScripts(Scripting scripting)
 		{
 			for (int i = 0; i < Scripts.Count; i++)
@@ -76,8 +83,8 @@ namespace BEngineEditor
 						for (int k = 0; k < Scripts[i].Fields.Count; k++)
 						{
 							Type scriptType = script.GetType();
-
-							scriptType.GetField(Scripts[i].Fields[j].Name)?.SetValue(script, JsonElementParser.Parse(Scripts[i].Fields[i].Value));
+							SceneScriptField field = Scripts[i].Fields[k];
+							scriptType.GetField(field.Name)?.SetValue(script, JsonSerializer.Deserialize(field.Value.Value, Type.GetType(field.Value.TypeFullName)));
 						}
 					}
 				}
