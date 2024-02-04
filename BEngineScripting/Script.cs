@@ -13,7 +13,7 @@ namespace BEngine
 		EditorSelected
 	}
 
-	public class Script : ICloneable
+	public class Script : ICloneable, IDisposable
 	{
 		public virtual void OnStart()
 		{
@@ -54,6 +54,33 @@ namespace BEngine
 		public object Clone()
 		{
 			return MemberwiseClone();
+		}
+
+		private bool disposed;
+
+		~Script()
+		{
+			Dispose(false);
+		}
+
+		public void Dispose()
+		{
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!disposed)
+			{
+				if (disposing)
+				{
+					// Dispose managed resources here.
+				}
+
+				// Dispose unmanaged resources here.
+			}
+
+			disposed = true;
 		}
 	}
 }

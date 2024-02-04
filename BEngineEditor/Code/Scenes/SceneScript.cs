@@ -12,7 +12,7 @@ namespace BEngineEditor
 		public SceneScriptField() { }
 	}
 
-	public class SceneScript
+	public class SceneScript : IDisposable
 	{
 		public string? Namespace { get; set; }
 		public string Name { get; set; }
@@ -99,6 +99,11 @@ namespace BEngineEditor
 			SceneScriptField? field = Fields.Find((field) => field.Name == name);
 			if (field != null)
 				Fields.Remove(field);
+		}
+
+		public void Dispose()
+		{
+			GC.SuppressFinalize(this);
 		}
 	}
 }

@@ -31,13 +31,30 @@ namespace BEngineEditor
 			CreateInstanseOf(script);
 		}
 
+		public void RemoveScript(SceneScript script)
+		{
+			Scripts.Remove(script);
+
+			Script? removeRuntime = Entity.Scripts.Find((current) => current.GetType().Name == script.Name &&
+				current.GetType().Namespace == script.Namespace);
+
+			if (removeRuntime != null)
+			{
+				Entity.Scripts.Remove(removeRuntime);
+				removeRuntime.Dispose();
+			}
+
+			script.Dispose();
+		}
+
+
 		public void LoadScripts(Scripting scripting)
 		{
 			for (int i = 0; i < Scripts.Count; i++) 
 			{
 				for (int j = 0; j < scripting.Scripts.Count; j++)
 				{
-					Scripting.CachedScript currentScript = scripting.Scripts[i];
+					Scripting.CachedScript currentScript = scripting.Scripts[j];
 					if (currentScript.Name == Scripts[i].Name && currentScript.Namespace == Scripts[i].Namespace)
 						CreateInstanseOf(currentScript);
 				}

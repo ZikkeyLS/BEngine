@@ -51,9 +51,22 @@ namespace BEngineEditor
 
 				for (int i = 0; i < selectedEntity.Scripts.Count; i++)
 				{
+					string fullName = selectedEntity.Scripts[i].Namespace + "." + selectedEntity.Scripts[i].Name;
+
+					ImGui.PushID(fullName);
 					ImGui.BeginGroup();
-					ImGui.Text(selectedEntity.Scripts[i].Namespace + "." + selectedEntity.Scripts[i].Name);
+					ImGui.Text(fullName);
 					ImGui.EndGroup();
+					ImGui.PopID();
+
+					if (ImGui.BeginPopupContextItem(fullName, ImGuiPopupFlags.MouseButtonRight))
+					{
+						if (ImGui.Selectable("Delete"))
+						{
+							selectedEntity.RemoveScript(selectedEntity.Scripts[i]);
+						}
+						ImGui.EndPopup();
+					}
 				}
 
 				ImGui.SetCursorPosX((ImGui.GetWindowWidth() - 125) / 4);
