@@ -1,4 +1,5 @@
 ﻿using ImGuiNET;
+using Silk.NET.Input;
 
 namespace BEngineEditor
 {
@@ -6,6 +7,7 @@ namespace BEngineEditor
 	{
 		private ProjectContext _projectContext;
 
+		private Project _project => _projectContext.CurrentProject;
 		private ProjectCompiler _compiler => _projectContext.CurrentProject.Compiler;
 		private ProjectSettings _settings => _projectContext.CurrentProject.Settings;
 
@@ -18,28 +20,36 @@ namespace BEngineEditor
 		{
 			ImGui.BeginMainMenuBar();
 
-			if (_projectContext.CurrentProject != null && ImGui.BeginMenu("Actions"))
-			{
-				if (ImGui.MenuItem("Load Project", "Ctrl+Shift+F"))
-				{
-					_projectContext.SearchingProject = true;
-				}
+			if (_projectContext.CurrentProject == null)
+				return;
 
+
+			if (ImGui.BeginMenu("Actions"))
+			{
 				if (ImGui.MenuItem("Open Code Editor", "Ctrl+Shift+Q"))
 				{
 					Utils.OpenWithDefaultProgram(_projectContext.CurrentProject.SolutionPath);
 				}
 
-				if (_projectContext.CurrentProject != null && _compiler.BuildingGame == false)
+				if (_compiler.BuildingGame)
+					return;
+
+				if (ImGui.MenuItem("Load Project", "Ctrl+Shift+F"))
 				{
-					if (ImGui.MenuItem("Reload assembly", "Ctrl+Shift+B"))
-					{
-						_compiler.CompileScripts();
-					}
+					_projectContext.SearchingProject = true;
 				}
 
-				if (_projectContext.CurrentProject != null && _compiler.BuildingGame == false
-					&& _compiler.AssemblyLoaded && _compiler.AssemblyCompileErrors.Count == 0)
+				if (ImGui.MenuItem("Reload assembly", "Ctrl+Shift+B"))
+				{
+					_compiler.CompileScripts();
+				}
+
+				if (ImGui.MenuItem("Reload assembly", "Ctrl+Shift+B") && _project.OpenedScene != null)
+				{
+					_project.OpenedScene.Save<Scene>();
+				}
+
+				if (_compiler.AssemblyLoaded && _compiler.AssemblyCompileErrors.Count == 0)
 				{
 					if (ImGui.MenuItem("Build", "Ctrl+Shift+G"))
 					{
@@ -55,7 +65,7 @@ namespace BEngineEditor
 				ImGui.EndMenu();
 			}
 
-			if (_projectContext.CurrentProject != null && ImGui.BeginMenu("BuildOS"))
+			if (ImGui.BeginMenu("BuildOS"))
 			{
 				if (ImGui.MenuItem("Windows", "", _compiler.IsCurrentOS(ProjectCompiler.Win64))) 
 				{ 

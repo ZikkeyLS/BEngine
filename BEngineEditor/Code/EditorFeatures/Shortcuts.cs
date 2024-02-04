@@ -20,13 +20,8 @@ namespace BEngineEditor
 
 		public void Update()
 		{
-			if (_projectContext.CurrentProject == null || _compiler.BuildingGame)
+			if (_projectContext == null) 
 				return;
-
-			if (ControlShiftActive() && window.IsKeyPressed(Key.F))
-			{
-				_projectContext.SearchingProject = true;
-			}
 
 			if (ControlShiftActive() && window.IsKeyPressed(Key.Q))
 			{
@@ -35,6 +30,14 @@ namespace BEngineEditor
 					_lastOpenedEditor = DateTime.Now;
 					Utils.OpenWithDefaultProgram(_projectContext.CurrentProject.SolutionPath);
 				}
+			}
+
+			if (_compiler.BuildingGame)
+				return;
+
+			if (ControlShiftActive() && window.IsKeyPressed(Key.F))
+			{
+				_projectContext.SearchingProject = true;
 			}
 
 			if (ControlShiftActive() && window.IsKeyPressed(Key.B))
@@ -47,9 +50,8 @@ namespace BEngineEditor
 				if ((DateTime.Now - _lastSavedScene).TotalSeconds >= 1)
 				{
 					_lastSavedScene = DateTime.Now;
-					_projectContext.CurrentProject.OpenedScene.Save<Scene>();
-				}
-				
+					_project.OpenedScene.Save<Scene>();
+				}			
 			}
 
 			if (_compiler.AssemblyLoaded && _compiler.AssemblyCompileErrors.Count == 0)
