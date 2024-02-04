@@ -19,10 +19,17 @@ namespace BEngineEditor
 
 		public void Save(string path)
 		{
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(AssetMetaData));
-			using (FileStream fs = new FileStream(path + @".meta", FileMode.Create))
+			try
 			{
-				xmlSerializer.Serialize(fs, this);
+				XmlSerializer xmlSerializer = new XmlSerializer(typeof(AssetMetaData));
+				using (FileStream fs = new FileStream(path + @".meta", FileMode.Create))
+				{
+					xmlSerializer.Serialize(fs, this);
+				}
+			}
+			catch
+			{
+
 			}
 		}
 
