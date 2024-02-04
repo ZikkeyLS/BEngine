@@ -1,5 +1,7 @@
-﻿using BEngineCore;
+﻿using BEngine;
+using BEngineCore;
 using ImGuiNET;
+using System.Reflection;
 
 namespace BEngineEditor
 {
@@ -56,6 +58,33 @@ namespace BEngineEditor
 					ImGui.PushID(fullName);
 					ImGui.BeginGroup();
 					ImGui.Text(fullName);
+
+					Script? script = selectedEntity.GetScriptInstance(selectedEntity.Scripts[i]);
+
+					if (script != null)
+					{
+						FieldInfo[] fields = script.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+						for (int j = 0; j < fields.Length; j++)
+						{
+							var field = script.GetType().GetFields()[j];
+							if (field.GetModifiedFieldType().FullName == typeof(int).FullName)
+							{
+								object? baseValue = selectedEntity.Scripts[i].Fields?.Find((field) => field.Name == field.Name)?.Value?.ToString();
+								string input = baseValue != null ? baseValue.ToString() : string.Empty;
+
+								ImGui.InputText(field.Name, ref input, 128);
+								if (int.TryParse(input, out int value))
+								{
+									field.SetValue(script, value);
+									if (selectedEntity.Scripts[i].ContainsField(field.Name))
+										selectedEntity.Scripts[i].ChangeField(field.Name, value);
+									else
+										selectedEntity.Scripts[i].AddField(field.Name, value);
+								}
+							}
+						}
+					}
+
 					ImGui.EndGroup();
 					ImGui.PopID();
 

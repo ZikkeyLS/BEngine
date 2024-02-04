@@ -1,6 +1,9 @@
 ﻿using BEngine;
 using BEngineCore;
+using BEngineEditor.Code;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace BEngineEditor
 {
@@ -18,7 +21,7 @@ namespace BEngineEditor
 
 		public SceneEntity() { }
 
-		public SceneEntity(string name) 
+		public SceneEntity(string name)
 		{
 			GUID = Guid.NewGuid().ToString();
 			Name = name;
@@ -47,23 +50,45 @@ namespace BEngineEditor
 			script.Dispose();
 		}
 
+		public Script? GetScriptInstance(SceneScript sceneScipt)
+		{
+			for (int i = 0; i < Entity.Scripts.Count; i++)
+			{
+				Type scriptType = Entity.Scripts[i].GetType();
+				Script currentScript = Entity.Scripts[i];
+				if (scriptType.Name == sceneScipt.Name && scriptType.Namespace == sceneScipt.Namespace)
+					return currentScript;
+			}
+
+			return null;
+		}
 
 		public void LoadScripts(Scripting scripting)
 		{
-			for (int i = 0; i < Scripts.Count; i++) 
+			for (int i = 0; i < Scripts.Count; i++)
 			{
 				for (int j = 0; j < scripting.Scripts.Count; j++)
 				{
 					Scripting.CachedScript currentScript = scripting.Scripts[j];
 					if (currentScript.Name == Scripts[i].Name && currentScript.Namespace == Scripts[i].Namespace)
-						CreateInstanseOf(currentScript);
+					{
+						Script script = CreateInstanseOf(currentScript);
+						for (int k = 0; k < Scripts[i].Fields.Count; k++)
+						{
+							Type scriptType = script.GetType();
+
+							scriptType.GetField(Scripts[i].Fields[j].Name)?.SetValue(script, JsonElementParser.Parse(Scripts[i].Fields[i].Value));
+						}
+					}
 				}
 			}
 		}
 
-		private void CreateInstanseOf(Scripting.CachedScript script)
+		private Script CreateInstanseOf(Scripting.CachedScript script)
 		{
-			Entity.Scripts.Add(script.CreateInstance<Script>());
+			Script instance = script.CreateInstance<Script>();
+			Entity.Scripts.Add(instance);
+			return instance;
 		}
 
 		public void Dispose()

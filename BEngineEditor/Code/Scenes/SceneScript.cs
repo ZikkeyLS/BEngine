@@ -2,6 +2,12 @@
 
 namespace BEngineEditor
 {
+	public class SceneScriptValue
+	{
+		public object? Value;
+		public string TypeFullName;
+	}
+
 	public class SceneScriptField
 	{
 		public string Name { get; set; }
@@ -76,7 +82,9 @@ namespace BEngineEditor
 		{
 			SceneScriptField? field = Fields.Find((field) => field.Name == name);
 			if (field == null)
-				Fields.Add(new SceneScriptField() { Name = name, Value = value, IsEditable = true, IsVisible = true });
+				Fields.Add(new SceneScriptField() { Name = name,
+					Value = value, 
+					IsEditable = true, IsVisible = true });
 			else
 				return false;
 
