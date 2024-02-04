@@ -27,7 +27,6 @@ namespace BEngineEditor
 		public void SetForceID(string guid) => _guid = guid;
 		public void SetForceProject(Project project) => _project = project;
 
-
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 		public static void CreateTemplate<T>(string path, object[]? args = null) where T : AssetData

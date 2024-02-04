@@ -259,16 +259,12 @@ namespace BEngineEditor
 				else 
 				{
 					if (Path.GetExtension(entryName) == ".cs")
+					{
 						Utils.OpenWithDefaultProgram(_currentProject.SolutionPath);
+					}
 					else if (Path.GetExtension(entryName) == ".scene")
 					{
-						Scene? scene = AssetData.Load<Scene>(_assetWorker.GetMetaID(entryPath), _currentProject);
-						if (scene != null)
-						{
-							_currentProject.OpenedScene?.Save<Scene>();
-							_currentProject.OpenedScene = scene;
-							_currentProject.Settings.LastOpenedSceneID = scene.GUID;
-						}
+						_currentProject.TryLoadScene(_assetWorker.GetMetaID(entryPath));
 					} 
 					else
 					{

@@ -1,4 +1,5 @@
 ﻿using BEngineCore;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace BEngineEditor
 {
@@ -80,16 +81,31 @@ namespace BEngineEditor
 
 			_assets = new AssetWorker(this);
 
-			Scene? scene = AssetData.Load<Scene>(Settings.LastOpenedSceneID, this);
-			if (scene != null)
-			{
-				Settings.LastOpenedSceneID = scene.GUID;
-				OpenedScene = scene;
-			}
-			else
+			TryLoadLastOpenedScene();
+		}
+
+		public void TryLoadLastOpenedScene()
+		{		
+			Scene? scene = TryLoadScene(Settings.LastOpenedSceneID);
+
+			if (scene == null)
 			{
 				Settings.LastOpenedSceneID = string.Empty;
 			}
+		}
+
+		public Scene? TryLoadScene(string metaID)
+		{
+			Scene? scene = AssetData.Load<Scene>(metaID, this);
+
+			if (scene != null)
+			{
+				OpenedScene?.Save<Scene>();
+				Settings.LastOpenedSceneID = scene.GUID;
+				OpenedScene = scene;
+			}
+
+			return scene;
 		}
 	}
 }
