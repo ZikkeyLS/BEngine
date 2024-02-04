@@ -57,6 +57,8 @@ namespace BEngineEditor
 		public string AssetsDirectory => $@"{ProjectAssemblyDirectory}\Assets";
 		public bool EditorAssemblyExists => File.Exists(AssemblyBinaryPath);
 
+		private const int WaitMSIteration = 10;
+
 		public Project(string name, string directory)
 		{
 			Name = name;
@@ -102,10 +104,22 @@ namespace BEngineEditor
 			{
 				OpenedScene?.Save<Scene>();
 				Settings.LastOpenedSceneID = scene.GUID;
-				OpenedScene = scene;
+				LoadSceneOnAssemblyLoaded(scene);
 			}
 
 			return scene;
+		}
+
+		public async void LoadSceneOnAssemblyLoaded(Scene scene)
+		{
+			await Task.Run(() =>
+			{
+				while (_compiler.AssemblyLoaded == false || 
+					_compiler.AssemblyCompileErrors.Count > 0 || _scripting.ReadyToUse == false)
+					Thread.Sleep(WaitMSIteration);
+				OpenedScene = scene;
+				OpenedScene.LoadScene();
+			});
 		}
 	}
 }

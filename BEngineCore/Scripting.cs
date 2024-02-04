@@ -1,4 +1,4 @@
-﻿using BEngineScripting;
+﻿using BEngine;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Security.Principal;
@@ -64,6 +64,8 @@ namespace BEngineCore
 
 		public List<CachedScript> Scripts => _scripts;
 
+		public bool ReadyToUse = false;
+
 		public void ReadScriptAssembly(string path)
 		{
 			_scripts.Clear();
@@ -82,11 +84,12 @@ namespace BEngineCore
 			}
 
 			context.Unload();
+			ReadyToUse = true;
 		}
 
 		public static void LoadInternalScriptingAPI()
 		{
-			BEngine.InternalCalls.LoadInternalCallsAPI();
+			 BEngine.InternalCalls.LoadInternalCallsAPI();
 		}
 	}
 }

@@ -1,5 +1,5 @@
 ﻿
-namespace BEngineScripting
+namespace BEngine
 {
 	[Serializable]
 	public class Entity

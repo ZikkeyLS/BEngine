@@ -44,7 +44,7 @@ namespace BEngineEditor
 					_compiler.CompileScripts();
 				}
 
-				if (ImGui.MenuItem("Reload assembly", "Ctrl+Shift+B") && _project.OpenedScene != null)
+				if (ImGui.MenuItem("Save Scene", "Ctrl+S") && _project.OpenedScene != null)
 				{
 					_project.OpenedScene.Save<Scene>();
 				}

@@ -1,4 +1,4 @@
-﻿using BEngineScripting;
+﻿using BEngine;
 
 namespace BEngineEditor
 {
@@ -20,6 +20,14 @@ namespace BEngineEditor
 		public Scene(string sceneName, Project project, string guid) : base(project, guid)
 		{
 			SceneName = sceneName;
+		}
+
+		public void LoadScene()
+		{
+			for (int i = 0; i < Entities.Count; i++)
+			{
+				Entities[i].LoadScripts(Project.Scripting);
+			}
 		}
 
 		public void CallEvent(EventID id)

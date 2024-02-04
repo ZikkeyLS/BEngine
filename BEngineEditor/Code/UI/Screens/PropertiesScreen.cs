@@ -1,5 +1,4 @@
 ﻿using BEngineCore;
-using BEngineScripting;
 using ImGuiNET;
 
 namespace BEngineEditor
@@ -69,17 +68,17 @@ namespace BEngineEditor
 					{
 						for (int i = 0; i < _scripting.Scripts.Count; i++)
 						{
-							if (selectedEntity.Scripts.Find((script) => script.Namespace == _scripting.Scripts[i].Namespace 
-								&& script.Name == _scripting.Scripts[i].Name) != null)
+							Scripting.CachedScript currentScript = _scripting.Scripts[i];
+
+							if (selectedEntity.Scripts.Find((script) => script.Namespace == currentScript.Namespace 
+								&& script.Name == currentScript.Name) != null)
 							{
 								continue;
 							}
 
-							if (ImGui.Selectable(_scripting.Scripts[i].Fullname))
+							if (ImGui.Selectable(currentScript.Fullname))
 							{
-								selectedEntity.Scripts.Add(new SceneScript() { Name = _scripting.Scripts[i].Name, Namespace = _scripting.Scripts[i].Namespace });
-								selectedEntity.Entity.Scripts.Add(_scripting.Scripts[i].CreateInstance<Script>());
-
+								selectedEntity.AddScript(currentScript);
 								_showScriptSelection = false;
 							}
 						}

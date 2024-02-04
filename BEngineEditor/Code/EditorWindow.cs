@@ -1,4 +1,5 @@
-﻿using BEngineCore;
+﻿using BEngine;
+using BEngineCore;
 using ImGuiNET;
 using Silk.NET.Input;
 using Silk.NET.OpenGL.Extensions.ImGui;
@@ -82,7 +83,7 @@ namespace BEngineEditor
 
 		protected override void OnUpdate(double time)
 		{
-			ProjectContext?.CurrentProject?.OpenedScene?.CallEvent(BEngineScripting.EventID.EditorUpdate);
+			ProjectContext?.CurrentProject?.OpenedScene?.CallEvent(EventID.EditorUpdate);
 		}
 
 		private void DisplayUI()

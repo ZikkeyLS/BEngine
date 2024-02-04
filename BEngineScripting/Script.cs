@@ -1,5 +1,5 @@
 ﻿
-namespace BEngineScripting
+namespace BEngine
 {
 	public enum EventID : ushort
 	{

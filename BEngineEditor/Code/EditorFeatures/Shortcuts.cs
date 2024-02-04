@@ -20,7 +20,7 @@ namespace BEngineEditor
 
 		public void Update()
 		{
-			if (_projectContext == null) 
+			if (_projectContext.CurrentProject == null) 
 				return;
 
 			if (ControlShiftActive() && window.IsKeyPressed(Key.Q))
