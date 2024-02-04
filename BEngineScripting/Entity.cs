@@ -2,7 +2,7 @@
 namespace BEngine
 {
 	[Serializable]
-	public class Entity
+	public class Entity : IDisposable
 	{
 		public string Name;
 		public List<Script> Scripts = new();
@@ -52,6 +52,17 @@ namespace BEngine
 		public void LoadScriptsCopy()
 		{
 			Scripts = _scriptCopy;
+		}
+
+		public void Dispose()
+		{
+			for (int i = 0; i < Scripts.Count; i++)
+				Scripts[i].Dispose();
+
+			for (int i = 0; i < _scriptCopy.Count; i++)
+				_scriptCopy[i].Dispose();
+
+			GC.SuppressFinalize(this);
 		}
 	}
 }

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace BEngineEditor
 {
-	public class SceneEntity
+	public class SceneEntity : IDisposable
 	{
 		public string GUID { get; set; }
 		public string Name { get; set; }
@@ -64,6 +64,14 @@ namespace BEngineEditor
 		private void CreateInstanseOf(Scripting.CachedScript script)
 		{
 			Entity.Scripts.Add(script.CreateInstance<Script>());
+		}
+
+		public void Dispose()
+		{
+			for (int i = 0; i < Scripts.Count; i++)
+				Scripts[i].Dispose();
+
+			Entity.Dispose();
 		}
 	}
 }
