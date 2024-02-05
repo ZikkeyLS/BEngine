@@ -35,6 +35,22 @@ namespace BEngineEditor
 
 			File.WriteAllText(path, JsonSerializer.Serialize(template));
 		}
+
+		public static T ReadRaw<T>(string path) where T : AssetData
+		{
+			T? assetData = JsonSerializer.Deserialize<T>(File.ReadAllText(path));
+			if (assetData != null)
+			{
+				return assetData;
+			}
+
+			return null;
+		}
+		
+		public static void WriteRaw<T>(string path, T data) where T : AssetData
+		{
+			File.WriteAllText(path, JsonSerializer.Serialize(data));
+		}
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 

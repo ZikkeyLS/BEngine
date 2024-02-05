@@ -95,6 +95,13 @@ namespace BEngineEditor
 
 			try
 			{
+				if (newPath.EndsWith(".scene"))
+				{
+					Scene? scene = AssetData.ReadRaw<Scene>(newPath);
+					scene.SceneName = Path.GetFileNameWithoutExtension(newPath);
+					AssetData.WriteRaw(newPath, scene);
+				}
+
 				File.Move(oldPath + @".meta", newPath + @".meta", true);
 			}
 			catch
