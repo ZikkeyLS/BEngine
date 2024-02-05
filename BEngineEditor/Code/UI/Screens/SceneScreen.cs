@@ -10,7 +10,6 @@ namespace BEngineEditor
 		public override void Display()
 		{
 			ImGui.Begin("Scene");
-			ImGui.Text(_openedScene.SceneName);
 
 			ImGui.End();
 		}

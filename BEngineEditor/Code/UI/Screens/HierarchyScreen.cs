@@ -12,13 +12,21 @@ namespace BEngineEditor
 		{
 			ImGui.Begin("Hierarchy", ImGuiWindowFlags.HorizontalScrollbar);
 
-			for (int i = 0; i < _entities.Count; i++)
+			bool open = ImGui.TreeNodeEx(_scene.SceneName, ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.Leaf);
+
+			if (open)
 			{
-				if (_entities[i].Parent == null)
+
+				for (int i = 0; i < _entities.Count; i++)
 				{
-					ShowEntitiesRecursively(_entities[i], _entities[i]);
+					if (_entities[i].Parent == null)
+					{
+						ShowEntitiesRecursively(_entities[i], _entities[i]);
+					}
+
 				}
 
+				ImGui.TreePop();
 			}
 
 			ShowPopups();
