@@ -45,9 +45,6 @@ namespace BEngineCore
 		{
 			gl.ClearColor(Color.CornflowerBlue);
 
-			_shader = new Shader("EngineData/Shaders/Shader.vert", "EngineData/Shaders/Shader.frag", gl);
-			_texture = new Texture("EngineData/Textures/Bricks.jpg", gl);
-
 			_vao = gl.GenVertexArray();
 			gl.BindVertexArray(_vao);
 
@@ -60,6 +57,9 @@ namespace BEngineCore
 			gl.BindBuffer(GLEnum.ElementArrayBuffer, _ebo);
 			fixed (uint* buff = indices)
 				gl.BufferData(GLEnum.ElementArrayBuffer, (nuint)(sizeof(uint) * indices.Length), buff, GLEnum.StaticDraw);
+
+			_shader = new Shader("EngineData/Shaders/Shader.vert", "EngineData/Shaders/Shader.frag", gl);
+			_texture = new Texture("EngineData/Textures/Bricks.jpg", gl);
 
 			gl.EnableVertexAttribArray(0);
 			gl.VertexAttribPointer(0, 3, GLEnum.Float, false, 8 * sizeof(float), (void*)0);
@@ -90,9 +90,9 @@ namespace BEngineCore
 				gl.Clear(ClearBufferMask.ColorBufferBit);
 
 				gl.BindVertexArray(_vao);
-				_texture.Bind();
 				_shader.Use();
-				gl.DrawElements(PrimitiveType.Triangles, 6, GLEnum.UnsignedInt, 0);
+				_texture.Bind();
+				gl.DrawElements(PrimitiveType.Triangles, 6, GLEnum.UnsignedInt, (void*)0);
 				gl.BindVertexArray(0);
 
 				frame.Unbind();
