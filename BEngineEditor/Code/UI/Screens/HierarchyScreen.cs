@@ -16,7 +16,6 @@ namespace BEngineEditor
 
 			if (open)
 			{
-
 				for (int i = 0; i < _entities.Count; i++)
 				{
 					if (_entities[i].Parent == null)

@@ -11,6 +11,7 @@ namespace BEngineCore
 		protected IInputContext input;
 
 		protected GL gl;
+		protected Graphics graphics;
 
 		public EngineWindow(string title = "Window", int x = 1280, int y = 720)
 		{
@@ -40,6 +41,8 @@ namespace BEngineCore
 			input.Mice[0].Scroll += OnScroll;
 
 			gl = window.CreateOpenGL();
+			graphics = new(gl);
+			graphics.Initialize();
 		}
 
 		protected virtual void OnRender(double time) { }
