@@ -1,4 +1,6 @@
-﻿using Silk.NET.OpenGL;
+﻿using Silk.NET.Input;
+using Silk.NET.OpenGL;
+using System.Numerics;
 using Color = System.Drawing.Color;
 
 namespace BEngineCore
@@ -7,12 +9,13 @@ namespace BEngineCore
 	{
 		public static GL gl { get; private set; }
 
+		private Camera _camera;
 		private Shader _shader;
+		private Texture _texture;
 
 		private uint _vao;
 		private uint _vbo;
 		private uint _ebo;
-		private Texture _texture;
 
 		private float[] vertices = {
     // Позиции          // Цвета             // Текстурные координаты
@@ -44,6 +47,8 @@ namespace BEngineCore
 		public unsafe void Initialize()
 		{
 			gl.ClearColor(Color.CornflowerBlue);
+
+			_camera = new Camera();
 
 			_vao = gl.GenVertexArray();
 			gl.BindVertexArray(_vao);
@@ -77,10 +82,66 @@ namespace BEngineCore
 			// For debug usage: gl.PolygonMode(GLEnum.FrontAndBack, GLEnum.Line);
 		}
 
-		public unsafe void Render(float time)
+		private Vector2 _lastMousePosition = Vector2.One * -1;
+
+		public unsafe void Render(EngineWindow window, float time)
 		{
 			gl.ClearColor(0f, 0f, 0f, 1.0f);
 			gl.Clear(ClearBufferMask.ColorBufferBit);
+
+			float speed = time;
+
+			if (window.IsKeyPressed(Key.W))
+			{
+				_camera.position += speed * _camera.forward;
+			}
+			if (window.IsKeyPressed(Key.S))
+			{
+				_camera.position -= speed * _camera.forward;
+			}
+			if (window.IsKeyPressed(Key.A))
+			{
+				_camera.position -= Vector3.Normalize(Vector3.Cross(_camera.forward, _camera.up)) * speed;
+			}
+			if (window.IsKeyPressed(Key.D))
+			{
+				_camera.position += Vector3.Normalize(Vector3.Cross(_camera.forward, _camera.up)) * speed;
+			}
+
+			Vector2 difference = Vector2.Zero;
+			Vector2 mouseMove = window.GetMousePosition();
+
+			if (window.IsMouseButtonPressed(MouseButton.Middle))
+			{
+				if (window.GetCursorMode() != CursorMode.Raw)
+				{
+					window.SetCursorMode(CursorMode.Raw);
+					_lastMousePosition = mouseMove;
+				}
+				else
+				{
+					if (_lastMousePosition != Vector2.One * -1)
+						difference = mouseMove - _lastMousePosition;
+
+					float senstivity = 0.05f;
+					difference *= senstivity;
+
+					_camera.x += difference.X;
+					_camera.y -= difference.Y;
+
+					_camera.Recalculate();
+
+					_lastMousePosition = mouseMove;
+				}		
+			}
+			else
+			{
+				if (window.GetCursorMode() != CursorMode.Normal)
+				{
+					window.SetCursorMode(CursorMode.Normal);
+					_lastMousePosition = mouseMove;
+				}
+			}
 
 			foreach (FrameBuffer frame in FrameBuffers.Values)
 			{
@@ -88,6 +149,26 @@ namespace BEngineCore
 
 				gl.ClearColor(Color.CornflowerBlue);
 				gl.Clear(ClearBufferMask.ColorBufferBit);
+
+				//Vector3 cameraRight = Vector3.Normalize(Vector3.Cross(Vector3.UnitY, cameraDirection));
+				//Vector3 cameraUp = Vector3.Cross(cameraDirection, cameraRight);
+
+				Matrix4x4 view = _camera.CalculateViewMatrix();
+				Matrix4x4 projection = _camera.CalculateProjectionMatrix(frame.Width, frame.Height);
+
+				Matrix4x4 model = Matrix4x4.CreateFromYawPitchRoll(0.5f, 0.5f, 0.5f);
+				int modelLoc = gl.GetUniformLocation(_shader.Program, "model");
+				int viewLoc = gl.GetUniformLocation(_shader.Program, "view");
+				int projLoc = gl.GetUniformLocation(_shader.Program, "projection");
+
+				fixed (float* buff = model.GetRawMatrix())
+					gl.UniformMatrix4(modelLoc, 1, false, buff);
+
+				fixed (float* buff = view.GetRawMatrix())
+					gl.UniformMatrix4(viewLoc, 1, false, buff);
+
+				fixed (float* buff = projection.GetRawMatrix())
+					gl.UniformMatrix4(projLoc, 1, false, buff);
 
 				gl.BindVertexArray(_vao);
 				_shader.Use();
@@ -97,6 +178,31 @@ namespace BEngineCore
 
 				frame.Unbind();
 			}
+		}
+	}
+
+	public static class MatrixUtils
+	{
+		public static float[] GetRawMatrix(this Matrix4x4 matrix)
+		{
+			return [
+				matrix.M11,
+				matrix.M12,
+				matrix.M13,
+				matrix.M14,
+				matrix.M21,
+				matrix.M22,
+				matrix.M23,
+				matrix.M24,
+				matrix.M31,
+				matrix.M32,
+				matrix.M33,
+				matrix.M34,
+				matrix.M41,
+				matrix.M42,
+				matrix.M43,
+				matrix.M44,
+			];
 		}
 	}
 }

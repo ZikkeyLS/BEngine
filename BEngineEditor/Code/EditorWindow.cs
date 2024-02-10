@@ -31,11 +31,6 @@ namespace BEngineEditor
 
 		}
 
-		public bool IsKeyPressed(Key key)
-		{
-			return input.Keyboards[0].IsKeyPressed(key);
-		}
-
 		protected override void OnLoad()
 		{
 			base.OnLoad();
@@ -75,7 +70,7 @@ namespace BEngineEditor
 		{
 			_controller.Update((float)time);
 
-			graphics.Render((float)time);
+			graphics.Render(this, (float)time);
 
 			ImGui.DockSpaceOverViewport();
 			DisplayUI();

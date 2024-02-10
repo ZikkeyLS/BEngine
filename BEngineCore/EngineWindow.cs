@@ -1,7 +1,9 @@
 ﻿using Silk.NET.Input;
+using Silk.NET.Input.Extensions;
 using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
+using System.Numerics;
 
 namespace BEngineCore
 {
@@ -31,6 +33,34 @@ namespace BEngineCore
 		public void Run()
 		{
 			window.Run();
+		}
+
+		public bool IsKeyPressed(Key key)
+		{
+			return input.Keyboards[0].IsKeyPressed(key);
+		}
+
+		public bool IsMouseButtonPressed(MouseButton button)
+		{
+			return input.Mice[0].IsButtonPressed(button);
+		}
+
+		public void SetCursorMode(CursorMode mode)
+		{
+			if (input.Mice[0].Cursor.IsSupported(mode))
+			{
+				input.Mice[0].Cursor.CursorMode = mode;
+			}
+		}
+
+		public CursorMode GetCursorMode()
+		{
+			return input.Mice[0].Cursor.CursorMode;
+		}
+
+		public Vector2 GetMousePosition()
+		{
+			return input.Mice[0].Position;
 		}
 
 		protected virtual void OnLoad() 

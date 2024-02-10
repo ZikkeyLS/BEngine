@@ -1,4 +1,5 @@
 ﻿using Silk.NET.OpenGL;
+using System.Numerics;
 
 namespace BEngineCore
 {
@@ -10,8 +11,14 @@ namespace BEngineCore
 
 		private GL gl => Graphics.gl;
 
+		public uint Width { get; private set; }
+		public uint Height { get; private set; }
+
 		public FrameBuffer(uint width, uint height)
 		{
+			Width = width;
+			Height = height;
+
 			gl.GenFramebuffers(1, out _fbo);
 			gl.BindFramebuffer(GLEnum.Framebuffer, _fbo);
 
@@ -52,6 +59,9 @@ namespace BEngineCore
 
 		public void RescaleFrameBuffer(uint width, uint height)
 		{
+			Width = width;
+			Height = height;
+
 			gl.BindTexture(GLEnum.Texture2D, _texture);
 			gl.TexImage2D(GLEnum.Texture2D, 0, InternalFormat.Rgb, width, height, 0, PixelFormat.Rgb, GLEnum.UnsignedByte, null);
 			gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMinFilter, (int)GLEnum.Linear);
