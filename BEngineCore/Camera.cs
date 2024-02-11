@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace BEngineCore
 {
@@ -16,22 +11,13 @@ namespace BEngineCore
 
 		public float x = -90.0f;
 		public float y = 0.0f;
-		public float z = -90.0f;
+		public float z = 0.0f;
 
 		public float fov = 45.0f;
 
 		public void Recalculate()
 		{
-			if (y > 89.0f)
-				y = 89.0f;
-			if (y < -89.0f)
-				y = -89.0f;
-
-			Vector3 front = Vector3.Zero;
-			front.X = (float)(Math.Cos(float.DegreesToRadians(x)) * Math.Cos(float.DegreesToRadians(y)));
-			front.Y = (float)Math.Sin(float.DegreesToRadians(y));
-			front.Z = (float)(Math.Sin(float.DegreesToRadians(x)) * Math.Cos(float.DegreesToRadians(y)));
-			forward = front;
+			forward = Vector3.Transform(Vector3.UnitZ, Quaternion.CreateFromYawPitchRoll(x, y, z));
 		}
 
 		public Matrix4x4 CalculateViewMatrix()
