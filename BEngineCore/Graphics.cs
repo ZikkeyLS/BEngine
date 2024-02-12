@@ -126,8 +126,8 @@ namespace BEngineCore
 					float senstivity = 0.05f * time;
 					difference *= senstivity;
 
-					_camera.x -= difference.X;
-					_camera.y += difference.Y;
+					_camera.rotation.X += difference.X;
+					_camera.rotation.Y += difference.Y;
 
 					_camera.Recalculate();
 
@@ -156,6 +156,7 @@ namespace BEngineCore
 				Matrix4x4 view = _camera.CalculateViewMatrix();
 				Matrix4x4 projection = _camera.CalculateProjectionMatrix(frame.Width, frame.Height);
 
+				Matrix4x4 model = Matrix4x4.CreateFromYawPitchRoll(0.5f, 0.5f, 0.5f);
 				int modelLoc = gl.GetUniformLocation(_shader.Program, "model");
 				int viewLoc = gl.GetUniformLocation(_shader.Program, "view");
 				int projLoc = gl.GetUniformLocation(_shader.Program, "projection");
