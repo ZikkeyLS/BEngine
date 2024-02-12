@@ -1,7 +1,10 @@
-﻿namespace BEngineEditor
+﻿namespace BEngineCore
 {
 	public class Logger
 	{
+		public bool EnableFileLogs = false;
+		public string FileLogPath = "RuntimeLogs.txt";
+
 		public List<string> MessageLogs { get; private set; } = new();
 		public HashSet<string> WarningsLogs { get; private set; } = new();
 		public HashSet<string> ErrorsLogs { get; private set; } = new();
@@ -23,17 +26,29 @@
 
 		public void LogMessage(string message)
 		{
-			_safeMessageLogs.Add(LogFormat(message));
+			string formatted = LogFormat(message);
+			_safeMessageLogs.Add(formatted);
+
+			if (EnableFileLogs)
+				File.AppendAllText(FileLogPath, formatted + "\n");
 		}
 
 		public void LogWarning(string warning)
 		{
+			string formatted = LogFormat(warning);
 			_safeWarningsLogs.Add(LogFormat(warning));
+
+			if (EnableFileLogs)
+				File.AppendAllText(FileLogPath, formatted + "\n");
 		}
 
 		public void LogError(string error)
 		{
+			string formatted = LogFormat(error);
 			_safeErrorsLogs.Add(LogFormat(error));
+
+			if (EnableFileLogs)
+				File.AppendAllText(FileLogPath, formatted + "\n");
 		}
 
 		private string LogFormat(string input)
@@ -46,6 +61,12 @@
 			MessageLogs.Clear();
 			WarningsLogs.Clear();
 			ErrorsLogs.Clear();
+		}
+
+		public void ClearFileLogs()
+		{
+			if (EnableFileLogs)
+				File.WriteAllText(FileLogPath, string.Empty);
 		}
 	}
 }

@@ -73,6 +73,9 @@ namespace BEngineEditor
 
 		public void LoadProjectData()
 		{
+			_logger.EnableFileLogs = true;
+			_logger.ClearFileLogs();
+
 			_compiler = new ProjectCompiler(this);
 			_compiler.CompileScripts();
 

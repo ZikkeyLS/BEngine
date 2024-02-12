@@ -82,7 +82,7 @@ namespace BEngineCore
 			// For debug usage: gl.PolygonMode(GLEnum.FrontAndBack, GLEnum.Line);
 		}
 
-		private Vector2 _lastMousePosition = Vector2.One * -1;
+		private Vector2? _lastMousePosition = null;
 
 		public unsafe void Render(EngineWindow window, float time)
 		{
@@ -120,8 +120,8 @@ namespace BEngineCore
 				}
 				else
 				{
-					if (_lastMousePosition != Vector2.One * -1)
-						difference = mouseMove - _lastMousePosition;
+					if (_lastMousePosition != null)
+						difference = mouseMove - _lastMousePosition.Value;
 
 					float senstivity = 0.05f * time;
 					difference *= senstivity;
@@ -129,10 +129,8 @@ namespace BEngineCore
 					_camera.rotation.X += difference.X;
 					_camera.rotation.Y += difference.Y;
 
-					_camera.Recalculate();
-
 					_lastMousePosition = mouseMove;
-				}		
+				}	
 			}
 			else
 			{
@@ -143,15 +141,14 @@ namespace BEngineCore
 				}
 			}
 
+			_camera.Recalculate();
+
 			foreach (FrameBuffer frame in FrameBuffers.Values)
 			{
 				frame.Bind();
 
 				gl.ClearColor(Color.CornflowerBlue);
 				gl.Clear(ClearBufferMask.ColorBufferBit);
-
-				//Vector3 cameraRight = Vector3.Normalize(Vector3.Cross(Vector3.UnitY, cameraDirection));
-				//Vector3 cameraUp = Vector3.Cross(cameraDirection, cameraRight);
 
 				Matrix4x4 view = _camera.CalculateViewMatrix();
 				Matrix4x4 projection = _camera.CalculateProjectionMatrix(frame.Width, frame.Height);
