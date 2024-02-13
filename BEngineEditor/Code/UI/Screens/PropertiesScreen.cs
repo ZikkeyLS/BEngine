@@ -10,13 +10,12 @@ namespace BEngineEditor
 	{
 		private ProjectContext _projectContext => window.ProjectContext;
 		private Scripting _scripting => _projectContext.CurrentProject.Scripting;
+		private Scene _scene => _projectContext.CurrentProject.OpenedScene;
 #pragma warning disable CS8603 // Possible null reference return.
 		private SelectedElement _selectedElement => _projectContext.CurrentProject.SelectedElement;
 #pragma warning restore CS8603 // Possible null reference return.
 
 		private string? _lastName = string.Empty;
-
-		private bool _showScriptSelection = false;
 
 		public override void Display()
 		{
@@ -73,15 +72,30 @@ namespace BEngineEditor
 							SceneScriptField? sceneScriptField = selectedEntity.Scripts[i].Fields?.Find((scripField) => scripField.Name == field.Name);
 							SceneScriptValue? sceneScriptValue = sceneScriptField?.Value;
 
-							if (IsInClassList(field.FieldType, typeof(string), typeof(int), 
+							if (IsInClassList(field.FieldType, typeof(string), typeof(int),
 								typeof(float), typeof(double), typeof(uint), typeof(byte), typeof(sbyte),
 								typeof(short), typeof(ushort)))
 							{
-								string input = sceneScriptValue != null ? sceneScriptValue.Value.ToString() : fields[j]?.GetValue(script)?.ToString();
+								string input = string.Empty;
+
+								if (sceneScriptValue != null)
+								{
+									input = sceneScriptValue.Value.ToString();
+								}
+								else if (fields[j] != null)
+								{
+									object? result = fields[j].GetValue(script);
+									if (result != null)
+										input = result.ToString();
+								}
+
+								if (input == null)
+									input = string.Empty;
 
 								if (IsInClassList(field.FieldType, typeof(string)))
 								{
-									input = input.Substring(1, input.Length - 2);
+									if (input != string.Empty)
+										input = input.Substring(1, input.Length - 2);
 								}
 
 								if (ImGui.InputText(field.Name, ref input, 128))
@@ -127,6 +141,93 @@ namespace BEngineEditor
 							}
 						}
 					}
+					else
+					{
+						if (ImGui.Button("Remove"))
+						{
+							selectedEntity.RemoveScript(sceneScript);
+						}
+						ImGui.SameLine(0, 15);
+						ImGui.Button("Change Instance");
+						if (ImGui.BeginPopupContextItem("Change Instance", ImGuiPopupFlags.MouseButtonLeft))
+						{
+							if (ImGui.BeginListBox("Select Script"))
+							{
+								for (int j = 0; j < _scripting.Scripts.Count; j++)
+								{
+									Scripting.CachedScript currentScript = _scripting.Scripts[j];
+
+									if (selectedEntity.Scripts.Find((script) => script.Namespace == currentScript.Namespace
+										&& script.Name == currentScript.Name) != null)
+									{
+										continue;
+									}
+
+									if (ImGui.Selectable(currentScript.Fullname))
+									{
+										if (selectedEntity.RenameScript(sceneScript, currentScript))
+										{
+											ImGui.CloseCurrentPopup();
+										}
+									}
+								}
+							}
+							ImGui.EndListBox();
+							ImGui.EndPopup();
+						}
+						ImGui.Button("Change All Instances");
+						if (ImGui.BeginPopupContextItem("Change All Instances", ImGuiPopupFlags.MouseButtonLeft))
+						{
+							if (ImGui.BeginListBox("Select Script"))
+							{
+								for (int j = 0; j < _scripting.Scripts.Count; j++)
+								{
+									Scripting.CachedScript currentScript = _scripting.Scripts[j];
+
+									if (selectedEntity.Scripts.Find((script) => script.Namespace == currentScript.Namespace
+										&& script.Name == currentScript.Name) != null)
+									{
+										continue;
+									}
+
+									if (ImGui.Selectable(currentScript.Fullname))
+									{
+										bool closed = false;
+										string initialName = sceneScript.Name;
+										string initialNamespace = sceneScript.Namespace;
+
+										foreach (SceneEntity entity in _scene.Entities)
+										{
+											SceneScript? found = entity.Scripts.Find((allScript) => 
+												allScript.Name == initialName && allScript.Namespace == initialNamespace);
+
+											if (found == null)
+												continue;
+
+											if (entity.Scripts.Find((script) => script.Namespace == currentScript.Namespace
+												&& script.Name == currentScript.Name) != null)
+											{
+												_projectContext.CurrentProject.Logger.LogWarning($"Can't rename " +
+													$"{found.Namespace}.{found.Name} " +
+													$"because it already contains {currentScript.Namespace}.{currentScript.Name} " +
+													$"in entity: {entity.Name} ({entity.GUID})");
+												continue;
+											}
+
+											if (entity.RenameScript(found, currentScript) 
+												&& closed == false)
+											{
+												ImGui.CloseCurrentPopup();
+												closed = true;
+											}
+										}
+									}
+								}
+							}
+							ImGui.EndListBox();
+							ImGui.EndPopup();
+						}
+					}
 
 					ImGui.EndGroup();
 					ImGui.PopID();
@@ -142,12 +243,9 @@ namespace BEngineEditor
 				}
 
 				ImGui.SetCursorPosX((ImGui.GetWindowWidth() - 125) / 4);
-				if (ImGui.Button("Add script", new System.Numerics.Vector2(100, 60)))
-				{
-					_showScriptSelection = !_showScriptSelection;
-				}
 
-				if (_showScriptSelection)
+				ImGui.Button("Add Script", new System.Numerics.Vector2(100, 60));
+				if (ImGui.BeginPopupContextItem("Add Script", ImGuiPopupFlags.MouseButtonLeft))
 				{
 					if (ImGui.BeginListBox("Select Script"))
 					{
@@ -164,11 +262,12 @@ namespace BEngineEditor
 							if (ImGui.Selectable(currentScript.Fullname))
 							{
 								selectedEntity.AddScript(currentScript);
-								_showScriptSelection = false;
+								ImGui.CloseCurrentPopup();
 							}
 						}
 					}
 					ImGui.EndListBox();
+					ImGui.EndPopup();
 				}
 			}
 

@@ -33,6 +33,29 @@ namespace BEngineEditor
 			CreateInstanseOf(script);
 		}
 
+		public bool RenameScript(SceneScript sceneScript, Scripting.CachedScript script)
+		{
+			bool success = true;
+
+			foreach (SceneScriptField scriptField in sceneScript.Fields)
+			{
+				if (script.Fields.Find(cached => cached.Name == scriptField.Name) == null)
+				{
+					success = false;
+					break;
+				}
+			}
+
+			if (success)
+			{
+				sceneScript.Name = script.Name;
+				sceneScript.Namespace = script.Namespace;
+				CreateInstanseOf(script);
+			}
+
+			return success;
+		}
+
 		public void RemoveScript(SceneScript script)
 		{
 			Scripts.Remove(script);

@@ -51,26 +51,34 @@ namespace BEngineEditor
 		{
 			string mode = debug ? "Debug" : "Release";
 
-			if (_assemblyCompilation != null) {
-				_assemblyCompilation.Kill();
-				_assemblyCompilation.Close();
+			try
+			{
+				if (_assemblyCompilation != null)
+				{
+					_assemblyCompilation.Kill();
+					_assemblyCompilation.Close();
+				}
+
+				_assemblyCompilation = new Process();
+				_assemblyCompilation.StartInfo.FileName = "cmd.exe";
+				_assemblyCompilation.EnableRaisingEvents = true;
+				_assemblyCompilation.OutputDataReceived += onOutput;
+				_assemblyCompilation.StartInfo.RedirectStandardInput = true;
+				_assemblyCompilation.StartInfo.RedirectStandardOutput = true;
+				_assemblyCompilation.StartInfo.CreateNoWindow = true;
+				_assemblyCompilation.StartInfo.UseShellExecute = false;
+
+				_assemblyCompilation.Start();
+				_assemblyCompilation.BeginOutputReadLine();
+
+				_assemblyCompilation.StandardInput.WriteLine($"dotnet build {_project.ProjectAssemblyDirectory} -c {mode}");
+				_assemblyCompilation.StandardInput.Flush();
+				_assemblyCompilation.StandardInput.Close();
 			}
+			catch
+			{
 
-			_assemblyCompilation = new Process();
-			_assemblyCompilation.StartInfo.FileName = "cmd.exe";
-			_assemblyCompilation.EnableRaisingEvents = true;
-			_assemblyCompilation.OutputDataReceived += onOutput;
-			_assemblyCompilation.StartInfo.RedirectStandardInput = true;
-			_assemblyCompilation.StartInfo.RedirectStandardOutput = true;
-			_assemblyCompilation.StartInfo.CreateNoWindow = true;
-			_assemblyCompilation.StartInfo.UseShellExecute = false;
-
-			_assemblyCompilation.Start();
-			_assemblyCompilation.BeginOutputReadLine();
-
-			_assemblyCompilation.StandardInput.WriteLine($"dotnet build {_project.ProjectAssemblyDirectory} -c {mode}");
-			_assemblyCompilation.StandardInput.Flush();
-			_assemblyCompilation.StandardInput.Close();
+			}	
 		}
 
 		private void CompileBuild(bool debug = false, DataReceivedEventHandler? onOutput = null)
