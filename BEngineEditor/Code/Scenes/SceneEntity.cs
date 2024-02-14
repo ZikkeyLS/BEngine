@@ -40,9 +40,7 @@ namespace BEngineEditor
 				return true;
 
 			if (current.Parent != null)
-			{
 				return IsChildOf(_scene.GetEntity(current.Parent), result);
-			}
 
 			return false;
 		}

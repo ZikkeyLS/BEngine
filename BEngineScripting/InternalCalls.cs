@@ -1,29 +1,70 @@
-﻿using System.Reflection;
+﻿using System.IO;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
+
+[assembly: InternalsVisibleTo("BEngineCore", AllInternalsVisible = true)]
 
 namespace BEngine
 {
-	public class InternalCalls
+	internal class InternalCalls
 	{
 		private static Type _internalCalls;
 
 		public static void LoadInternalCallsAPI()
 		{
-			AssemblyLoadContext context = new AssemblyLoadContext(name: "ReadInternalCalls", isCollectible: true);
-
-			Assembly dll = context.LoadFromAssemblyPath(AppDomain.CurrentDomain.BaseDirectory + "BEngineCore.dll");
-			foreach (Type type in dll.GetExportedTypes())
+			Type? internalCallsAPI = GetTypeByName("BEngineCore.InternalCalls");
+			if (internalCallsAPI != null)
 			{
-				if (type.Name == nameof(InternalCalls))
-					_internalCalls = type;
+				_internalCalls = internalCallsAPI;
+				LoadLoggerAssembly();
 			}
-
-			context.Unload();
 		}
 
-		public static void Log(string message)
+		private static Type? GetTypeByName(string name)
 		{
-			_internalCalls.GetMethod("Log")?.Invoke(null, new object[] { message });
+			return
+				AppDomain.CurrentDomain.GetAssemblies()
+					.Reverse()
+					.Select(assembly => assembly.GetType(name))
+					.FirstOrDefault(t => t != null)
+				// Safely delete the following part
+				// if you do not want fall back to first partial result
+				??
+				AppDomain.CurrentDomain.GetAssemblies()
+					.Reverse()
+					.SelectMany(assembly => assembly.GetTypes())
+					.FirstOrDefault(t => t.Name.Contains(name));
 		}
+
+		private static MethodInfo? GetMethod(string name) => _internalCalls.GetMethod(name);
+
+		#region Logger
+		private static MethodInfo? _logMessage;
+		private static MethodInfo? _logWarning;
+		private static MethodInfo? _logError;
+
+		private static void LoadLoggerAssembly()
+		{
+			_logMessage = GetMethod("LogMessage");
+			_logWarning = GetMethod("LogWarning");
+			_logError = GetMethod("LogErorr");
+		}
+
+		public static void LogMessage(string message)
+		{
+			_logMessage?.Invoke(null, new object[] { message });
+		}
+
+		public static void LogWarning(string warning)
+		{
+			_logWarning?.Invoke(null, new object[] { warning });
+		}
+
+		public static void LogError(string error)
+		{
+			_logError?.Invoke(null, new object[] { error });
+		}
+		#endregion
 	}
 }

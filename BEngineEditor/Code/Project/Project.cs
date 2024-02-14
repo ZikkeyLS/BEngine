@@ -32,7 +32,7 @@ namespace BEngineEditor
 		private AssetWorker _assets;
 		private ProjectCompiler _compiler;
 		private AssemblyListener _assemblyListener;
-		private Logger _logger = new();
+		private Logger _logger = new(true);
 
 		public Scene OpenedScene;
 		public SelectedElement? SelectedElement;

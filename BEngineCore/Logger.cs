@@ -2,6 +2,8 @@
 {
 	public class Logger
 	{
+		public static Logger? Main { get; private set; } = null;
+
 		public bool EnableFileLogs = false;
 		public string FileLogPath = "RuntimeLogs.txt";
 
@@ -12,6 +14,12 @@
 		private List<string> _safeMessageLogs = new();
 		private HashSet<string> _safeWarningsLogs = new();
 		private HashSet<string> _safeErrorsLogs = new();
+
+		public Logger(bool isMain = false)
+		{
+			if (isMain)
+				Main = this;
+		}
 
 		public void InsertSafeLogs()
 		{

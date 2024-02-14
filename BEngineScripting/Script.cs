@@ -15,6 +15,8 @@ namespace BEngine
 
 	public class Script : ICloneable, IDisposable
 	{
+		public Entity Entity { get; }
+
 		public virtual void OnStart()
 		{
 

@@ -45,7 +45,7 @@ namespace BEngineCore
 				FieldInfo[] properties = Type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 				for (int i = 0; i < properties.Length; i++)
 				{
-					Fields.Add(new CachedField () { Name = properties[i].Name, Type = properties[i].FieldType.Name });
+					Fields.Add(new CachedField() { Name = properties[i].Name, Type = properties[i].FieldType.Name });
 				}
 			}
 
@@ -70,12 +70,13 @@ namespace BEngineCore
 		{
 			_scripts.Clear();
 
+			LoadInternalAssembly();
+
 			AssemblyLoadContext context = new AssemblyLoadContext("LoadScripts", true);
 
 			using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
 			{
 				var assembly = context.LoadFromStream(fs);
-
 				foreach (Type type in assembly.GetExportedTypes())
 				{
 					if (type.IsSubclassOf(typeof(Script)))
@@ -84,7 +85,14 @@ namespace BEngineCore
 			}
 
 			context.Unload();
+
 			ReadyToUse = true;
+		}
+
+		private void LoadInternalAssembly()
+		{
+			_scripts.Add(new CachedScript(typeof(BEngine.Transform)));
+			_scripts.Add(new CachedScript(typeof(BEngine.Camera)));
 		}
 
 		public static void LoadInternalScriptingAPI()
