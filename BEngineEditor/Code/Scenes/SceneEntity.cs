@@ -1,8 +1,8 @@
 ﻿using BEngine;
 using BEngineCore;
+using Silk.NET.Vulkan;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
 
 namespace BEngineEditor
 {
@@ -15,6 +15,8 @@ namespace BEngineEditor
 		public List<string> Children { get; set; } = new();
 		public List<SceneScript> Scripts { get; set; } = new();
 
+		private Scene _scene => ProjectContext.Instance.CurrentProject.OpenedScene;
+
 		[JsonIgnore]
 		public Entity Entity { get; set; } = new();
 
@@ -25,6 +27,24 @@ namespace BEngineEditor
 			GUID = Guid.NewGuid().ToString();
 			Name = name;
 			Entity.Name = name;
+		}
+
+		public bool ChildOf(SceneEntity entity)
+		{
+			return IsChildOf(this, entity);
+		}
+
+		private bool IsChildOf(SceneEntity current, SceneEntity result)
+		{
+			if (current.Parent == result.Parent && current.Parent != null)
+				return true;
+
+			if (current.Parent != null)
+			{
+				return IsChildOf(_scene.GetEntity(current.Parent), result);
+			}
+
+			return false;
 		}
 
 		public void AddScript(Scripting.CachedScript script)

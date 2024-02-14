@@ -12,6 +12,8 @@ namespace BEngineEditor
 {
 	public class ProjectContext
 	{
+		public static ProjectContext Instance { get; private set; }
+
 		private const string TemplateProjectDirectory = "ProjectTemplate";
 
 		public string TempProjectPath = "";
@@ -29,6 +31,7 @@ namespace BEngineEditor
 
 		public ProjectContext(EditorWindow window)
 		{
+			Instance = this;
 			Window = window;
 		}
 

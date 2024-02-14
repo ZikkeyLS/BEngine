@@ -1,4 +1,5 @@
-﻿using ImGuiNET;
+﻿using BEngine;
+using ImGuiNET;
 
 namespace BEngineEditor
 {
@@ -7,6 +8,13 @@ namespace BEngineEditor
 		private ProjectContext _projectContext => window.ProjectContext;
 		private Scene _scene => _projectContext.CurrentProject.OpenedScene;
 		private List<SceneEntity> _entities => _scene.Entities;
+
+		private const string HierarchyPayload = "HierarchyPayload";
+
+		private struct Entry
+		{
+			public string GUID;
+		}
 
 		public override void Display()
 		{
@@ -22,7 +30,6 @@ namespace BEngineEditor
 					{
 						ShowEntitiesRecursively(_entities[i], _entities[i]);
 					}
-
 				}
 
 				ImGui.TreePop();
@@ -50,10 +57,7 @@ namespace BEngineEditor
 				_projectContext.CurrentProject.SelectedElement = new SelectedElement(ItemTypeSelected.Entity, current);
 			}
 
-			//if (directory != _rootAssetsDirectory && directory != _rootAssetsDirectory)
-			//	DragAndDrop(directory, new DirectoryInfo(directory).Name, false);
-			//else
-			//	Drop(directory, false);
+			DragAndDrop(current);
 
 			if (ImGui.BeginPopupContextItem(current.GUID, ImGuiPopupFlags.MouseButtonRight))
 			{
@@ -91,6 +95,48 @@ namespace BEngineEditor
 				}
 
 				ImGui.EndPopup();
+			}
+		}
+
+
+		private unsafe void DragAndDrop(SceneEntity entity)
+		{
+			if (ImGui.BeginDragDropSource())
+			{
+				Entry entry = new Entry() { GUID = entity.GUID };
+				ImGui.SetDragDropPayload(HierarchyPayload, (IntPtr)(&entry), (uint)sizeof(Entry));
+				ImGui.Text("Entity");
+				ImGui.Text($"{entity.Name} ({entity.GUID})");
+				ImGui.EndDragDropSource();
+			}
+
+			Drop(entity);
+		}
+
+		private unsafe void Drop(SceneEntity entity)
+		{
+			if (ImGui.BeginDragDropTarget())
+			{
+				var payload = ImGui.AcceptDragDropPayload(HierarchyPayload);
+
+				if (payload.NativePtr != null)
+				{
+					var entryPointer = (Entry*)payload.Data;
+					Entry entry = entryPointer[0];
+
+					SceneEntity? drop = _scene.GetEntity(entry.GUID);
+
+					if (drop != null)
+					{
+						if (entity.ChildOf(drop) == false)
+						{
+							entity.Children.Add(drop.GUID);
+							drop.Parent = entity.GUID;
+						}
+					}
+				}
+
+				ImGui.EndDragDropTarget();
 			}
 		}
 	}

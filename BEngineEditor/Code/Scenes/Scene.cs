@@ -76,5 +76,10 @@ namespace BEngineEditor
 			Entities.Add(entity);
 			return entity;
 		}
+
+		public SceneEntity? GetEntity(string guid)
+		{
+			return Entities.Find((sceneEntity) => sceneEntity.GUID == guid);
+		}
 	}
 }
