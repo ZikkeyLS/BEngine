@@ -4,13 +4,13 @@
 	{
 		private FileWatcher _scriptWatcher;
 		private Timer _timer;
-		private Project _project;
+		private EditorProject _project;
 
 		private List<string> _filesChanged = new();
 		public Action<List<string>> OnScriptsChanged;
 		private const int MSDelay = 500;
 
-		public void InitializeScriptWatch(Project project)
+		public void InitializeScriptWatch(EditorProject project)
 		{
 			_project = project;
 			_timer = new Timer((e) => OnTimerCallback(), null, 0, MSDelay);

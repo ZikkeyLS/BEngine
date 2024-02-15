@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using BEngineCore;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace BEngineEditor
@@ -6,26 +7,26 @@ namespace BEngineEditor
 	public class AssetData
 	{
 		private string _guid;
-		private Project _project;
+		private ProjectAbstraction _project;
 
 		[JsonIgnore]
 		public string GUID => _guid;
 		[JsonIgnore]
-		public Project Project => _project;
+		public ProjectAbstraction Project => _project;
 
 		protected AssetData()
 		{
 
 		}
 
-		public AssetData(Project project, string guid) 
+		public AssetData(string guid, ProjectAbstraction project) 
 		{
-			_project = project;
 			_guid = guid;
+			_project = project;
 		}
 
 		public void SetForceID(string guid) => _guid = guid;
-		public void SetForceProject(Project project) => _project = project;
+		public void SetForceProject(ProjectAbstraction project) => _project = project;
 
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
@@ -56,7 +57,7 @@ namespace BEngineEditor
 
 		public void Save<T>() where T : AssetData
 		{
-			string path = _project.AssetWorker.GetAssetPath(_guid);
+			string path = _project.AssetsReader.GetAssetPath(_guid);
 
 			if (path == string.Empty)
 				return;
@@ -64,9 +65,9 @@ namespace BEngineEditor
 			File.WriteAllText(path, JsonSerializer.Serialize((T)this));
 		}
 
-		public static T? Load<T>(string guid, Project project) where T : AssetData
+		public static T? Load<T>(string guid, ProjectAbstraction project) where T : AssetData
 		{
-			string path = project.AssetWorker.GetAssetPath(guid);
+			string path = project.AssetsReader.GetAssetPath(guid);
 
 			if (path == string.Empty)
 				return null;

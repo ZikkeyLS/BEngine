@@ -26,13 +26,11 @@ namespace BEngineEditor
 		}
 	}
 
-	public class Project
+	public class EditorProject : ProjectAbstraction
 	{
-		private Scripting _scripting = new();
 		private AssetWorker _assets;
 		private ProjectCompiler _compiler;
 		private AssemblyListener _assemblyListener;
-		private Logger _logger = new(true);
 
 		public Scene OpenedScene;
 		public SelectedElement? SelectedElement;
@@ -43,9 +41,7 @@ namespace BEngineEditor
 
 		public AssemblyListener AssemblyListener => _assemblyListener;
 		public ProjectCompiler Compiler => _compiler;
-		public Logger Logger => _logger;
 		public AssetWorker AssetWorker => _assets;
-		public Scripting Scripting => _scripting;
 
 		public string SolutionPath => $@"{Directory}\{Name}.sln";
 		public string ProjectAssemblyDirectory => $@"{Directory}\{Name}Assembly";
@@ -58,7 +54,7 @@ namespace BEngineEditor
 
 		private const int WaitMSIteration = 10;
 
-		public Project(string name, string directory)
+		public EditorProject(string name, string directory)
 		{
 			Name = name;
 			Directory = directory;
@@ -71,10 +67,10 @@ namespace BEngineEditor
 			Settings.UpdateResultPath(this);
 		}
 
-		public void LoadProjectData()
+		public override void LoadProjectData()
 		{
-			_logger.EnableFileLogs = true;
-			_logger.ClearFileLogs();
+			logger.EnableFileLogs = true;
+			logger.ClearFileLogs();
 
 			_compiler = new ProjectCompiler(this);
 			_compiler.CompileScripts();
@@ -83,7 +79,8 @@ namespace BEngineEditor
 			_assemblyListener.InitializeScriptWatch(this);
 			_assemblyListener.OnScriptsChanged += (e) => _compiler.CompileScripts();
 
-			_assets = new AssetWorker(this);
+			reader = new AssetReader(AssetsDirectory);
+			_assets = new AssetWorker(this, reader);
 
 			TryLoadLastOpenedScene();
 		}
@@ -117,7 +114,7 @@ namespace BEngineEditor
 			await Task.Run(() =>
 			{
 				while (_compiler.AssemblyLoaded == false || 
-					_compiler.AssemblyCompileErrors.Count > 0 || _scripting.ReadyToUse == false)
+					_compiler.AssemblyCompileErrors.Count > 0 || scripting.ReadyToUse == false)
 					Thread.Sleep(WaitMSIteration);
 				OpenedScene = scene;
 				OpenedScene.LoadScene();

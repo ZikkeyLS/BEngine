@@ -25,7 +25,7 @@ namespace BEngineEditor
 		private bool _activeUsing = false;
 		private string _lastSavePath = string.Empty;
 
-		private Project _currentProject => _projectContext.CurrentProject;
+		private EditorProject _currentProject => _projectContext.CurrentProject;
 
 		private string _rootAssetsDirectory => _currentProject.AssetsDirectory;
 		private Logger _logger => _currentProject.Logger;
@@ -265,7 +265,7 @@ namespace BEngineEditor
 					}
 					else if (Path.GetExtension(entryName) == ".scene")
 					{
-						_currentProject.TryLoadScene(_assetWorker.GetMetaID(entryPath));
+						_currentProject.TryLoadScene(_currentProject.AssetsReader.GetMetaID(entryPath));
 					} 
 					else
 					{

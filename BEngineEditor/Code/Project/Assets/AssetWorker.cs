@@ -1,24 +1,23 @@
-﻿using System.Xml;
+﻿using BEngineCore;
 
 namespace BEngineEditor
 {
 	public class AssetWorker
 	{
-		private Project _project;
+		private AssetReader _assetReader;
+
+		private EditorProject _project;
 
 		private FileWatcher _assetWatcher;
 		private Timer _timer;
 
 		private const int MSDelay = 10000;
-
-		private List<AssetMetaData> _loadedAssets = new();
-
 		private string _lastMovedAsset = string.Empty;
-		private string _lastCreatedAsset = string.Empty;
 
-		public AssetWorker(Project project)
+		public AssetWorker(EditorProject project, AssetReader reader)
 		{
 			_project = project;
+			_assetReader = reader;
 
 			if (Directory.Exists(project.AssetsDirectory) == false)
 				Directory.CreateDirectory(project.AssetsDirectory);
@@ -28,7 +27,7 @@ namespace BEngineEditor
 			_assetWatcher.Renamed += RenameAsset;
 			_assetWatcher.Deleted += RemoveAsset;
 
-			LoadAssets(_project.AssetsDirectory);
+			_assetReader.LoadAssets(_project.AssetsDirectory);
 
 			_timer = new Timer((a) => { UpdateData(); }, null, 0, MSDelay);
 		}
@@ -37,19 +36,19 @@ namespace BEngineEditor
 		{
 			List<AssetMetaData> removeData = new List<AssetMetaData>();
 
-			for (int i = 0; i < _loadedAssets.Count; i++)
+			for (int i = 0; i < _assetReader.LoadedAssets.Count; i++)
 			{
-				string path = GetMetaPath(_loadedAssets[i].GUID, _project.AssetsDirectory);
+				string path = _assetReader.GetMetaPath(_assetReader.LoadedAssets[i].GUID, _project.AssetsDirectory);
 
 				if (path == string.Empty)
 				{
-					removeData.Add(_loadedAssets[i]);
+					removeData.Add(_assetReader.LoadedAssets[i]);
 				}
 			}
 
 			for (int i = 0; i < removeData.Count; i++)
 			{
-				_loadedAssets.Remove(removeData[i]);
+				_assetReader.LoadedAssets.Remove(removeData[i]);
 			}
 
 			CreateSearchedAssets(_project.AssetsDirectory);
@@ -61,27 +60,21 @@ namespace BEngineEditor
 			//}
 		}
 
-		public bool HasAsset(string path)
-		{
-			string guid = GetMetaID(path);
-			return guid != string.Empty;
-		}
-
 		public void RemoveAsset(string path)
 		{
 			if (path.EndsWith(".meta") || _lastMovedAsset == path)
 				return;
 
-			string guid = GetMetaID(path);
+			string guid = _assetReader.GetMetaID(path);
 
 			if (guid == string.Empty)
 				return;
 
-			AssetMetaData? foundAsset = _loadedAssets.Find((asset) => asset.GUID == guid);
+			AssetMetaData? foundAsset = _assetReader.LoadedAssets.Find((asset) => asset.GUID == guid);
 
 			if (foundAsset != null)
 			{
-				_loadedAssets.Remove(foundAsset);
+				_assetReader.LoadedAssets.Remove(foundAsset);
 				File.Delete(path + @".meta");
 			}
 		}
@@ -110,48 +103,14 @@ namespace BEngineEditor
 			}
 		}
 
-		public void AddAsset(string path)
-		{
-			if (path.EndsWith(".meta") || File.Exists(path) == false)
-				return;
-
-			AssetMetaData? asset = AssetMetaData.Load(path);
-			if (asset != null)
-				_loadedAssets.Add(asset);
-		}
-
-		private void LoadAssets(string directory)
-		{
-			foreach (var file in Directory.EnumerateFiles(directory))
-			{
-				if (file.EndsWith(".meta") == false && file.EndsWith(".csproj") == false && HasAsset(file))
-					AddAsset(file);
-			}
-
-			foreach (var subDir in Directory.EnumerateDirectories(directory))
-			{
-				try
-				{
-					DirectoryInfo subInfo = new DirectoryInfo(subDir);
-
-					if (subInfo.Name != "bin" && subInfo.Name != "obj")
-						LoadAssets(subDir);
-				}
-				catch
-				{
-
-				}
-			}
-		}
-
 		public void CreateAsset(string path)
 		{
-			if (path.EndsWith(".meta") || _lastMovedAsset == path || File.Exists(path) == false || HasAsset(path))
+			if (path.EndsWith(".meta") || _lastMovedAsset == path || File.Exists(path) == false || _assetReader.HasAsset(path))
 				return;
 
 			AssetMetaData asset = new AssetMetaData(GenerateID());
 			asset.Save(path);
-			_loadedAssets.Add(asset);
+			_assetReader.LoadedAssets.Add(asset);
 		}
 
 		private void CreateSearchedAssets(string directory)
@@ -186,99 +145,9 @@ namespace BEngineEditor
 			}
 		}
 
-		public string GetMetaPath(string guid, string directory)
-		{
-			string result = string.Empty;
-
-			foreach (var file in Directory.EnumerateFiles(directory))
-			{
-				if (file.EndsWith(".meta"))
-				{
-					string metaID = GetMetaID(file, false);
-
-					if (guid == metaID)
-						result = file;
-				}
-			}
-
-			foreach (var subDir in Directory.EnumerateDirectories(directory))
-			{
-				try
-				{
-					DirectoryInfo subInfo = new DirectoryInfo(subDir);
-
-					if (subInfo.Name != "bin" && subInfo.Name != "obj")
-						return result + GetMetaPath(guid, subDir);
-				}
-				catch
-				{
-
-				}
-			}
-
-			return result;
-		}
-
 		public string GetAssetPath(string guid)
 		{
-			return GetAssetPath(_project.AssetsDirectory, guid);
-		}
-
-		public string GetAssetPath(string directory, string guid)
-		{
-			foreach (var file in Directory.EnumerateFiles(directory))
-			{
-				if (file.EndsWith(".meta"))
-				{
-					if (GetMetaID(file, false) ==  guid)
-						return file.Substring(0, file.LastIndexOf(".meta"));
-				}
-			}
-
-			foreach (var subDir in Directory.EnumerateDirectories(directory))
-			{
-				try
-				{
-					DirectoryInfo subInfo = new DirectoryInfo(subDir);
-
-					if (subInfo.Name != "bin" && subInfo.Name != "obj")
-						return GetAssetPath(subDir, guid);
-				}
-				catch
-				{
-
-				}
-			}
-
-			return string.Empty;
-		}
-
-		public string GetMetaID(string path, bool includeXMLEnd = true)
-		{
-			string xmlEnd = includeXMLEnd ? ".meta" : string.Empty;
-
-			try
-			{
-				if (File.Exists(path + xmlEnd))
-				{
-					XmlDocument metaFile = new XmlDocument();
-					metaFile.Load(path + xmlEnd);
-
-					XmlElement? xRoot = metaFile.DocumentElement;
-					string? value = xRoot?.ChildNodes[0]?.InnerText;
-
-					if (value != null)
-					{
-						return value;
-					}
-				}
-			}
-			catch
-			{
-
-			}
-
-			return string.Empty;
+			return _assetReader.GetAssetPath(guid);
 		}
 
 		private string GenerateID()

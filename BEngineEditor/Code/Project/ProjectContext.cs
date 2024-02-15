@@ -23,9 +23,9 @@ namespace BEngineEditor
 		public bool ValidTempProjectPath => !Directory.Exists(AssembledTempProjectPath);
 		public string AssembledTempProjectPath => $@"{TempProjectPath}\{TempProjectName}";
 		public bool ProjectLoaded => _currentProject != null;
-		public Project CurrentProject => _currentProject;
+		public EditorProject CurrentProject => _currentProject;
 
-		private Project _currentProject;
+		private EditorProject _currentProject;
 
 		public EditorWindow Window { get; private set; }
 
@@ -53,13 +53,13 @@ namespace BEngineEditor
 			_currentProject?.Settings.Save();
 			_currentProject?.OpenedScene?.Save<Scene>();
 
-			_currentProject = new Project(Path.GetFileNameWithoutExtension(slnPath), Path.GetDirectoryName(slnPath));
+			_currentProject = new EditorProject(Path.GetFileNameWithoutExtension(slnPath), Path.GetDirectoryName(slnPath));
 			SearchingProject = false;
 
 			Window.Settings.ProjectHistory.Remove(new LastProject(_currentProject.Name, _currentProject.Directory));
 			Window.Settings.ProjectHistory.Add(new LastProject(_currentProject.Name, _currentProject.Directory));
 
-			_currentProject.LoadProjectData();
+			_currentProject.LoadProject();
 		}
 	}
 }

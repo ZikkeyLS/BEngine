@@ -1,35 +1,77 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ICSharpCode.SharpZipLib.Zip;
+using System.Text.Json;
 
 namespace BEngineEditor
 {
 	internal class Packer
 	{
-		public void Pack()
+		public void Pack(string directory, string outputFile)
 		{
-			ArchiveProvider compressor = new ArchiveProvider();
-			using (SaveFileDialog sfd = new SaveFileDialog())
+			using (ZipOutputStream compression = new ZipOutputStream(File.Create(outputFile)))
 			{
-				if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+				ZipFolder(directory, directory, compression);
+			}
+		}
+
+		public void ReadFile(string archivePath, string fileRelativePath)
+		{
+			using (var fs = new FileStream(archivePath, FileMode.Open, FileAccess.Read))
+			using (var zf = new ZipFile(fs))
+			{
+				var ze = zf.GetEntry(fileRelativePath);
+				if (ze == null)
 				{
-					CompressorOption option = new CompressorOption()
-					{
-						Password = пароль_если_зашифровать,
-						WithoutCompress = true_если_без_сжатия,
-						RemoveSource = true_если_удалять_исходные_файлы,
-						Output = sfd.FileName
-					};
-					//Списки файлов и каталогов для сжатия
-					foreach (string line in lbIncludes.Items)
-						option.IncludePath.Add(line);
-					//Списки файлов и каталогов для исключения
-					foreach (string line in lbExclude.Items)
-						option.ExcludePath.Add(line);
-					compressor.Compress(option);
+					throw new ArgumentException(fileRelativePath, "not found in Zip");
 				}
+
+				using (var s = zf.GetInputStream(ze))
+				{
+					JsonSerializer.Deserialize<object>(s);
+				}
+			}
+		}
+
+		private void ZipFolder(string RootFolder, string CurrentFolder, ZipOutputStream zStream)
+		{
+			string[] SubFolders = Directory.GetDirectories(CurrentFolder);
+
+			foreach (string Folder in SubFolders)
+				ZipFolder(RootFolder, Folder, zStream);
+
+			string relativePath = CurrentFolder.Substring(RootFolder.Length) + "/";
+
+			if (relativePath.Length > 1)
+			{
+				ZipEntry dirEntry;
+
+				dirEntry = new ZipEntry(relativePath);
+				dirEntry.DateTime = DateTime.Now;
+			}
+
+			foreach (string file in Directory.GetFiles(CurrentFolder))
+			{
+				AddFileToZip(zStream, relativePath, file);
+			}
+		}
+
+		private static void AddFileToZip(ZipOutputStream zStream, string relativePath, string file)
+		{
+			byte[] buffer = new byte[4096];
+			string fileRelativePath = (relativePath.Length > 1 ? relativePath : string.Empty) + Path.GetFileName(file);
+			ZipEntry entry = new ZipEntry(fileRelativePath);
+
+			entry.DateTime = DateTime.Now;
+			zStream.PutNextEntry(entry);
+
+			using (FileStream fs = File.OpenRead(file))
+			{
+				int sourceBytes;
+
+				do
+				{
+					sourceBytes = fs.Read(buffer, 0, buffer.Length);
+					zStream.Write(buffer, 0, sourceBytes);
+				} while (sourceBytes > 0);
 			}
 		}
 	}

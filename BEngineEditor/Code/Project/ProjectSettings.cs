@@ -16,12 +16,12 @@ namespace BEngineEditor
 
 		}
 
-		public ProjectSettings(Project project)
+		public ProjectSettings(EditorProject project)
 		{
 			UpdateResultPath(project);
 		}
 
-		public void UpdateResultPath(Project project)
+		public void UpdateResultPath(EditorProject project)
 		{
 			_settingsFilePath = $@"{project.Directory}\{project.Name}Settings.json";
 		}

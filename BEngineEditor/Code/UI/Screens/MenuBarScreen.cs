@@ -7,7 +7,7 @@ namespace BEngineEditor
 	{
 		private ProjectContext _projectContext;
 
-		private Project _project => _projectContext.CurrentProject;
+		private EditorProject _project => _projectContext.CurrentProject;
 		private ProjectCompiler _compiler => _projectContext.CurrentProject.Compiler;
 		private ProjectSettings _settings => _projectContext.CurrentProject.Settings;
 

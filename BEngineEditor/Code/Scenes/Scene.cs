@@ -17,7 +17,7 @@ namespace BEngineEditor
 			SceneName = sceneName;
 		}
 
-		public Scene(string sceneName, Project project, string guid) : base(project, guid)
+		public Scene(string sceneName, EditorProject project, string guid) : base(guid, project)
 		{
 			SceneName = sceneName;
 		}

@@ -7,7 +7,7 @@ namespace BEngineEditor
 		private ProjectContext _projectContext;
 
 		protected EditorWindow window => _projectContext.Window;
-		private Project _project => _projectContext.CurrentProject;
+		private EditorProject _project => _projectContext.CurrentProject;
 		private ProjectCompiler _compiler => _projectContext.CurrentProject.Compiler;
 
 		private DateTime _lastOpenedEditor = DateTime.Now;

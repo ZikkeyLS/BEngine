@@ -33,11 +33,11 @@ namespace BEngineEditor
 		public const string Osx64 = "osx-x64";
 
 		private bool _runOnBuild = false;
-		private Project _project;
+		private EditorProject _project;
 
 		private const int CopyDelayInMS = 5000;
 
-		public ProjectCompiler(Project project)
+		public ProjectCompiler(EditorProject project)
 		{
 			_project = project;
 		}
