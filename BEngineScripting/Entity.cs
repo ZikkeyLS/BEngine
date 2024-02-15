@@ -7,6 +7,11 @@ namespace BEngine
 		public string Name;
 		public List<Script> Scripts = new();
 		private List<Script> _scriptCopy = new List<Script>();
+
+		public void Log(string message)
+		{
+			Logger.LogMessage(message);
+		}
 	
 		public void CallEvent(EventID id)
 		{
