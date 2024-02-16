@@ -1,5 +1,4 @@
-﻿using BEngineEditor;
-using System.Xml;
+﻿using System.Xml;
 
 namespace BEngineCore
 {

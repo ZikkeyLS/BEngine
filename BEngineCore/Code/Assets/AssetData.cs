@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace BEngineEditor
+namespace BEngineCore
 {
 	public class AssetData
 	{

@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace BEngineEditor 
+namespace BEngineCore 
 {
 	[Serializable]
 	public class AssetMetaData

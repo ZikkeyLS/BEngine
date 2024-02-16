@@ -1,5 +1,5 @@
-﻿using ImGuiNET;
-using Silk.NET.Input;
+﻿using BEngineCore;
+using ImGuiNET;
 
 namespace BEngineEditor
 {
@@ -22,7 +22,6 @@ namespace BEngineEditor
 
 			if (_projectContext.CurrentProject == null)
 				return;
-
 
 			if (ImGui.BeginMenu("Actions"))
 			{

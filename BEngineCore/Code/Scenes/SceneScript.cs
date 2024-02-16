@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using static BEngineCore.Scripting;
 
-namespace BEngineEditor
+namespace BEngineCore
 {
 	public class SceneScriptValue
 	{

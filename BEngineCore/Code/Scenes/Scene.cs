@@ -1,6 +1,6 @@
 ﻿using BEngine;
 
-namespace BEngineEditor
+namespace BEngineCore
 {
 	public class Scene : AssetData
 	{
@@ -17,7 +17,7 @@ namespace BEngineEditor
 			SceneName = sceneName;
 		}
 
-		public Scene(string sceneName, EditorProject project, string guid) : base(guid, project)
+		public Scene(string sceneName, ProjectAbstraction project, string guid) : base(guid, project)
 		{
 			SceneName = sceneName;
 		}

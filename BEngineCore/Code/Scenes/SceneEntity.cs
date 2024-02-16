@@ -1,10 +1,8 @@
 ﻿using BEngine;
-using BEngineCore;
-using Silk.NET.Vulkan;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace BEngineEditor
+namespace BEngineCore
 {
 	public class SceneEntity : IDisposable
 	{
@@ -15,7 +13,7 @@ namespace BEngineEditor
 		public List<string> Children { get; set; } = new();
 		public List<SceneScript> Scripts { get; set; } = new();
 
-		private Scene _scene => ProjectContext.Instance.CurrentProject.OpenedScene;
+		private Scene _scene => ProjectAbstraction.LoadedProject.LoadedScene;
 
 		[JsonIgnore]
 		public Entity Entity { get; set; } = new();

@@ -1,4 +1,4 @@
-﻿using BEngine;
+﻿using BEngineCore;
 using ImGuiNET;
 
 namespace BEngineEditor
