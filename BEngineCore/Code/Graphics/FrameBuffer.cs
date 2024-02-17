@@ -9,6 +9,9 @@ namespace BEngineCore
 		private uint _texture;
 		private uint _rbo;
 
+		public uint FBO => _fbo;
+		public uint Texture => _texture;
+
 		private GL gl => Graphics.gl;
 
 		public uint Width { get; private set; }

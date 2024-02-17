@@ -33,7 +33,6 @@ namespace BEngineCore
 		public static void CreateTemplate<T>(string path, object[]? args = null) where T : AssetData
 		{
 			T template = (T)Activator.CreateInstance(typeof(T), args);
-
 			File.WriteAllText(path, JsonSerializer.Serialize(template));
 		}
 

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using BEngineCore;
+using System.Diagnostics;
 
 namespace BEngineEditor
 {
@@ -34,6 +35,7 @@ namespace BEngineEditor
 
 		private bool _runOnBuild = false;
 		private EditorProject _project;
+		private Packer _packer = new Packer();
 
 		private const int CopyDelayInMS = 5000;
 
@@ -226,6 +228,8 @@ namespace BEngineEditor
 			}
 
 			Utils.CopyDirectory($@"runtimes\{_project.Settings.BuildOS}\native", $@"{_project.Directory}\Build\{_project.Settings.BuildOS}\Data");
+
+			_packer.Pack(_project.AssetsDirectory, $@"{_project.Directory}\Build\{_project.Settings.BuildOS}\Data\Game.data");
 
 			if (BuildCompileErrors.Count == 0)
 			{

@@ -1,6 +1,7 @@
 ﻿using Silk.NET.Input;
 using Silk.NET.OpenGL;
 using System.Numerics;
+using static System.Net.Mime.MediaTypeNames;
 using Color = System.Drawing.Color;
 
 namespace BEngineCore
@@ -84,7 +85,7 @@ namespace BEngineCore
 
 		private Vector2? _lastMousePosition = null;
 
-		public unsafe void Render(EngineWindow window, float time)
+		public unsafe void Render(EngineWindow window, float time, bool forceRender = false)
 		{
 			gl.ClearColor(0f, 0f, 0f, 1.0f);
 			gl.Clear(ClearBufferMask.ColorBufferBit);
@@ -174,6 +175,22 @@ namespace BEngineCore
 				gl.BindVertexArray(0);
 
 				frame.Unbind();
+			}
+
+			if (forceRender)
+			{
+				FrameBuffer main = FrameBuffers.First().Value;
+
+				gl.ClearColor(Color.AliceBlue);
+				gl.Clear(ClearBufferMask.ColorBufferBit);
+
+				gl.BindFramebuffer(GLEnum.ReadFramebuffer, main.FBO);
+				gl.FramebufferTexture2D(GLEnum.ReadFramebuffer, GLEnum.ColorAttachment0,
+									   GLEnum.Texture2D, main.Texture, 0);
+				gl.BlitFramebuffer(0, 0, (int)main.Width, (int)main.Height,
+								  0, 0, (int)main.Width, (int)main.Height,
+								  ClearBufferMask.ColorBufferBit, GLEnum.Linear);
+				gl.BindFramebuffer(GLEnum.ReadFramebuffer, 0);
 			}
 		}
 	}

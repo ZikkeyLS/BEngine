@@ -1,13 +1,18 @@
-﻿
-namespace BEngineCore.Code.Runtime
+﻿using BEngine;
+
+namespace BEngineCore
 {
 	internal class RuntimeProject : ProjectAbstraction
 	{
 		public override void LoadProjectData()
 		{
-		//	scripting.ReadScriptAssembly(Path.Combine(Directory.GetCurrentDirectory(), "ProjectAssembly.dll"));
-			//Scene? test = TryLoadScene("87632fbc-18eb-40c0-bd45-f80c8da47b69", true);
-			// init AssetReader with .zip reader feature
+			logger.EnableFileLogs = true;
+
+			scripting.ReadScriptAssembly(AppDomain.CurrentDomain.FriendlyName + "Assembly.dll");
+			reader = new AssetReader("Game.data", AssetReaderType.Archive);
+			Scene? test = TryLoadScene("7976e5ca-d6d7-4af7-a89e-d92aba20c946", true);
+
+			// init AssetReader with.zip reader feature
 		}
 	}
 }

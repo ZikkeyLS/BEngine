@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using BEngineScripting;
+using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -12,28 +13,12 @@ namespace BEngine
 
 		public static void LoadInternalCallsAPI()
 		{
-			Type? internalCallsAPI = GetTypeByName("BEngineCore.InternalCalls");
+			Type? internalCallsAPI = ScriptingUtils.GetTypeByName("BEngineCore.InternalCalls");
 			if (internalCallsAPI != null)
 			{
 				_internalCalls = internalCallsAPI;
 				LoadLoggerAssembly();
 			}
-		}
-
-		private static Type? GetTypeByName(string name)
-		{
-			return
-				AppDomain.CurrentDomain.GetAssemblies()
-					.Reverse()
-					.Select(assembly => assembly.GetType(name))
-					.FirstOrDefault(t => t != null)
-				// Safely delete the following part
-				// if you do not want fall back to first partial result
-				??
-				AppDomain.CurrentDomain.GetAssemblies()
-					.Reverse()
-					.SelectMany(assembly => assembly.GetTypes())
-					.FirstOrDefault(t => t.Name.Contains(name));
 		}
 
 		private static MethodInfo? GetMethod(string name) => _internalCalls.GetMethod(name);

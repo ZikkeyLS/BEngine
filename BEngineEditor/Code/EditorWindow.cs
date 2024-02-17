@@ -37,12 +37,6 @@ namespace BEngineEditor
 
 			Scripting.LoadInternalScriptingAPI();
 
-		//	Packer packer = new Packer();
-		//	packer.Pack("D:\\Projects\\CSharp\\BEngine\\BEngineEditor\\bin\\Debug\\net8.0\\Projects\\DemoScripting\\DemoScriptingAssembly\\Assets", 
-		//		"D:\\Projects\\CSharp\\BEngine\\BEngineEditor\\bin\\Debug\\net8.0\\Projects\\DemoScripting\\DemoScriptingAssembly\\assets.zip");
-
-			
-
 			ImGuiFontConfig fontConfig = new ImGuiFontConfig(@"Fonts\ArialRegular.ttf", 16);
 			_controller = new ImGuiController(gl, window, input, fontConfig);
 			ImGuiIOPtr io = ImGui.GetIO();

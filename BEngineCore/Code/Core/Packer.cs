@@ -1,9 +1,10 @@
-﻿using ICSharpCode.SharpZipLib.Zip;
+﻿using ICSharpCode.SharpZipLib.Core;
+using ICSharpCode.SharpZipLib.Zip;
 using System.Text.Json;
 
-namespace BEngineEditor
+namespace BEngineCore
 {
-	internal class Packer
+	public class Packer
 	{
 		public void Pack(string directory, string outputFile)
 		{
@@ -18,6 +19,7 @@ namespace BEngineEditor
 			using (var fs = new FileStream(archivePath, FileMode.Open, FileAccess.Read))
 			using (var zf = new ZipFile(fs))
 			{
+			
 				var ze = zf.GetEntry(fileRelativePath);
 				if (ze == null)
 				{
@@ -50,7 +52,8 @@ namespace BEngineEditor
 
 			foreach (string file in Directory.GetFiles(CurrentFolder))
 			{
-				AddFileToZip(zStream, relativePath, file);
+				if (file.EndsWith(".cs") == false && file.EndsWith(".cs.meta") == false)
+					AddFileToZip(zStream, relativePath, file);
 			}
 		}
 

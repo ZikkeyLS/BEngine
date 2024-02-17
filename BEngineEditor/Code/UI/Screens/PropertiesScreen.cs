@@ -72,6 +72,8 @@ namespace BEngineEditor
 							SceneScriptField? sceneScriptField = selectedEntity.Scripts[i].Fields?.Find((scripField) => scripField.Name == field.Name);
 							SceneScriptValue? sceneScriptValue = sceneScriptField?.Value;
 
+							ImGui.PushID(field.Name);
+
 							if (IsInClassList(field.FieldType, typeof(string), typeof(int),
 								typeof(float), typeof(double), typeof(uint), typeof(byte), typeof(sbyte),
 								typeof(short), typeof(ushort)))
@@ -139,6 +141,196 @@ namespace BEngineEditor
 									UpdateField(field, script, sceneScript, result);
 								}
 							}
+							else if (IsInClassList(field.FieldType, typeof(Vector3)))
+							{
+								string x = "0";
+								string y = "0";
+								string z = "0";
+
+								if (sceneScriptValue != null)
+								{
+									Vector3? input = JsonSerializer.Deserialize<Vector3>(sceneScriptValue.Value);
+
+									if (input != null)
+									{
+
+										x = input.x.ToString();
+										y = input.y.ToString();
+										z = input.z.ToString();
+									}
+								}
+								else
+								{
+									object? result = fields[j].GetValue(script);
+									if (result != null)
+									{
+										Vector3 initial = (Vector3)result;
+										x = initial.x.ToString();
+										y = initial.y.ToString();
+										z = initial.z.ToString();
+									}
+								}
+
+								ImGui.Text(field.Name);
+								ImGui.PushItemWidth(ImGui.GetWindowSize().X / 6);
+								ImGui.Text("x");
+								ImGui.SameLine();
+								if (ImGui.InputText("##x", ref x, 128))
+								{
+									try
+									{
+										object final = new Vector3(float.Parse(x), float.Parse(y), float.Parse(z));
+	
+										if (final != null)
+											UpdateField(field, script, sceneScript, final);
+									}
+									catch
+									{
+
+									}
+								}
+								ImGui.SameLine(0, 5);
+								ImGui.Text("y");
+								ImGui.SameLine();
+								if (ImGui.InputText("##y", ref y, 128))
+								{
+									try
+									{
+										object final = new Vector3(float.Parse(x), float.Parse(y), float.Parse(z));
+
+										if (final != null)
+											UpdateField(field, script, sceneScript, final);
+									}
+									catch
+									{
+
+									}
+								}
+								ImGui.SameLine(0, 5);
+								ImGui.Text("z");
+								ImGui.SameLine();
+								if (ImGui.InputText("##z", ref z, 128))
+								{
+									try
+									{
+										object final = new Vector3(float.Parse(x), float.Parse(y), float.Parse(z));
+
+										if (final != null)
+											UpdateField(field, script, sceneScript, final);
+									}
+									catch
+									{
+
+									}
+								}
+								ImGui.PopItemWidth();
+							}
+							else if (IsInClassList(field.FieldType, typeof(Quaternion)))
+							{
+								string x = "0";
+								string y = "0";
+								string z = "0";
+								string w = "0";
+
+								if (sceneScriptValue != null)
+								{
+									Quaternion? input = JsonSerializer.Deserialize<Quaternion>(sceneScriptValue.Value);
+
+									if (input != null)
+									{
+										x = input.x.ToString();
+										y = input.y.ToString();
+										z = input.z.ToString();
+										w = input.w.ToString();
+									}
+								}
+								else
+								{
+									object? result = fields[j].GetValue(script);
+									if (result != null)
+									{
+										Quaternion initial = (Quaternion)result;
+										x = initial.x.ToString();
+										y = initial.y.ToString();
+										z = initial.z.ToString();
+										w = initial.w.ToString();
+									}
+								}
+
+
+								ImGui.Text(field.Name);
+								ImGui.PushItemWidth(ImGui.GetWindowSize().X / 6);
+								ImGui.Text("x");
+								ImGui.SameLine();
+								if (ImGui.InputText("##x", ref x, 128))
+								{
+									try
+									{
+										object final = new Quaternion(float.Parse(x), float.Parse(y), float.Parse(z), float.Parse(w));
+
+										if (final != null)
+											UpdateField(field, script, sceneScript, final);
+									}
+									catch
+									{
+
+									}
+								}
+								ImGui.SameLine(0, 5);
+								ImGui.Text("y");
+								ImGui.SameLine();
+								if (ImGui.InputText("##y", ref y, 128))
+								{
+									try
+									{
+										object final = new Quaternion(float.Parse(x), float.Parse(y), float.Parse(z), float.Parse(w));
+
+										if (final != null)
+											UpdateField(field, script, sceneScript, final);
+									}
+									catch
+									{
+
+									}
+								}
+								ImGui.SameLine(0, 5);
+								ImGui.Text("z");
+								ImGui.SameLine();
+								if (ImGui.InputText("##z", ref z, 128))
+								{
+									try
+									{
+										object final = new Quaternion(float.Parse(x), float.Parse(y), float.Parse(z), float.Parse(w));
+
+										if (final != null)
+											UpdateField(field, script, sceneScript, final);
+									}
+									catch
+									{
+
+									}
+								}
+								ImGui.SameLine(0, 5);
+								ImGui.Text("w");
+								ImGui.SameLine();
+								if (ImGui.InputText("##w", ref w, 128))
+								{
+									try
+									{
+										object final = new Quaternion(float.Parse(x), float.Parse(y), float.Parse(z), float.Parse(w));
+
+										if (final != null)
+											UpdateField(field, script, sceneScript, final);
+									}
+									catch
+									{
+
+									}
+								}
+								ImGui.PopItemWidth();
+							}
+
+							ImGui.PopID();
 						}
 					}
 					else

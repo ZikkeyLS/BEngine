@@ -1,4 +1,5 @@
 ﻿using BEngine;
+using BEngineScripting;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -122,7 +123,17 @@ namespace BEngineCore
 						{
 							Type scriptType = script.GetType();
 							SceneScriptField field = Scripts[i].Fields[k];
-							scriptType.GetField(field.Name)?.SetValue(script, JsonSerializer.Deserialize(field.Value.Value, Type.GetType(field.Value.TypeFullName)));
+							SceneScriptValue? value = field.Value;
+							if (value != null)
+							{
+								Type? type = ScriptingUtils.GetTypeByName(value.TypeFullName);
+
+								if (type != null)
+								{
+									object? result = JsonSerializer.Deserialize(value.Value, type);
+									scriptType.GetField(field.Name)?.SetValue(script, result);
+								}
+							}
 						}
 					}
 				}

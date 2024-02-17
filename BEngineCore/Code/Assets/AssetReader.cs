@@ -2,14 +2,28 @@
 
 namespace BEngineCore
 {
+	public enum AssetReaderType
+	{
+		Directory = 0,
+		Archive
+	}
+
 	public class AssetReader
 	{
+		public readonly AssetReaderType Type;
 		public readonly string AssetsDirectory;
 		public readonly List<AssetMetaData> LoadedAssets = new();
 
-		public AssetReader(string assetsDirectory)
+		private Packer? _packer;
+
+		public AssetReader(string assetsDirectory, AssetReaderType type)
 		{
 			AssetsDirectory = assetsDirectory;
+			Type = type;
+			if (Type == AssetReaderType.Archive)
+			{
+				_packer = new();
+			}		
 		}
 
 		public bool HasAsset(string path)
