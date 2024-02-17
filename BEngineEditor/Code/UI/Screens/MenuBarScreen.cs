@@ -43,9 +43,9 @@ namespace BEngineEditor
 					_compiler.CompileScripts();
 				}
 
-				if (ImGui.MenuItem("Save Scene", "Ctrl+S") && _project.OpenedScene != null)
+				if (ImGui.MenuItem("Save Scene", "Ctrl+S") && _project.LoadedScene != null)
 				{
-					_project.OpenedScene.Save<Scene>();
+					_project.LoadedScene.Save<Scene>();
 				}
 
 				if (_compiler.AssemblyLoaded && _compiler.AssemblyCompileErrors.Count == 0)

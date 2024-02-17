@@ -81,7 +81,7 @@ namespace BEngineEditor
 
 		protected override void OnUpdate(double time)
 		{
-			ProjectContext?.CurrentProject?.OpenedScene?.CallEvent(EventID.EditorUpdate);
+			ProjectContext?.CurrentProject?.LoadedScene?.CallEvent(EventID.EditorUpdate);
 			_shortcuts.Update();
 		}
 
@@ -98,7 +98,7 @@ namespace BEngineEditor
 			if (ProjectContext.SearchingProject)
 				_projectLoader.Display();
 
-			if (ProjectContext.ProjectLoaded && ProjectContext.CurrentProject.OpenedScene != null)
+			if (ProjectContext.ProjectLoaded && ProjectContext.CurrentProject.LoadedScene != null)
 			{
 				_scene.Display();
 				_hierarchy.Display();
@@ -114,7 +114,7 @@ namespace BEngineEditor
 		{
 			Settings.Save();
 			ProjectContext.CurrentProject?.Settings.Save();
-			ProjectContext.CurrentProject?.OpenedScene?.Save<Scene>();
+			ProjectContext.CurrentProject?.LoadedScene?.Save<Scene>();
 
 			ImGui.SaveIniSettingsToDisk(UIConfigName);
 		}

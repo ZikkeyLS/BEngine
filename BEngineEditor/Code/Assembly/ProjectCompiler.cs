@@ -158,7 +158,7 @@ namespace BEngineEditor
 			if (AssemblyCompileErrors.Count == 0)
 			{
 				_project.Scripting.ReadScriptAssembly(_project.AssemblyBinaryPath);
-				_project.OpenedScene?.ReloadScripts();
+				_project.LoadedScene?.ReloadScripts();
 
 				_project.Logger.LogMessage($"Working clear, no errors found! (Build in " +
 					$"{AssemblyBuildEndTime.ToString("HH:mm:ss")}, " +

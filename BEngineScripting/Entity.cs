@@ -19,33 +19,44 @@ namespace BEngine
 			{
 				case EventID.Start:
 					for (int i = 0; i < Scripts.Count; i++)
-						Scripts[i].OnStart();
+						Scripts[i]?.OnStart();
 					break;
 				case EventID.Update:
 					for (int i = 0; i < Scripts.Count; i++)
-						Scripts[i].OnUpdate();
+						Scripts[i]?.OnUpdate();
 					break;
 				case EventID.Destroy:
 					for (int i = 0; i < Scripts.Count; i++)
-						Scripts[i].OnDestroy();
+						Scripts[i]?.OnDestroy();
 					break;
 				case EventID.EditorStart:
 					for (int i = 0; i < Scripts.Count; i++)
-						Scripts[i].OnEditorStart();
+						Scripts[i]?.OnEditorStart();
 					break;
 				case EventID.EditorUpdate:
 					for (int i = 0; i < Scripts.Count; i++)
-						Scripts[i].OnEditorUpdate();
+						Scripts[i]?.OnEditorUpdate();
 					break;
 				case EventID.EditorDestroy:
 					for (int i = 0; i < Scripts.Count; i++)
-						Scripts[i].OnEditorDestroy();
+						Scripts[i]?.OnEditorDestroy();
 					break;
 				case EventID.EditorSelected:
 					for (int i = 0; i < Scripts.Count; i++)
-						Scripts[i].OnEditorSelected();
+						Scripts[i]?.OnEditorSelected();
 					break;
 			}
+		}
+
+		public T GetScript<T>() where T : Script
+		{
+			foreach (Script script in Scripts)
+			{
+				if (script is T)
+					return (T)script;
+			}
+
+			return null;
 		}
 
 		public void MakeScriptsCopy()

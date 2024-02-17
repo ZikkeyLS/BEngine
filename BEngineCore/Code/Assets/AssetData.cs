@@ -61,7 +61,14 @@ namespace BEngineCore
 			if (path == string.Empty)
 				return;
 
-			File.WriteAllText(path, JsonSerializer.Serialize((T)this));
+			try
+			{
+				File.WriteAllText(path, JsonSerializer.Serialize((T)this));
+			}
+			catch
+			{
+
+			}
 		}
 
 		public static T? Load<T>(string guid, ProjectAbstraction project) where T : AssetData

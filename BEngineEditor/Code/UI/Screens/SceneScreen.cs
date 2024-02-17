@@ -7,7 +7,7 @@ namespace BEngineEditor
 	public class SceneScreen : Screen
 	{
 		private ProjectContext _projectContext => window.ProjectContext;
-		private Scene _openedScene => _projectContext.CurrentProject.OpenedScene;
+		private Scene _openedScene => _projectContext.CurrentProject.LoadedScene;
 
 		private FrameBuffer _frameBuffer;
 

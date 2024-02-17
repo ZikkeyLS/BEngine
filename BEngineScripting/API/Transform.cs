@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-
+﻿
 namespace BEngine
 {
 	public class Transform : Script
@@ -7,7 +6,5 @@ namespace BEngine
 		public Vector3 Position;
 		public Quaternion Rotation;
 		public Vector3 Scale;
-
-		public int test = 5;
 	}
 }

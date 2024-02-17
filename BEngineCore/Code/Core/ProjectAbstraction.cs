@@ -26,25 +26,43 @@ namespace BEngineCore
 
 		}
 
-		public Scene? TryLoadScene(string metaID, bool fastLoad = false)
+		public Scene? TryLoadScene(string metaID, bool fastLoad = false, bool savePrevious = true)
 		{
 			Scene? scene = AssetData.Load<Scene>(metaID, this);
 
 			if (scene != null)
 			{
-				loadedScene?.Save<Scene>();
-				OnScenePreLoaded(scene);
 				if (fastLoad)
 				{
+					if (savePrevious)
+						loadedScene?.Save<Scene>();
 					loadedScene = scene;
 					loadedScene.LoadScene();
+				}
+				else
+				{
+					OnSceneLongLoad(scene);
 				}
 			}
 
 			return scene;
 		}
 
-		public virtual void OnScenePreLoaded(Scene scene)
+		public void TryLoadScene(Scene scene, bool fastLoad = false)
+		{
+			if (fastLoad)
+			{
+				loadedScene?.Save<Scene>();
+				loadedScene = scene;
+				loadedScene.LoadScene();
+			}
+			else
+			{
+				OnSceneLongLoad(scene);
+			}
+		}
+
+		public virtual void OnSceneLongLoad(Scene scene)
 		{
 
 		}

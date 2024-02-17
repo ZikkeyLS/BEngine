@@ -32,8 +32,6 @@ namespace BEngineEditor
 		private AssetWorker _assets;
 		private ProjectCompiler _compiler;
 		private AssemblyListener _assemblyListener;
-
-		public Scene OpenedScene;
 		public SelectedElement? SelectedElement;
 
 		public string Name { get; private set; } = string.Empty;
@@ -86,7 +84,7 @@ namespace BEngineEditor
 			TryLoadLastOpenedScene();
 		}
 
-		public override void OnScenePreLoaded(Scene scene)
+		public override void OnSceneLongLoad(Scene scene)
 		{
 			Settings.LastOpenedSceneID = scene.GUID;
 			LoadSceneOnAssemblyLoaded(scene);
@@ -108,9 +106,11 @@ namespace BEngineEditor
 			{
 				while (_compiler.AssemblyLoaded == false ||
 					_compiler.AssemblyCompileErrors.Count > 0 || scripting.ReadyToUse == false)
+				{
 					Thread.Sleep(WaitMSIteration);
-				OpenedScene = scene;
-				OpenedScene.LoadScene();
+				}
+
+				TryLoadScene(scene, true);
 			});
 		}
 	}

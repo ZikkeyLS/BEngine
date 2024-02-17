@@ -53,6 +53,11 @@ namespace BEngine
 
 		}
 
+		public T GetScript<T>() where T : Script
+		{
+			return Entity.GetScript<T>();
+		}
+
 		public object Clone()
 		{
 			return MemberwiseClone();

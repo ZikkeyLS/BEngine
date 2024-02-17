@@ -143,6 +143,7 @@ namespace BEngineCore
 		private Script CreateInstanseOf(Scripting.CachedScript script)
 		{
 			Script instance = script.CreateInstance<Script>();
+			instance.GetType().GetField("Entity")?.SetValue(instance, Entity);
 			Entity.Scripts.Add(instance);
 			return instance;
 		}

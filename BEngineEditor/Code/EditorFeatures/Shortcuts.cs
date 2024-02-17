@@ -46,12 +46,12 @@ namespace BEngineEditor
 				_compiler.CompileScripts();
 			}
 
-			if (ControlActive() && window.IsKeyPressed(Key.S) && _project.OpenedScene != null)
+			if (ControlActive() && window.IsKeyPressed(Key.S) && _project.LoadedScene != null)
 			{
 				if ((DateTime.Now - _lastSavedScene).TotalSeconds >= 1)
 				{
 					_lastSavedScene = DateTime.Now;
-					_project.OpenedScene.Save<Scene>();
+					_project.LoadedScene.Save<Scene>();
 				}			
 			}
 

@@ -6,7 +6,7 @@ namespace BEngineEditor
 	internal class HierarchyScreen : Screen
 	{
 		private ProjectContext _projectContext => window.ProjectContext;
-		private Scene _scene => _projectContext.CurrentProject.OpenedScene;
+		private Scene _scene => _projectContext.CurrentProject.LoadedScene;
 		private List<SceneEntity> _entities => _scene.Entities;
 
 		private const string HierarchyPayload = "HierarchyPayload";

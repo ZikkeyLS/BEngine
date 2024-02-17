@@ -10,7 +10,7 @@ namespace BEngineEditor
 	{
 		private ProjectContext _projectContext => window.ProjectContext;
 		private Scripting _scripting => _projectContext.CurrentProject.Scripting;
-		private Scene _scene => _projectContext.CurrentProject.OpenedScene;
+		private Scene _scene => _projectContext.CurrentProject.LoadedScene;
 #pragma warning disable CS8603 // Possible null reference return.
 		private SelectedElement _selectedElement => _projectContext.CurrentProject.SelectedElement;
 #pragma warning restore CS8603 // Possible null reference return.
@@ -25,7 +25,7 @@ namespace BEngineEditor
 			{
 				SceneEntity selectedEntity = (SceneEntity)_selectedElement.Element;
 
-				if (_projectContext.CurrentProject.OpenedScene.Entities.Contains(selectedEntity) == false)
+				if (_projectContext.CurrentProject.LoadedScene.Entities.Contains(selectedEntity) == false)
 				{
 					_projectContext.CurrentProject.SelectedElement = null;
 					return;
@@ -99,6 +99,8 @@ namespace BEngineEditor
 									if (input != string.Empty)
 										input = input.Substring(1, input.Length - 2);
 								}
+								else
+									input = input.Replace(".", ",");
 
 								if (ImGui.InputText(field.Name, ref input, 128))
 								{
@@ -108,16 +110,14 @@ namespace BEngineEditor
 									if (input == string.Empty && IsInClassList(field.FieldType, typeof(string)) == false)
 										continue;
 
-									if (IsInClassList(field.FieldType, typeof(float), typeof(double)))
-									{
-										input = input.Replace(",", ".");
-									}
-
 									try
 									{
 										object? final = null;
 										if (field.FieldType != typeof(string))
+										{
+											input = input.Replace(",", ".");
 											final = JsonSerializer.Deserialize(input, field.FieldType);
+										}
 										else
 											final = input;
 
@@ -177,6 +177,8 @@ namespace BEngineEditor
 								ImGui.SameLine();
 								if (ImGui.InputText("##x", ref x, 128))
 								{
+									x = x.Replace(".", ",");
+
 									try
 									{
 										object final = new Vector3(float.Parse(x), float.Parse(y), float.Parse(z));
@@ -184,9 +186,9 @@ namespace BEngineEditor
 										if (final != null)
 											UpdateField(field, script, sceneScript, final);
 									}
-									catch
+									catch (Exception ex)
 									{
-
+										Console.WriteLine(ex.Message);
 									}
 								}
 								ImGui.SameLine(0, 5);
@@ -194,6 +196,8 @@ namespace BEngineEditor
 								ImGui.SameLine();
 								if (ImGui.InputText("##y", ref y, 128))
 								{
+									y = y.Replace(".", ",");
+
 									try
 									{
 										object final = new Vector3(float.Parse(x), float.Parse(y), float.Parse(z));
@@ -211,6 +215,8 @@ namespace BEngineEditor
 								ImGui.SameLine();
 								if (ImGui.InputText("##z", ref z, 128))
 								{
+									z = z.Replace(".", ",");
+
 									try
 									{
 										object final = new Vector3(float.Parse(x), float.Parse(y), float.Parse(z));
@@ -264,6 +270,8 @@ namespace BEngineEditor
 								ImGui.SameLine();
 								if (ImGui.InputText("##x", ref x, 128))
 								{
+									x = x.Replace(".", ",");
+
 									try
 									{
 										object final = new Quaternion(float.Parse(x), float.Parse(y), float.Parse(z), float.Parse(w));
@@ -281,6 +289,8 @@ namespace BEngineEditor
 								ImGui.SameLine();
 								if (ImGui.InputText("##y", ref y, 128))
 								{
+									y = y.Replace(".", ",");
+
 									try
 									{
 										object final = new Quaternion(float.Parse(x), float.Parse(y), float.Parse(z), float.Parse(w));
@@ -298,6 +308,8 @@ namespace BEngineEditor
 								ImGui.SameLine();
 								if (ImGui.InputText("##z", ref z, 128))
 								{
+									z = z.Replace(".", ",");
+
 									try
 									{
 										object final = new Quaternion(float.Parse(x), float.Parse(y), float.Parse(z), float.Parse(w));
@@ -315,6 +327,8 @@ namespace BEngineEditor
 								ImGui.SameLine();
 								if (ImGui.InputText("##w", ref w, 128))
 								{
+									w = w.Replace(".", ",");
+
 									try
 									{
 										object final = new Quaternion(float.Parse(x), float.Parse(y), float.Parse(z), float.Parse(w));
