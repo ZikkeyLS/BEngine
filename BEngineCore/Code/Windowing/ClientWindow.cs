@@ -12,12 +12,15 @@ namespace BEngineCore
 
 			Scripting.LoadInternalScriptingAPI();
 
+			graphics.CreateBuffer((uint)window.Size.X, (uint)window.Size.Y);
+
 			_project = new();
 			_project.LoadProject();
 		}
 
 		protected override void OnRender(double time)
 		{
+			graphics.Render(this, (float)time);
 			base.OnRender(time);
 		}
 	}

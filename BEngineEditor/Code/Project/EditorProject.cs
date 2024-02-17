@@ -1,4 +1,5 @@
 ﻿using BEngineCore;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace BEngineEditor
 {
@@ -85,6 +86,12 @@ namespace BEngineEditor
 			TryLoadLastOpenedScene();
 		}
 
+		public override void OnScenePreLoaded(Scene scene)
+		{
+			Settings.LastOpenedSceneID = scene.GUID;
+			LoadSceneOnAssemblyLoaded(scene);
+		}
+
 		public void TryLoadLastOpenedScene()
 		{		
 			Scene? scene = TryLoadScene(Settings.LastOpenedSceneID);
@@ -95,25 +102,11 @@ namespace BEngineEditor
 			}
 		}
 
-		public Scene? TryLoadScene(string metaID)
-		{
-			Scene? scene = AssetData.Load<Scene>(metaID, this);
-
-			if (scene != null)
-			{
-				OpenedScene?.Save<Scene>();
-				Settings.LastOpenedSceneID = scene.GUID;
-				LoadSceneOnAssemblyLoaded(scene);
-			}
-
-			return scene;
-		}
-
 		public async void LoadSceneOnAssemblyLoaded(Scene scene)
 		{
 			await Task.Run(() =>
 			{
-				while (_compiler.AssemblyLoaded == false || 
+				while (_compiler.AssemblyLoaded == false ||
 					_compiler.AssemblyCompileErrors.Count > 0 || scripting.ReadyToUse == false)
 					Thread.Sleep(WaitMSIteration);
 				OpenedScene = scene;

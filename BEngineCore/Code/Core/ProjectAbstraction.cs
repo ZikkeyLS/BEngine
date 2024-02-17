@@ -25,5 +25,28 @@ namespace BEngineCore
 		{
 
 		}
+
+		public Scene? TryLoadScene(string metaID, bool fastLoad = false)
+		{
+			Scene? scene = AssetData.Load<Scene>(metaID, this);
+
+			if (scene != null)
+			{
+				loadedScene?.Save<Scene>();
+				OnScenePreLoaded(scene);
+				if (fastLoad)
+				{
+					loadedScene = scene;
+					loadedScene.LoadScene();
+				}
+			}
+
+			return scene;
+		}
+
+		public virtual void OnScenePreLoaded(Scene scene)
+		{
+
+		}
 	}
 }
