@@ -5,8 +5,7 @@ namespace BEngineCore.Code.Runtime
 	{
 		public override void LoadProjectData()
 		{
-		//	scripting.ReadScriptAssembly(Path.Combine(Directory.GetCurrentDirectory(), "ProjectAssembly.dll"));
-			//Scene? test = TryLoadScene("87632fbc-18eb-40c0-bd45-f80c8da47b69", true);
+			scripting.ReadScriptAssembly(Path.Combine(Directory.GetCurrentDirectory(), "ProjectAssembly.dll"));
 			// init AssetReader with .zip reader feature
 		}
 	}
