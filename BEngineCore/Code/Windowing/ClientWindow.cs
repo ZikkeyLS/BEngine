@@ -10,8 +10,6 @@ namespace BEngineCore
 		{
 			base.OnLoad();
 
-			Scripting.LoadInternalScriptingAPI();
-
 			graphics.CreateBuffer((uint)window.Size.X, (uint)window.Size.Y);
 
 			_project = new();

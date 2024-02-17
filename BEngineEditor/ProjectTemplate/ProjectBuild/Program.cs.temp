@@ -6,6 +6,8 @@ namespace ProjectBuild
 	{
 		static void Main(string[] args)
 		{
+			Scripting.LoadInternalScriptingAPI();
+
 			string currentDirectory = Directory.GetCurrentDirectory();
 			Directory.SetCurrentDirectory(Path.Combine(currentDirectory, "Data"));
 
