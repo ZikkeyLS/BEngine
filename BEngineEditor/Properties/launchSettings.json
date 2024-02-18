@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BEngineEditor": {
+      "commandName": "Project",
+      "hotReloadEnabled": true
+    }
+  }
+}

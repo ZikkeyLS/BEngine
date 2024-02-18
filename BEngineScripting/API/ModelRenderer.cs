@@ -8,10 +8,6 @@ namespace BEngine
 		public override void OnStart()
 		{
 			Transform = GetScript<Transform>();
-			if (Transform == null)
-				Logger.LogMessage("AWFUL START");
-			else
-				Logger.LogMessage("GOOD START");
 		}
 
 		public override void OnUpdate()
@@ -22,20 +18,12 @@ namespace BEngine
 				return;
 			}
 
-			Logger.LogMessage("Message from Model Renderer");
-			Logger.LogMessage(Transform.Position.ToString());
-			Logger.LogMessage(Transform.Rotation.ToString());
-			Logger.LogMessage(Transform.Scale.ToString());
+			// render
 		}
 
 		public override void OnEditorStart()
 		{
 			Transform = GetScript<Transform>();
-			Logger.LogMessage("AWFUL START");
-			if (Transform == null)
-				Logger.LogMessage("AWFUL START");
-			else
-				Logger.LogMessage("GOOD START");
 		}
 
 		public override void OnEditorUpdate()
@@ -46,10 +34,7 @@ namespace BEngine
 				return;
 			}
 
-			Logger.LogMessage("Message from Model Renderer");
-			Logger.LogMessage(Transform.Position.ToString());
-			Logger.LogMessage(Transform.Rotation.ToString());
-			Logger.LogMessage(Transform.Scale.ToString());
+			
 
 		}
 	}

@@ -19,16 +19,61 @@ namespace BEngineCore
 		private uint _ebo;
 
 		private float[] vertices = {
-    // Позиции          // Цвета             // Текстурные координаты
-     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // Верхний правый
-     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // Нижний правый
-    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // Нижний левый
-    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // Верхний левый
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 		};
 
-		private uint[] indices = {
-			0, 1, 3, // First Triangle
-			1, 2, 3  // Second Triangle
+		private Vector3[] cubePositions =
+		{
+			new Vector3( 0.0f, 0.0f, 0.0f),
+			new Vector3( 2.0f, 5.0f, -15.0f),
+			new Vector3(-1.5f, -2.2f, -2.5f),
+			new Vector3(-3.8f, -2.0f, -12.3f),
+			new Vector3( 2.4f, -0.4f, -3.5f),
+			new Vector3(-1.7f, 3.0f, -7.5f),
+			new Vector3( 1.3f, -2.0f, -2.5f),
+			new Vector3( 1.5f, 2.0f, -2.5f),
+			new Vector3( 1.5f, 0.2f, -1.5f),
+			new Vector3(-1.3f, 1.0f, -1.5f)
 		};
 
 		public Dictionary<string, FrameBuffer> FrameBuffers = new();
@@ -47,6 +92,8 @@ namespace BEngineCore
 
 		public unsafe void Initialize()
 		{
+			gl.Enable(GLEnum.DepthTest);
+
 			gl.ClearColor(Color.CornflowerBlue);
 
 			_camera = new Camera();
@@ -59,22 +106,14 @@ namespace BEngineCore
 			fixed (float* buff = vertices)
 				gl.BufferData(GLEnum.ArrayBuffer, (nuint)(sizeof(float) * vertices.Length), buff, GLEnum.StaticDraw);
 
-			_ebo = gl.GenBuffer();
-			gl.BindBuffer(GLEnum.ElementArrayBuffer, _ebo);
-			fixed (uint* buff = indices)
-				gl.BufferData(GLEnum.ElementArrayBuffer, (nuint)(sizeof(uint) * indices.Length), buff, GLEnum.StaticDraw);
-
 			_shader = new Shader("EngineData/Shaders/Shader.vert", "EngineData/Shaders/Shader.frag", gl);
 			_texture = new Texture("EngineData/Textures/Bricks.jpg", gl);
 
 			gl.EnableVertexAttribArray(0);
-			gl.VertexAttribPointer(0, 3, GLEnum.Float, false, 8 * sizeof(float), (void*)0);
-
-			gl.EnableVertexAttribArray(1);
-			gl.VertexAttribPointer(1, 3, GLEnum.Float, false, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+			gl.VertexAttribPointer(0, 3, GLEnum.Float, false, 5 * sizeof(float), (void*)0);
 
 			gl.EnableVertexAttribArray(2);
-			gl.VertexAttribPointer(2, 2, GLEnum.Float, false, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+			gl.VertexAttribPointer(2, 2, GLEnum.Float, false, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
 			gl.BindVertexArray(0);
 			gl.BindBuffer(BufferTargetARB.ArrayBuffer, 0);
@@ -88,7 +127,7 @@ namespace BEngineCore
 		public unsafe void Render(EngineWindow window, float time, bool forceRender = false)
 		{
 			gl.ClearColor(0f, 0f, 0f, 1.0f);
-			gl.Clear(ClearBufferMask.ColorBufferBit);
+			gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
 			float speed = time;
 
@@ -149,18 +188,19 @@ namespace BEngineCore
 				frame.Bind();
 
 				gl.ClearColor(Color.CornflowerBlue);
-				gl.Clear(ClearBufferMask.ColorBufferBit);
+				gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
 				Matrix4x4 view = _camera.CalculateViewMatrix();
 				Matrix4x4 projection = _camera.CalculateProjectionMatrix(frame.Width, frame.Height);
 
-				Matrix4x4 model = Matrix4x4.CreateFromYawPitchRoll(0.5f, 0.5f, 0.5f);
 				int modelLoc = gl.GetUniformLocation(_shader.Program, "model");
 				int viewLoc = gl.GetUniformLocation(_shader.Program, "view");
 				int projLoc = gl.GetUniformLocation(_shader.Program, "projection");
 
-				fixed (float* buff = model.GetRawMatrix())
-					gl.UniformMatrix4(modelLoc, 1, false, buff);
+				gl.BindVertexArray(_vao);
+
+				_shader.Use();
+				_texture.Bind();
 
 				fixed (float* buff = view.GetRawMatrix())
 					gl.UniformMatrix4(viewLoc, 1, false, buff);
@@ -168,10 +208,21 @@ namespace BEngineCore
 				fixed (float* buff = projection.GetRawMatrix())
 					gl.UniformMatrix4(projLoc, 1, false, buff);
 
-				gl.BindVertexArray(_vao);
-				_shader.Use();
-				_texture.Bind();
-				gl.DrawElements(PrimitiveType.Triangles, 6, GLEnum.UnsignedInt, (void*)0);
+				for (int i = 0; i < 10; i++)
+				{
+					Matrix4x4 model = new Matrix4x4();
+					model = Matrix4x4.CreateTranslation(cubePositions[i]);
+					model *= Matrix4x4.CreateFromYawPitchRoll(i * 0.1f, i * 0.1f, i * 0.1f);
+					model *= Matrix4x4.CreateScale(new Vector3(i * 0.1f, i * 0.1f, i * 0.1f));
+
+					fixed (float* buff = model.GetRawMatrix())
+						gl.UniformMatrix4(modelLoc, 1, false, buff);
+
+
+					gl.DrawArrays(GLEnum.Triangles, 0, 36);
+				}
+
+
 				gl.BindVertexArray(0);
 
 				frame.Unbind();

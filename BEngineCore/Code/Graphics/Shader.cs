@@ -44,6 +44,11 @@ namespace BEngineCore
 			gl.DeleteShader(fragmentShader);
 		}
 
+		public void SetFloat(string attributeName, float value)
+		{
+
+		}
+
 		public void Use()
 		{
 			gl.UseProgram(Program);
