@@ -43,7 +43,7 @@ namespace BEngineEditor
 		public void LoadProject(string slnPath)
 		{
 			_currentProject?.Settings.Save();
-			_currentProject?.OpenedScene?.Save<Scene>();
+			_currentProject?.LoadedScene?.Save<Scene>();
 
 			_currentProject = new EditorProject(Path.GetFileNameWithoutExtension(slnPath), Path.GetDirectoryName(slnPath));
 			SearchingProject = false;

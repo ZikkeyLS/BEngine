@@ -7,12 +7,19 @@ namespace BEngineCore
 		public override void LoadProjectData()
 		{
 			logger.EnableFileLogs = true;
+			logger.ClearFileLogs();
 
 			scripting.ReadScriptAssembly(AppDomain.CurrentDomain.FriendlyName + "Assembly.dll");
-			reader = new AssetReader("Game.data", AssetReaderType.Archive);
-			Scene? test = TryLoadScene("7976e5ca-d6d7-4af7-a89e-d92aba20c946", true, false);
+			reader = new AssetReader("./", AssetReaderType.Directory);
+			Scene? test = TryLoadScene("a736c7ae-d289-43e0-b865-558b3f4df5f9", true, false);
 
 			// init AssetReader with.zip reader feature
+		}
+
+		public override void OnSceneLoaded()
+		{
+			base.OnSceneLoaded();
+			LoadedScene?.CallEvent(EventID.Start);
 		}
 	}
 }

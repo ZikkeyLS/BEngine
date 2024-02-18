@@ -1,4 +1,5 @@
-﻿using BEngineCore;
+﻿using BEngine;
+using BEngineCore;
 using static System.Formats.Asn1.AsnWriter;
 
 namespace BEngineEditor
@@ -88,6 +89,12 @@ namespace BEngineEditor
 		{
 			Settings.LastOpenedSceneID = scene.GUID;
 			LoadSceneOnAssemblyLoaded(scene);
+		}
+
+		public override void OnSceneLoaded()
+		{
+			base.OnSceneLoaded();
+			LoadedScene?.CallEvent(EventID.EditorStart);
 		}
 
 		public void TryLoadLastOpenedScene()

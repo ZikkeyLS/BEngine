@@ -60,7 +60,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BEngineCore\BEngineCore.csproj" />
-    <ProjectReference Include="..\BEngineScripting\BEngineScripting.csproj" />
   </ItemGroup>
 
 </Project>

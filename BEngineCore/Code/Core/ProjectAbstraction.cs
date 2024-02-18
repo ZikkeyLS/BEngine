@@ -38,6 +38,7 @@ namespace BEngineCore
 						loadedScene?.Save<Scene>();
 					loadedScene = scene;
 					loadedScene.LoadScene();
+					OnSceneLoaded();
 				}
 				else
 				{
@@ -55,11 +56,17 @@ namespace BEngineCore
 				loadedScene?.Save<Scene>();
 				loadedScene = scene;
 				loadedScene.LoadScene();
+				OnSceneLoaded();
 			}
 			else
 			{
 				OnSceneLongLoad(scene);
 			}
+		}
+
+		public virtual void OnSceneLoaded()
+		{
+
 		}
 
 		public virtual void OnSceneLongLoad(Scene scene)

@@ -1,5 +1,6 @@
 ﻿using BEngine;
 using BEngineScripting;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -119,6 +120,7 @@ namespace BEngineCore
 					if (currentScript.Name == Scripts[i].Name && currentScript.Namespace == Scripts[i].Namespace)
 					{
 						Script script = CreateInstanseOf(currentScript);
+
 						for (int k = 0; k < Scripts[i].Fields.Count; k++)
 						{
 							Type scriptType = script.GetType();
@@ -142,6 +144,7 @@ namespace BEngineCore
 
 		private Script CreateInstanseOf(Scripting.CachedScript script)
 		{
+			Entity.Name = Name;
 			Script instance = script.CreateInstance<Script>();
 			instance.GetType().GetField("Entity")?.SetValue(instance, Entity);
 			Entity.Scripts.Add(instance);

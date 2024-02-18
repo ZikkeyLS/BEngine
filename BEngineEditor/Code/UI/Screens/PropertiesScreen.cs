@@ -149,15 +149,10 @@ namespace BEngineEditor
 
 								if (sceneScriptValue != null)
 								{
-									Vector3? input = JsonSerializer.Deserialize<Vector3>(sceneScriptValue.Value);
-
-									if (input != null)
-									{
-
-										x = input.x.ToString();
-										y = input.y.ToString();
-										z = input.z.ToString();
-									}
+									Vector3 input = JsonSerializer.Deserialize<Vector3>(sceneScriptValue.Value);
+									x = input.x.ToString();
+									y = input.y.ToString();
+									z = input.z.ToString();
 								}
 								else
 								{
@@ -182,7 +177,7 @@ namespace BEngineEditor
 									try
 									{
 										object final = new Vector3(float.Parse(x), float.Parse(y), float.Parse(z));
-	
+
 										if (final != null)
 											UpdateField(field, script, sceneScript, final);
 									}
@@ -240,15 +235,11 @@ namespace BEngineEditor
 
 								if (sceneScriptValue != null)
 								{
-									Quaternion? input = JsonSerializer.Deserialize<Quaternion>(sceneScriptValue.Value);
-
-									if (input != null)
-									{
-										x = input.x.ToString();
-										y = input.y.ToString();
-										z = input.z.ToString();
-										w = input.w.ToString();
-									}
+									Quaternion input = JsonSerializer.Deserialize<Quaternion>(sceneScriptValue.Value);
+									x = input.x.ToString();
+									y = input.y.ToString();
+									z = input.z.ToString();
+									w = input.w.ToString();
 								}
 								else
 								{
@@ -404,7 +395,7 @@ namespace BEngineEditor
 
 										foreach (SceneEntity entity in _scene.Entities)
 										{
-											SceneScript? found = entity.Scripts.Find((allScript) => 
+											SceneScript? found = entity.Scripts.Find((allScript) =>
 												allScript.Name == initialName && allScript.Namespace == initialNamespace);
 
 											if (found == null)
@@ -420,7 +411,7 @@ namespace BEngineEditor
 												continue;
 											}
 
-											if (entity.RenameScript(found, currentScript) 
+											if (entity.RenameScript(found, currentScript)
 												&& closed == false)
 											{
 												ImGui.CloseCurrentPopup();

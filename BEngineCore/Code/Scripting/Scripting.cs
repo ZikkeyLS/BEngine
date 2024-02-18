@@ -94,6 +94,7 @@ namespace BEngineCore
 		private void LoadInternalAssembly()
 		{
 			_scripts.Add(new CachedScript(typeof(BEngine.Transform)));
+			_scripts.Add(new CachedScript(typeof(BEngine.ModelRenderer)));
 			_scripts.Add(new CachedScript(typeof(BEngine.Camera)));
 		}
 

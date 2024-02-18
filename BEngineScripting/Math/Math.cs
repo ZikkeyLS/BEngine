@@ -1,7 +1,7 @@
 ﻿
 namespace BEngine
 {
-	public class Vector2
+	public struct Vector2
 	{
 		public float x { get; set; } = 0;
 		public float y { get; set; } = 0;
@@ -16,9 +16,14 @@ namespace BEngine
 			this.x = x;
 			this.y = y;
 		}
+
+		public override string ToString()
+		{
+			return $"Vector2 ({x};{y})";
+		}
 	}
 
-	public class Vector3
+	public struct Vector3
 	{
 		public float x { get; set; } = 0;
 		public float y { get; set; } = 0;
@@ -41,9 +46,14 @@ namespace BEngine
 			this.y = y;
 			this.z = z;
 		}
+
+		public override string ToString()
+		{
+			return $"Vector3 ({x};{y};{z})";
+		}
 	}
 
-	public class Vector4
+	public struct Vector4
 	{
 		public float x { get; set; } = 0;
 		public float y { get; set; } = 0;
@@ -75,9 +85,14 @@ namespace BEngine
 			this.z = z;
 			this.w = w;
 		}
+
+		public override string ToString()
+		{
+			return $"Vector4 ({x};{y};{z};{w})";
+		}
 	}
 
-	public class Quaternion
+	public struct Quaternion
 	{
 		public float x { get; set; } = 0;
 		public float y { get; set; } = 0;
@@ -114,6 +129,11 @@ namespace BEngine
 		{
 			System.Numerics.Quaternion result = System.Numerics.Quaternion.CreateFromYawPitchRoll(x, y, z);
 			return new Quaternion(result.X, result.Y, result.Z, result.W);
+		}
+
+		public override string ToString()
+		{
+			return $"Quaternion ({x};{y};{z};{w})";
 		}
 	}
 }
