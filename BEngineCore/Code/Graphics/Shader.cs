@@ -1,4 +1,6 @@
 ﻿using Silk.NET.OpenGL;
+using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace BEngineCore
 {
@@ -46,7 +48,13 @@ namespace BEngineCore
 
 		public void SetFloat(string attributeName, float value)
 		{
+			gl.Uniform1(gl.GetUniformLocation(Program, attributeName), value);
+		}
 
+		public unsafe void SetMatrix4(string attributeName, Matrix4x4 matrix)
+		{
+			fixed (float* buff = matrix.GetRawMatrix())
+				gl.UniformMatrix4(gl.GetUniformLocation(Program, attributeName), 1, false, buff);
 		}
 
 		public void Use()

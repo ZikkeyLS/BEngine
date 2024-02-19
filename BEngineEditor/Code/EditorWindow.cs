@@ -55,7 +55,7 @@ namespace BEngineEditor
 
 			_shortcuts = new Shortcuts(ProjectContext);
 
-			_sceneBuffer = graphics.CreateBuffer((uint)window.Size.X, (uint)window.Size.Y);
+			_sceneBuffer = graphics.CreateBuffer("Scene", (uint)window.Size.X, (uint)window.Size.Y);
 
 			_projectLoader.Initialize(this);
 			_menuBar.Initialize(this);
@@ -81,8 +81,6 @@ namespace BEngineEditor
 
 		protected override void OnUpdate(double time)
 		{
-			ProjectContext?.CurrentProject?.LoadedScene?.CallEvent(EventID.Start);
-			ProjectContext?.CurrentProject?.LoadedScene?.CallEvent(EventID.Update);
 			ProjectContext?.CurrentProject?.LoadedScene?.CallEvent(EventID.EditorUpdate);
 			_shortcuts.Update();
 		}

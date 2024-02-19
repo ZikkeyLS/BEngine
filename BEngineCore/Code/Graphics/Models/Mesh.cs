@@ -1,4 +1,5 @@
-﻿using Silk.NET.OpenGL;
+﻿using Silk.NET.Assimp;
+using Silk.NET.OpenGL;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -13,10 +14,13 @@ namespace BEngineCore
 		public Vector2 TexCoords;
 	}
 
+	[StructLayout(LayoutKind.Sequential)]
 	public struct TextureMesh
 	{
 		public uint ID;
 		public string Type;
+		public Texture Texture;
+		public AssimpString Path;
 	}
 
 	internal class Mesh
@@ -40,7 +44,7 @@ namespace BEngineCore
 			SetupMesh();
 		}
 
-		public void Draw(Shader shader)
+		public unsafe void Draw(Shader shader)
 		{
 			uint diffuseNr = 1;
 			uint specularNr = 1;
@@ -50,8 +54,6 @@ namespace BEngineCore
 				gl.ActiveTexture((GLEnum)((uint)GLEnum.Texture0 + i));
 
 				StringBuilder stringStream = new StringBuilder();
-
-				string number;
 				string name = Textures[i].Type;
 
 				if (name == "texture_diffuse")
@@ -63,10 +65,17 @@ namespace BEngineCore
 					stringStream.Append(specularNr++);
 				}
 
-				number = stringStream.ToString();
+				string number = stringStream.ToString();
 
-				
+				shader.SetFloat(name + number, i);
+				gl.BindTexture(GLEnum.Texture2D, Textures[i].ID);
 			}
+
+			gl.BindVertexArray(_vao);
+			gl.DrawElements(GLEnum.Triangles, (uint)Indices.Length, GLEnum.UnsignedInt, (void*)0);
+			gl.BindVertexArray(0);
+
+			gl.ActiveTexture(GLEnum.Texture0);
 		}
 
 		private unsafe void SetupMesh()
@@ -95,7 +104,7 @@ namespace BEngineCore
 			gl.EnableVertexAttribArray(1);
 			gl.VertexAttribPointer(1, 3, GLEnum.Float, false, (uint)sizeof(VertexMesh), (void*)sizeof(Vector3));
 
-			gl.EnableVertexAttribArray(1);
+			gl.EnableVertexAttribArray(2);
 			gl.VertexAttribPointer(2, 2, GLEnum.Float, false, (uint)sizeof(VertexMesh), (void*)(sizeof(Vector3) * 2));
 
 			gl.BindVertexArray(0);

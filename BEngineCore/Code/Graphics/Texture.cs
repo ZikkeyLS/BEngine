@@ -1,5 +1,4 @@
 using Silk.NET.OpenGL;
-using System;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Runtime.InteropServices;
@@ -13,28 +12,58 @@ namespace BEngineCore
         private uint _handle;
         private GL _gl;
 
+        private int _maxSize = 2048;
+
+        public uint ID => _handle;
+
         public unsafe Texture(string path, GL gl, FlipMode fm = FlipMode.None)
         {
-            //Loading an image using imagesharp.
             Image<Rgba32> img = Image.Load<Rgba32>(path);
-            //We need to flip our image as image sharps coordinates has origin (0, 0) in the top-left corner,
-            //where as openGL has origin in the bottom-left corner.
-            img.Mutate(x => x.Flip(fm));
 
-            Rgba32[] pixelArray = new Rgba32[img.Width * img.Height];
-            img.CopyPixelDataTo(pixelArray);
+            int properWidth = img.Width;
+            int properHeight = img.Height;
 
-            fixed (void* data = &MemoryMarshal.GetReference(pixelArray.AsSpan()))
+            if (properWidth == properHeight && properWidth > _maxSize)
             {
-                //Loading the actual image.
-                Load(gl, data, (uint)img.Width, (uint)img.Height);
+                properWidth = _maxSize;
+                properHeight = _maxSize;
+            }
+            else if (properWidth > _maxSize || properHeight > _maxSize)
+            {
+                if (properHeight > properWidth)
+                {
+                    float aspect = (float)properWidth / properHeight;
+                    properHeight = _maxSize;
+                    properWidth = (int)(aspect * _maxSize);
+                }
+                else
+                {
+					float aspect = (float)properWidth / properHeight;
+                    properWidth = _maxSize;
+                    properHeight = (int)(aspect * _maxSize);
+				}
             }
 
-            //Deleting the img from imagesharp.
+            img.Mutate(x => 
+            {
+                x.Flip(fm);
+                x.Resize(properWidth, properHeight);
+            });
+
+            byte[] pixelBytes = new byte[img.Width * img.Height * Unsafe.SizeOf<Rgba32>()];
+            img.CopyPixelDataTo(pixelBytes);
+
+            fixed (void* buff = pixelBytes)
+            {
+                Load(gl, buff, (uint)img.Width, (uint)img.Height);
+            }
+
             img.Dispose();
+            img = null;
+            GC.Collect();
         }
 
-        public unsafe Texture(GL gl, Span<byte> data, uint width, uint height)
+		public unsafe Texture(GL gl, Span<byte> data, uint width, uint height)
         {
             //We want the ability to create a texture using data generated from code aswell.
             fixed (void* d = &data[0])

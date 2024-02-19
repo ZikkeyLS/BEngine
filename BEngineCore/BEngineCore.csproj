@@ -18,12 +18,61 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="EngineData\Models\Rifle_fbx\**" />
+    <Compile Remove="EngineData\Models\Rifle_obj\**" />
+    <EmbeddedResource Remove="EngineData\Models\Rifle_fbx\**" />
+    <EmbeddedResource Remove="EngineData\Models\Rifle_obj\**" />
+    <None Remove="EngineData\Models\Rifle_fbx\**" />
+    <None Remove="EngineData\Models\Rifle_obj\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="EngineData\Models\Rifle\M1 Garand Lowpoly.fbx" />
+    <None Remove="EngineData\Models\Rifle\M1 Garand.mtl" />
+    <None Remove="EngineData\Models\Rifle\M1 Garand.obj" />
+    <None Remove="EngineData\Models\Rifle\textures\LP_Checker_BaseColor.jpg" />
+    <None Remove="EngineData\Models\Rifle\textures\LP_Checker_Height.jpg" />
+    <None Remove="EngineData\Models\Rifle\textures\LP_Checker_Metallic.jpg" />
+    <None Remove="EngineData\Models\Rifle\textures\LP_Checker_Normal.jpg" />
+    <None Remove="EngineData\Models\Rifle\textures\LP_Checker_Roughness.jpg" />
+    <None Remove="EngineData\Shaders\PointLight.frag" />
+    <None Remove="EngineData\Shaders\PointLight.vert" />
     <None Remove="EngineData\Shaders\Shader.frag" />
     <None Remove="EngineData\Shaders\Shader.vert" />
     <None Remove="EngineData\Textures\Bricks.jpg" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="EngineData\Models\Rifle\M1 Garand Lowpoly.fbx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Models\Rifle\M1 Garand.mtl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Models\Rifle\M1 Garand.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Models\Rifle\textures\LP_Checker_BaseColor.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Models\Rifle\textures\LP_Checker_Height.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Models\Rifle\textures\LP_Checker_Metallic.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Models\Rifle\textures\LP_Checker_Normal.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Models\Rifle\textures\LP_Checker_Roughness.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Shaders\PointLight.frag">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Shaders\PointLight.vert">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="EngineData\Shaders\Shader.frag">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -11,7 +11,7 @@ namespace BEngineCore
 		{
 			base.OnLoad();
 
-			_game = graphics.CreateBuffer((uint)window.Size.X, (uint)window.Size.Y);
+			_game = graphics.CreateBuffer("Game", (uint)window.Size.X, (uint)window.Size.Y);
 
 			_project = new();
 			_project.LoadProject();

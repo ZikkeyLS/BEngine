@@ -1,5 +1,4 @@
 ﻿using Silk.NET.OpenGL;
-using System.Numerics;
 
 namespace BEngineCore
 {
