@@ -33,7 +33,8 @@ namespace BEngineCore
 
 		private unsafe void LoadModel(string path)
 		{
-			Silk.NET.Assimp.Scene* scene = assimp.ImportFile(path, (uint)(PostProcessSteps.Triangulate | PostProcessSteps.FlipUVs));
+			Silk.NET.Assimp.Scene* scene = assimp.ImportFile(path, (uint)(PostProcessSteps.Triangulate | PostProcessSteps.GenerateSmoothNormals 
+				| PostProcessSteps.FlipUVs | PostProcessSteps.JoinIdenticalVertices | PostProcessSteps.CalculateTangentSpace));
 
 			if (scene == null || scene->MFlags == (uint)SceneFlags.Incomplete || scene->MRootNode == null)
 			{
@@ -75,9 +76,12 @@ namespace BEngineCore
 				vertex.Position.Y = mesh->MVertices[i].Y;
 				vertex.Position.Z = mesh->MVertices[i].Z;
 
-				vertex.Normal.X = mesh->MNormals[i].X;
-				vertex.Normal.Y = mesh->MNormals[i].Y;
-				vertex.Normal.Z = mesh->MNormals[i].Z;
+				if (mesh->MNormals != null)
+				{
+					vertex.Normal.X = mesh->MNormals[i].X;
+					vertex.Normal.Y = mesh->MNormals[i].Y;
+					vertex.Normal.Z = mesh->MNormals[i].Z;
+				}
 
 				if (mesh->MTextureCoords[0] != null)
 				{

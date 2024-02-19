@@ -31,10 +31,13 @@ namespace BEngineCore
 
 		public unsafe void Initialize()
 		{
-			long prev = GC.GetTotalMemory(true);
 			gl.Enable(GLEnum.DepthTest);
+
 			gl.Enable(GLEnum.CullFace);
 			gl.CullFace(GLEnum.Back);
+
+			gl.BlendFunc(GLEnum.SrcAlpha, GLEnum.OneMinusSrcAlpha);
+			gl.Enable(GLEnum.Blend);
 
 			gl.ClearColor(Color.CornflowerBlue);
 
