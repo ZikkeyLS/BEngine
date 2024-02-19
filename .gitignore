@@ -3,7 +3,6 @@ obj/
 bin/
 
 #Visual Studio files
-*.[Oo]bj
 *.user
 *.aps
 *.pch
