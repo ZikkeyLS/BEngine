@@ -5,6 +5,7 @@ namespace BEngineCore
 	{
 		public static ProjectAbstraction LoadedProject { get; private set; }
 
+		protected Graphics graphics;
 		protected Scripting scripting = new();
 		protected AssetReader reader;
 		protected Logger logger = new(true);
@@ -14,10 +15,17 @@ namespace BEngineCore
 		public AssetReader AssetsReader => reader;
 		public Logger Logger => logger;
 		public Scene LoadedScene => loadedScene;
+		public Graphics Graphics => graphics;
+
+		public ProjectAbstraction(Graphics graphics)
+		{
+			this.graphics = graphics;
+		}
 
 		public void LoadProject()
 		{
 			LoadedProject = this;
+
 			LoadProjectData();
 		}
 

@@ -23,7 +23,7 @@ namespace BEngineCore
 		public AssimpString Path;
 	}
 
-	internal class Mesh
+	internal class Mesh : IDisposable
 	{
 		public readonly VertexMesh[] Vertices;
 		public readonly uint[] Indices;
@@ -105,9 +105,14 @@ namespace BEngineCore
 			gl.VertexAttribPointer(1, 3, GLEnum.Float, false, (uint)sizeof(VertexMesh), (void*)sizeof(Vector3));
 
 			gl.EnableVertexAttribArray(2);
-			gl.VertexAttribPointer(2, 2, GLEnum.Float, false, (uint)sizeof(VertexMesh), (void*)(sizeof(Vector3) * 2));
+			gl.VertexAttribPointer(2, 3, GLEnum.Float, false, (uint)sizeof(VertexMesh), (void*)(sizeof(Vector3) * 2));
 
 			gl.BindVertexArray(0);
+		}
+
+		public void Dispose()
+		{
+
 		}
 	}
 }

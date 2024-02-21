@@ -1,12 +1,15 @@
 ﻿using Silk.NET.Assimp;
 using Silk.NET.OpenGL;
+using Silk.NET.SDL;
+using SixLabors.ImageSharp.Processing;
+using System.IO;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace BEngineCore
 {
-	internal class Model
+	public class Model : IDisposable
 	{
 		private List<Mesh> _meshes = new();
 		private List<TextureMesh> _texturesLoaded = new();
@@ -18,7 +21,6 @@ namespace BEngineCore
 
 		public Model(string path)
 		{
-			assimp = Assimp.GetApi();
 			gl = Graphics.gl;
 			LoadModel(path);
 		}
@@ -33,8 +35,10 @@ namespace BEngineCore
 
 		private unsafe void LoadModel(string path)
 		{
-			Silk.NET.Assimp.Scene* scene = assimp.ImportFile(path, (uint)(PostProcessSteps.Triangulate | PostProcessSteps.GenerateSmoothNormals 
-				| PostProcessSteps.FlipUVs | PostProcessSteps.JoinIdenticalVertices | PostProcessSteps.CalculateTangentSpace));
+			assimp = Assimp.GetApi();
+			Silk.NET.Assimp.Scene* scene = assimp.ImportFile(path, (uint)(PostProcessSteps.Triangulate
+				| PostProcessSteps.FlipUVs | PostProcessSteps.JoinIdenticalVertices 
+				| PostProcessSteps.CalculateTangentSpace | PostProcessSteps.GenerateSmoothNormals));
 
 			if (scene == null || scene->MFlags == (uint)SceneFlags.Incomplete || scene->MRootNode == null)
 			{
@@ -43,9 +47,12 @@ namespace BEngineCore
 			}
 
 			_directory = path.Substring(0, path.LastIndexOf("/") + 1);
+			if (_directory == string.Empty)
+				_directory = path.Substring(0, path.LastIndexOf("\\") + 1);
 
 			ProcessNode(scene->MRootNode, scene);
 			assimp.ReleaseImport(scene);
+			assimp.Dispose();
 		}
 
 		private unsafe void ProcessNode(Node* node, Silk.NET.Assimp.Scene* scene)
@@ -108,13 +115,44 @@ namespace BEngineCore
 				Material* material = scene->MMaterials[mesh->MMaterialIndex];
 
 				List<TextureMesh> diffuseMaps = GetTextures(material, TextureType.Diffuse, "texture_diffuse");
+				if (diffuseMaps.Count == 0)
+				{
+					diffuseMaps.Add(GetDefaultTexture("texture_diffuse"));
+				}
+				if (diffuseMaps.Count > 1)
+					Console.WriteLine("EE");
 				textures.AddRange(diffuseMaps);
+
 				List<TextureMesh> specularMaps = GetTextures(material, TextureType.Specular, "texture_specular");
 				textures.AddRange(specularMaps);
+
 			}
 
 			Mesh result = new Mesh(vertices, indices, textures);
 			return result;
+		}
+
+		public Texture? _defaultLoaded = null;
+		private unsafe TextureMesh GetDefaultTexture(string typeName)
+		{
+			TextureMesh texture = new TextureMesh();
+			Texture load;
+
+			if (_defaultLoaded != null)
+			{
+				load = _defaultLoaded;
+			}
+			else
+			{
+				load = new Texture("EngineData/Textures/Default.jpg", gl);
+				_defaultLoaded = load;
+			}
+
+			texture.Texture = load;
+			texture.ID = texture.Texture.ID;
+			texture.Type = typeName;
+			texture.Path = "EngineData/Textures/Default.jpg";
+			return texture;
 		}
 
 		private unsafe List<TextureMesh> GetTextures(Material* material, TextureType type, string typeName)
@@ -144,10 +182,21 @@ namespace BEngineCore
 					}
 				}
 
-				if (skip == false)
+
+				string resultPath = _directory + path.AsString;
+				if (resultPath.Contains(".fbm"))
+				{
+					resultPath = _directory + "Textures\\" + resultPath.Substring(resultPath.IndexOf(".fbm") + 5).Replace(".tif", ".png");
+					if (Path.Exists(resultPath) == false)
+						resultPath = _directory + "Textures\\" + resultPath.Substring(resultPath.IndexOf(".fbm") + 5).Replace(".tif", ".jpg");
+					if (Path.Exists(resultPath) == false)
+						resultPath = _directory + "Textures\\" + resultPath.Substring(resultPath.IndexOf(".fbm") + 5).Replace(".tif", ".jpeg");
+				}
+
+				if (skip == false && Path.Exists(resultPath))
 				{
 					TextureMesh texture = new TextureMesh();
-					texture.Texture = new Texture(_directory + path.AsString, gl);
+					texture.Texture = new Texture(resultPath, gl);
 					texture.ID = texture.Texture.ID;
 					texture.Type = typeName;
 					texture.Path = path.AsString;
@@ -156,6 +205,19 @@ namespace BEngineCore
 			}
 
 			return textures;
+		}
+
+		public void Dispose()
+		{
+			for (int i = 0; i < _meshes.Count; i++)
+			{
+				_meshes[i].Dispose();
+			}
+
+			for (int i = 0; i < _texturesLoaded.Count; i++)
+			{
+				_texturesLoaded[i].Texture.Dispose();
+			}
 		}
 	}
 }

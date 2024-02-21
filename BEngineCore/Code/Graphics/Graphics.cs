@@ -1,18 +1,30 @@
-﻿using Silk.NET.Input;
+﻿using BEngine;
+using Silk.NET.Input;
 using Silk.NET.OpenGL;
 using System.Numerics;
 using Color = System.Drawing.Color;
+using Quaternion = System.Numerics.Quaternion;
+using Vector2 = System.Numerics.Vector2;
+using Vector3 = System.Numerics.Vector3;
 
 namespace BEngineCore
 {
+	public struct ModelRenderContext
+	{
+		public Model Model;
+		public Transform Transform;
+	}
+
 	public class Graphics
 	{
 		public static GL gl { get; private set; }
+		public static Thread MainThread { get; private set; }
 
 		private Camera _camera;
 		private Shader _shader;
 
-		private Model _model;
+		// private Model _model;
+		public List<ModelRenderContext> ModelsToRender = new();
 
 
 		public Dictionary<string, FrameBuffer> FrameBuffers = new();
@@ -31,13 +43,15 @@ namespace BEngineCore
 
 		public unsafe void Initialize()
 		{
+			MainThread = Thread.CurrentThread;
+
 			gl.Enable(GLEnum.DepthTest);
 
 			gl.Enable(GLEnum.CullFace);
 			gl.CullFace(GLEnum.Back);
 
-			gl.BlendFunc(GLEnum.SrcAlpha, GLEnum.OneMinusSrcAlpha);
-			gl.Enable(GLEnum.Blend);
+		//	gl.BlendFunc(GLEnum.SrcAlpha, GLEnum.OneMinusSrcAlpha);
+	//		gl.Enable(GLEnum.Blend);
 
 			gl.ClearColor(Color.CornflowerBlue);
 
@@ -45,18 +59,35 @@ namespace BEngineCore
 			_shader = new Shader("EngineData/Shaders/Shader.vert", "EngineData/Shaders/Shader.frag", gl);
 
 			//_model = new Model("EngineData/Models/Rifle/M1 Garand Lowpoly.fbx");
-			_model = new Model("EngineData/Models/Rifle/M1 Garand.obj");
+			//_model = new Model("EngineData/Models/Rifle/M1 Garand.obj");
 
 			// For debug usage: gl.PolygonMode(GLEnum.FrontAndBack, GLEnum.Line);
 		}
 
 		private Vector2? _lastMousePosition = null;
 
+		private bool fill = true;
+		private DateTime fillTime = DateTime.Now;
+
 		public unsafe void Render(EngineWindow window, float time, bool forceRender = false)
 		{
 			gl.ClearColor(0f, 0f, 0f, 1.0f);
 			gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
+			if (window.IsKeyPressed(Key.Escape) && (DateTime.Now - fillTime).TotalSeconds >= 0.25f)
+			{
+				if (fill)
+				{
+					gl.PolygonMode(GLEnum.FrontAndBack, GLEnum.Line);
+				}
+				else
+				{
+					gl.PolygonMode(GLEnum.FrontAndBack, GLEnum.Fill);
+				}
+
+				fillTime = DateTime.Now;
+				fill = !fill;
+			}
 
 			float speed = time * 6;
 			if (window.IsKeyPressed(Key.W))
@@ -126,11 +157,20 @@ namespace BEngineCore
 				_shader.SetMatrix4("view", view);
 				_shader.SetMatrix4("projection", projection);
 
-				Matrix4x4 model = Matrix4x4.CreateScale(1f);
-				model *= Matrix4x4.CreateTranslation(new Vector3(0f, 0f, 0f));
+				//_model.Draw(_shader);
 
-				_shader.SetMatrix4("model", model);
-				_model.Draw(_shader);
+				for (int i = 0; i < ModelsToRender.Count; i++)
+				{
+					Transform transform = ModelsToRender[i].Transform;
+
+					Matrix4x4 model = Matrix4x4.CreateScale(transform.Scale.ToNative());
+					model *= Matrix4x4.CreateFromQuaternion(transform.Rotation.ToNative());
+					model *= Matrix4x4.CreateTranslation(transform.Position.ToNative());
+					_shader.SetMatrix4("model", model);
+
+					ModelsToRender[i].Model.Draw(_shader);
+				}
+				ModelsToRender.Clear();
 
 				frame.Unbind();
 			}
@@ -150,6 +190,21 @@ namespace BEngineCore
 								  ClearBufferMask.ColorBufferBit, GLEnum.Linear);
 				gl.BindFramebuffer(GLEnum.ReadFramebuffer, 0);
 			}
+		}
+
+
+	}
+
+	internal static class GraphicsUtils
+	{
+		public static Vector3 ToNative(this BEngine.Vector3 vector)
+		{
+			return new Vector3(vector.x, vector.y, vector.z);
+		}
+
+		public static Quaternion ToNative(this BEngine.Quaternion vector)
+		{
+			return new Quaternion(vector.x, vector.y, vector.z, vector.w);
 		}
 	}
 

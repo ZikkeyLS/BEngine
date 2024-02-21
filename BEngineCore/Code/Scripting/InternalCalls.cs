@@ -1,5 +1,5 @@
 ﻿
-using System.Runtime.InteropServices;
+using BEngine;
 
 
 
@@ -10,7 +10,7 @@ namespace BEngineCore
 	public class InternalCalls
 	{
 		#region Logger
-		
+
 		public static void LogMessage(string message)
 		{
 			if (Logger.Main != null)
@@ -30,5 +30,18 @@ namespace BEngineCore
 		}
 		#endregion
 
+		#region Graphics
+		public static void AddRenderModel(RenderModel renderModel)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject != null)
+			{
+				Model? model = loadedProject.AssetsReader.ModelContext.GetModel(renderModel.Model.GUID);
+				if (model != null)
+					loadedProject.Graphics.ModelsToRender.Add(new ModelRenderContext { Model = model, Transform = renderModel.Transform });
+			}
+		}
+		#endregion
 	}
 }

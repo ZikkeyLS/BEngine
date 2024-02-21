@@ -14,16 +14,22 @@ namespace BEngineCore
 		public readonly string AssetsDirectory;
 		public readonly List<AssetMetaData> LoadedAssets = new();
 
+		public readonly ModelContext ModelContext;
+
 		private Packer? _packer;
 
 		public AssetReader(string assetsDirectory, AssetReaderType type)
 		{
+			ModelContext = new(this);
 			AssetsDirectory = assetsDirectory;
 			Type = type;
+
 			if (Type == AssetReaderType.Archive)
 			{
 				_packer = new();
-			}		
+			}
+
+			LoadAssets(AssetsDirectory);
 		}
 
 		public bool HasAsset(string path)
@@ -39,7 +45,19 @@ namespace BEngineCore
 
 			AssetMetaData? asset = AssetMetaData.Load(path);
 			if (asset != null)
-				LoadedAssets.Add(asset);
+			{
+				AddAssetRaw(asset);
+			}
+		}
+
+		public void AddAssetRaw(AssetMetaData asset)
+		{
+			LoadedAssets.Add(asset);
+			string path = GetAssetPath(asset.GUID);
+			if (path.EndsWith(".obj") || path.EndsWith(".fbx") || path.EndsWith(".gltf"))
+			{
+				ModelContext.AddGUID(asset.GUID);
+			}
 		}
 
 		public void LoadAssets(string directory)

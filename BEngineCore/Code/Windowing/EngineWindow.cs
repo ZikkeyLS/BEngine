@@ -1,5 +1,4 @@
 ﻿using Silk.NET.Input;
-using Silk.NET.Input.Extensions;
 using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
@@ -14,6 +13,8 @@ namespace BEngineCore
 
 		protected GL gl;
 		protected Graphics graphics;
+
+		public Graphics Graphics => graphics;
 
 		public EngineWindow(string title = "Window", int x = 1280, int y = 720)
 		{

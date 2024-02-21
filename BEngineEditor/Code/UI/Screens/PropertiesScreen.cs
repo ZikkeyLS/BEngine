@@ -80,15 +80,15 @@ namespace BEngineEditor
 							{
 								string input = string.Empty;
 
-								if (sceneScriptValue != null)
-								{
-									input = sceneScriptValue.Value.ToString();
-								}
-								else if (fields[j] != null)
+								if (fields[j] != null)
 								{
 									object? result = fields[j].GetValue(script);
 									if (result != null)
 										input = result.ToString();
+								}
+								else if (sceneScriptValue != null)
+								{
+									input = sceneScriptValue.Value.ToString();
 								}
 
 								if (input == null)
@@ -133,7 +133,7 @@ namespace BEngineEditor
 							}
 							else if (IsInClassList(field.FieldType, typeof(bool)))
 							{
-								bool input = sceneScriptValue != null ? bool.Parse(sceneScriptValue.Value) : (bool)field.GetValue(script);
+								bool input = (bool)field.GetValue(script);
 								bool result = input;
 
 								if (ImGui.Checkbox(field.Name, ref result))
@@ -147,14 +147,7 @@ namespace BEngineEditor
 								string y = "0";
 								string z = "0";
 
-								if (sceneScriptValue != null)
-								{
-									Vector3 input = JsonSerializer.Deserialize<Vector3>(sceneScriptValue.Value);
-									x = input.x.ToString();
-									y = input.y.ToString();
-									z = input.z.ToString();
-								}
-								else
+								if (fields[j] != null)
 								{
 									object? result = fields[j].GetValue(script);
 									if (result != null)
@@ -164,6 +157,13 @@ namespace BEngineEditor
 										y = initial.y.ToString();
 										z = initial.z.ToString();
 									}
+								}
+								else if (sceneScriptValue != null)
+								{
+									Vector3 input = JsonSerializer.Deserialize<Vector3>(sceneScriptValue.Value);
+									x = input.x.ToString();
+									y = input.y.ToString();
+									z = input.z.ToString();
 								}
 
 								ImGui.Text(field.Name);
@@ -181,9 +181,9 @@ namespace BEngineEditor
 										if (final != null)
 											UpdateField(field, script, sceneScript, final);
 									}
-									catch (Exception ex)
+									catch
 									{
-										Console.WriteLine(ex.Message);
+
 									}
 								}
 								ImGui.SameLine(0, 5);
@@ -333,6 +333,46 @@ namespace BEngineEditor
 									}
 								}
 								ImGui.PopItemWidth();
+							}
+							else if (IsInClassList(field.FieldType, typeof(BEngine.Model)))
+							{
+								string input = string.Empty;
+
+								if (fields[j] != null)
+								{
+									BEngine.Model? result = (BEngine.Model?)fields[j].GetValue(script);
+									if (result != null)
+										input = result.GUID;
+								}
+								else if (sceneScriptValue != null)
+								{
+									BEngine.Model? model = JsonSerializer.Deserialize<BEngine.Model>(sceneScriptValue.Value);
+									if (model != null)
+									{
+										input = model.GUID;
+									}
+								}
+
+								if (input == null)
+									input = string.Empty;
+
+								if (ImGui.InputText(field.Name, ref input, 128))
+								{
+									if (input == string.Empty)
+										continue;
+
+									try
+									{
+										object final = new BEngine.Model() { GUID = input };
+
+										if (final != null)
+											UpdateField(field, script, sceneScript, final);
+									}
+									catch
+									{
+
+									}
+								}
 							}
 
 							ImGui.PopID();

@@ -1,4 +1,5 @@
 ﻿using BEngineCore;
+using System.IO;
 
 namespace BEngineEditor
 {
@@ -26,8 +27,6 @@ namespace BEngineEditor
 			_assetWatcher.Created += CreateAsset;
 			_assetWatcher.Renamed += RenameAsset;
 			_assetWatcher.Deleted += RemoveAsset;
-
-			_assetReader.LoadAssets(_project.AssetsDirectory);
 
 			_timer = new Timer((a) => { UpdateData(); }, null, 0, MSDelay);
 		}
@@ -74,6 +73,11 @@ namespace BEngineEditor
 
 			if (foundAsset != null)
 			{
+				if (path.EndsWith(".obj") || path.EndsWith(".fbx") || path.EndsWith(".gltf"))
+				{
+					_assetReader.ModelContext.RemoveGUID(guid);
+				}
+
 				_assetReader.LoadedAssets.Remove(foundAsset);
 				File.Delete(path + @".meta");
 			}
@@ -94,6 +98,12 @@ namespace BEngineEditor
 					scene.SceneName = Path.GetFileNameWithoutExtension(newPath);
 					AssetData.WriteRaw(newPath, scene);
 				}
+				else if (newPath.EndsWith(".obj") || newPath.EndsWith(".fbx") || newPath.EndsWith(".gltf"))
+				{
+					string guid = _assetReader.GetMetaID(oldPath + @".meta");
+					if (guid != string.Empty)
+						_assetReader.ModelContext.GUIDMoved(guid, newPath);
+				}
 
 				File.Move(oldPath + @".meta", newPath + @".meta", true);
 			}
@@ -110,7 +120,7 @@ namespace BEngineEditor
 
 			AssetMetaData asset = new AssetMetaData(GenerateID());
 			asset.Save(path);
-			_assetReader.LoadedAssets.Add(asset);
+			_assetReader.AddAssetRaw(asset);
 		}
 
 		private void CreateSearchedAssets(string directory)

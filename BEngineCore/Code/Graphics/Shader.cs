@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace BEngineCore
 {
-	internal class Shader
+	public class Shader
 	{
 		public uint Program { get; private set; }
 

@@ -4,6 +4,11 @@ namespace BEngineCore
 {
 	internal class RuntimeProject : ProjectAbstraction
 	{
+		public RuntimeProject(Graphics graphics) : base(graphics)
+		{
+
+		}
+
 		public override void LoadProjectData()
 		{
 			logger.EnableFileLogs = true;

@@ -17,7 +17,9 @@ namespace BEngine
 			if (internalCallsAPI != null)
 			{
 				_internalCalls = internalCallsAPI;
+
 				LoadLoggerAssembly();
+				LoadGraphicsAssembly();
 			}
 		}
 
@@ -50,5 +52,20 @@ namespace BEngine
 			_logError?.Invoke(null, new object[] { error });
 		}
 		#endregion
+
+		#region Graphics
+		private static MethodInfo? _addRenderModel;
+
+		private static void LoadGraphicsAssembly()
+		{
+			_addRenderModel = GetMethod("AddRenderModel");
+		}
+
+		public static void AddRenderModel(RenderModel renderModel)
+		{
+			_addRenderModel?.Invoke(null, new object[] { renderModel });
+		}
+		#endregion
+
 	}
 }

@@ -1,9 +1,17 @@
 ﻿
 namespace BEngine
 {
+	public struct RenderModel
+	{
+		public Model Model;
+		public Transform Transform;
+	}
+
 	public class ModelRenderer : Script
 	{
 		public Transform Transform { get; set; }
+
+		public Model Model;
 
 		public override void OnStart()
 		{
@@ -18,7 +26,8 @@ namespace BEngine
 				return;
 			}
 
-			// render
+			if (Model != null && Model.GUID != string.Empty)
+				InternalCalls.AddRenderModel(new RenderModel() { Model = Model, Transform = Transform });
 		}
 
 		public override void OnEditorStart()
@@ -34,8 +43,8 @@ namespace BEngine
 				return;
 			}
 
-			
-
+			if (Model != null && Model.GUID != string.Empty)
+				InternalCalls.AddRenderModel(new RenderModel() { Model = Model, Transform = Transform });
 		}
 	}
 }

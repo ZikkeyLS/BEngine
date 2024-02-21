@@ -54,7 +54,7 @@ namespace BEngineEditor
 
 		private const int WaitMSIteration = 10;
 
-		public EditorProject(string name, string directory)
+		public EditorProject(string name, string directory, Graphics graphics) : base(graphics)
 		{
 			Name = name;
 			Directory = directory;

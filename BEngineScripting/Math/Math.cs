@@ -1,6 +1,9 @@
 ﻿
+using System.Runtime.InteropServices;
+
 namespace BEngine
 {
+	[StructLayout(LayoutKind.Sequential)]
 	public struct Vector2
 	{
 		public float x { get; set; } = 0;
@@ -23,6 +26,7 @@ namespace BEngine
 		}
 	}
 
+	[StructLayout(LayoutKind.Sequential)]
 	public struct Vector3
 	{
 		public float x { get; set; } = 0;
@@ -53,6 +57,7 @@ namespace BEngine
 		}
 	}
 
+	[StructLayout(LayoutKind.Sequential)]
 	public struct Vector4
 	{
 		public float x { get; set; } = 0;
@@ -92,6 +97,7 @@ namespace BEngine
 		}
 	}
 
+	[StructLayout(LayoutKind.Sequential)]
 	public struct Quaternion
 	{
 		public float x { get; set; } = 0;
