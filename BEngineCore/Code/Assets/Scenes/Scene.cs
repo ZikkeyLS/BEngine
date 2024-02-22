@@ -1,4 +1,5 @@
 ﻿using BEngine;
+using System.Reflection;
 
 namespace BEngineCore
 {
@@ -20,6 +21,43 @@ namespace BEngineCore
 		public Scene(string sceneName, ProjectAbstraction project, string guid) : base(guid, project)
 		{
 			SceneName = sceneName;
+		}
+
+		protected override void OnPreSave()
+		{
+			foreach (SceneEntity entity in Entities)
+			{
+				foreach (Script script in entity.Entity.Scripts)
+				{
+					FieldInfo[] fields = script.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+
+					foreach(FieldInfo field in fields)
+					{
+						if (field.IsInitOnly)
+							continue;
+
+						SceneScript? resultScript = entity.Scripts.Find((sceneScript) => sceneScript.Name == script.GetType().Name 
+							&& sceneScript.Namespace == script.GetType().Namespace);
+
+						if (resultScript == null)
+							continue;
+
+						object? resultValue = field.GetValue(script);
+
+						if (resultValue == null)
+							continue;
+
+						if (resultScript.ContainsField(field.Name))
+						{
+							resultScript.ChangeField(field.Name, resultValue);
+						}
+						else
+						{
+							resultScript.AddField(field.Name, resultValue);
+						}
+					}
+				}
+			}
 		}
 
 		public void LoadScene()

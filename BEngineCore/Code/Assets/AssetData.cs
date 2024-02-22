@@ -63,12 +63,18 @@ namespace BEngineCore
 
 			try
 			{
+				OnPreSave();
 				File.WriteAllText(path, JsonSerializer.Serialize((T)this));
 			}
 			catch
 			{
 
 			}
+		}
+
+		protected virtual void OnPreSave()
+		{
+
 		}
 
 		public static T? Load<T>(string guid, ProjectAbstraction project) where T : AssetData
