@@ -2,6 +2,7 @@
 using Silk.NET.Input;
 using Silk.NET.OpenGL;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using Color = System.Drawing.Color;
 using Quaternion = System.Numerics.Quaternion;
 using Vector2 = System.Numerics.Vector2;
@@ -50,16 +51,13 @@ namespace BEngineCore
 			gl.Enable(GLEnum.CullFace);
 			gl.CullFace(GLEnum.Back);
 
-		//	gl.BlendFunc(GLEnum.SrcAlpha, GLEnum.OneMinusSrcAlpha);
-	//		gl.Enable(GLEnum.Blend);
+			//gl.BlendFunc(GLEnum.SrcAlpha, GLEnum.OneMinusSrcAlpha);
+			//gl.Enable(GLEnum.Blend);
 
 			gl.ClearColor(Color.CornflowerBlue);
 
 			_camera = new Camera();
 			_shader = new Shader("EngineData/Shaders/Shader.vert", "EngineData/Shaders/Shader.frag", gl);
-
-			//_model = new Model("EngineData/Models/Rifle/M1 Garand Lowpoly.fbx");
-			//_model = new Model("EngineData/Models/Rifle/M1 Garand.obj");
 
 			// For debug usage: gl.PolygonMode(GLEnum.FrontAndBack, GLEnum.Line);
 		}
@@ -157,14 +155,15 @@ namespace BEngineCore
 				_shader.SetMatrix4("view", view);
 				_shader.SetMatrix4("projection", projection);
 
-				//_model.Draw(_shader);
-
 				for (int i = 0; i < ModelsToRender.Count; i++)
 				{
 					Transform transform = ModelsToRender[i].Transform;
 
 					Matrix4x4 model = Matrix4x4.CreateScale(transform.Scale.ToNative());
-					model *= Matrix4x4.CreateFromQuaternion(transform.Rotation.ToNative());
+					model *= Matrix4x4.CreateFromQuaternion(Quaternion.CreateFromYawPitchRoll(
+						float.DegreesToRadians(transform.Rotation.x),
+						float.DegreesToRadians(transform.Rotation.y),
+						float.DegreesToRadians(transform.Rotation.z)));
 					model *= Matrix4x4.CreateTranslation(transform.Position.ToNative());
 					_shader.SetMatrix4("model", model);
 
