@@ -11,6 +11,7 @@ namespace BEngineEditor
 		private ProjectContext _projectContext => window.ProjectContext;
 		private Scripting _scripting => _projectContext.CurrentProject.Scripting;
 		private Scene _scene => _projectContext.CurrentProject.LoadedScene;
+		private AssetReader _reader => _projectContext.CurrentProject.AssetsReader;
 #pragma warning disable CS8603 // Possible null reference return.
 		private SelectedElement _selectedElement => _projectContext.CurrentProject.SelectedElement;
 #pragma warning restore CS8603 // Possible null reference return.
@@ -356,22 +357,27 @@ namespace BEngineEditor
 								if (input == null)
 									input = string.Empty;
 
-								if (ImGui.InputText(field.Name, ref input, 128))
+								ImGui.TextWrapped($"Current model id:\n{input}");
+								ImGui.Button("Select Another Model");
+								if (ImGui.BeginPopupContextItem("Select Another Model", ImGuiPopupFlags.MouseButtonLeft))
 								{
-									if (input == string.Empty)
-										continue;
-
-									try
+									if (ImGui.BeginListBox("Select Model"))
 									{
-										object final = new BEngine.Model() { GUID = input };
+										foreach (string modelID in _reader.ModelContext.GUIDs)
+										{
+											if (ImGui.Selectable(modelID))
+											{
+												object final = new BEngine.Model() { GUID = modelID };
 
-										if (final != null)
-											UpdateField(field, script, sceneScript, final);
-									}
-									catch
-									{
+												if (final != null)
+													UpdateField(field, script, sceneScript, final);
 
+												ImGui.CloseCurrentPopup();
+											}
+										}
 									}
+									ImGui.EndListBox();
+									ImGui.EndPopup();
 								}
 							}
 
