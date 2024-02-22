@@ -64,12 +64,15 @@ namespace BEngineCore
 		{
 			for (int i = 0; i < Entities.Count; i++)
 			{
+				Entities[i].LoadInheritance();
 				Entities[i].LoadScripts(Project.Scripting);
 			}
 		}
 
 		public void ReloadScripts()
 		{
+			Save<Scene>();
+
 			for (int i = 0; i < Entities.Count; i++)
 			{
 				Entities[i].ReloadScripts(Project.Scripting);
@@ -89,15 +92,12 @@ namespace BEngineCore
 			List<SceneEntity> removeAlso = new();
 			for (int i = 0; i < Entities.Count; i++)
 			{
-				if (Entities[i].Parent == entity.GUID)
+				if (Entities[i].Parent == entity)
 				{
 					removeAlso.Add(Entities[i]);
 				}
 
-				if (Entities[i].Children.Contains(entity.GUID))
-				{
-					Entities[i].Children.Remove(entity.GUID);
-				}
+				Entities[i].RemoveChild(entity);
 			}
 
 			Entities.Remove(entity);
@@ -110,7 +110,7 @@ namespace BEngineCore
 
 		public SceneEntity CreateEntity(string name, SceneEntity? parent = null)
 		{
-			SceneEntity entity = new SceneEntity(name) { Parent = parent?.GUID };
+			SceneEntity entity = new SceneEntity(name) { Parent = parent };
 			Entities.Add(entity);
 			return entity;
 		}

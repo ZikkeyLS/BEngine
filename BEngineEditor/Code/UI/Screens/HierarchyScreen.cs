@@ -63,7 +63,7 @@ namespace BEngineEditor
 			{
 				if (ImGui.Selectable("Create Entity"))
 				{
-					current.Children.Add(_scene.CreateEntity("New Entity", current).GUID);
+					current.AddChild(_scene.CreateEntity("New Entity", current));
 				}
 
 				if (ImGui.Selectable("Delete"))
@@ -78,7 +78,7 @@ namespace BEngineEditor
 			{
 				for (int i = 0; i < current.Children.Count; i++)
 				{
-					ShowEntitiesRecursively(_entities.Find((entity) => entity.GUID == current.Children[i]), root);
+					ShowEntitiesRecursively(_entities.Find((entity) => entity == current.Children[i]), root);
 				}
 
 				ImGui.TreePop();
@@ -97,7 +97,6 @@ namespace BEngineEditor
 				ImGui.EndPopup();
 			}
 		}
-
 
 		private unsafe void DragAndDrop(SceneEntity entity)
 		{
@@ -130,8 +129,8 @@ namespace BEngineEditor
 					{
 						if (entity.ChildOf(drop) == false)
 						{
-							entity.Children.Add(drop.GUID);
-							drop.Parent = entity.GUID;
+							entity.AddChild(drop);
+							drop.SetParent(entity);
 						}
 					}
 				}

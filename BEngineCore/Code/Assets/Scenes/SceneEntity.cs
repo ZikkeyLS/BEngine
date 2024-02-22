@@ -1,6 +1,5 @@
 ﻿using BEngine;
 using BEngineScripting;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -11,8 +10,13 @@ namespace BEngineCore
 		public string GUID { get; set; }
 		public string Name { get; set; }
 		public bool Active { get; set; }
-		public string? Parent { get; set; }
-		public List<string> Children { get; set; } = new();
+		
+	    [JsonIgnore] public SceneEntity? Parent { get; set; }
+		public string? ParentBase { get; set; }
+
+		[JsonIgnore] public List<SceneEntity> Children { get; set; } = new();
+		public List<string> ChildrenBase { get; set; } = new();
+
 		public List<SceneScript> Scripts { get; set; } = new();
 
 		private Scene _scene => ProjectAbstraction.LoadedProject.LoadedScene;
@@ -20,13 +24,62 @@ namespace BEngineCore
 		[JsonIgnore]
 		public Entity Entity { get; set; } = new();
 
-		public SceneEntity() { }
+		public SceneEntity() 
+		{
+
+		}
 
 		public SceneEntity(string name)
 		{
 			GUID = Guid.NewGuid().ToString();
 			Name = name;
 			Entity.Name = name;
+		}
+
+		public void LoadInheritance()
+		{
+			if (ParentBase != null && ParentBase != string.Empty)
+			{
+				Parent = _scene.GetEntity(ParentBase);
+			}
+
+			foreach (string childBase in ChildrenBase)
+			{
+				SceneEntity? child = _scene.GetEntity(childBase);
+				if (child != null)
+					Children.Add(child);
+			}
+		}
+
+		public void SetParent(string guid)
+		{
+			SceneEntity? entity = _scene.GetEntity(guid);
+			if (entity != null)
+				SetParent(entity);
+		}
+
+		public void SetParent(SceneEntity entity)
+		{
+			Parent = entity;
+			ParentBase = entity.GUID;
+		}
+
+		public bool AddChild(SceneEntity entity)
+		{
+			if (Children.Contains(entity))
+				return false;
+			Children.Add(entity);
+			ChildrenBase.Add(entity.GUID);
+			return true;
+		}
+
+		public bool RemoveChild(SceneEntity entity)
+		{
+			if (Children.Contains(entity) == false)
+				return false;
+			Children.Remove(entity);
+			ChildrenBase.Remove(entity.GUID);
+			return true;
 		}
 
 		public bool ChildOf(SceneEntity entity)
@@ -40,7 +93,7 @@ namespace BEngineCore
 				return true;
 
 			if (current.Parent != null)
-				return IsChildOf(_scene.GetEntity(current.Parent), result);
+				return IsChildOf(current.Parent, result);
 
 			return false;
 		}
