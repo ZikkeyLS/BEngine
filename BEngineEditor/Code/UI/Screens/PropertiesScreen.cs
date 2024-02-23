@@ -47,7 +47,7 @@ namespace BEngineEditor
 						newName = "~";
 					}
 
-					selectedEntity.Name = newName;
+					selectedEntity.SetName(newName);
 				}
 
 				ImGui.Separator();

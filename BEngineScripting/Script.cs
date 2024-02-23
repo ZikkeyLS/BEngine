@@ -53,6 +53,11 @@ namespace BEngine
 
 		}
 
+		public void Log(string message)
+		{
+			Logger.LogMessage(message);
+		}
+
 		public T GetScript<T>() where T : Script
 		{
 			return Entity.GetScript<T>();

@@ -2,6 +2,7 @@
 using BEngineScripting;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 
 namespace BEngineCore
 {
@@ -32,12 +33,19 @@ namespace BEngineCore
 		public SceneEntity(string name)
 		{
 			GUID = Guid.NewGuid().ToString();
+			SetName(name);
+		}
+
+		public void SetName(string name)
+		{
 			Name = name;
-			Entity.Name = name;
+			Entity.Name = Name;
 		}
 
 		public void LoadInheritance()
 		{
+			SetName(Name);
+
 			if (ParentBase != null && ParentBase != string.Empty)
 			{
 				Parent = _scene.GetEntity(ParentBase);
@@ -197,7 +205,6 @@ namespace BEngineCore
 
 		private Script CreateInstanseOf(Scripting.CachedScript script)
 		{
-			Entity.Name = Name;
 			Script instance = script.CreateInstance<Script>();
 			instance.GetType().GetField("Entity")?.SetValue(instance, Entity);
 			Entity.Scripts.Add(instance);

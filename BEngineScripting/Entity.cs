@@ -5,15 +5,10 @@ namespace BEngine
 	public class Entity : IDisposable
 	{
 		public string Name;
-		public List<Script> Scripts = new();
+		internal List<Script> Scripts = new();
 		private List<Script> _scriptCopy = new List<Script>();
-
-		public void Log(string message)
-		{
-			Logger.LogMessage(message);
-		}
 	
-		public void CallEvent(EventID id)
+		internal void CallEvent(EventID id)
 		{
 			switch (id)
 			{
@@ -59,13 +54,13 @@ namespace BEngine
 			return null;
 		}
 
-		public void MakeScriptsCopy()
+		internal void MakeScriptsCopy()
 		{
 			for (int i = 0; i < Scripts.Count; i++)
 				_scriptCopy.Add((Script)Scripts[i].Clone());
 		}
 
-		public void LoadScriptsCopy()
+		internal void LoadScriptsCopy()
 		{
 			Scripts = _scriptCopy;
 		}
