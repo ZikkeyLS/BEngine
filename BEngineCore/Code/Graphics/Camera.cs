@@ -19,7 +19,10 @@ namespace BEngineCore
 
 		public void Recalculate()
 		{
-			Quaternion resultRotation = Quaternion.CreateFromYawPitchRoll(-rotation.X, rotation.Y, rotation.Z);
+			Quaternion resultRotation = Quaternion.CreateFromYawPitchRoll(
+				float.DegreesToRadians(rotation.X), 
+				float.DegreesToRadians(rotation.Y), 
+				float.DegreesToRadians(rotation.Z));
 
 			forward = Vector3.Transform(Vector3.UnitZ, resultRotation);
 			up = Vector3.Transform(Vector3.UnitY, resultRotation); 

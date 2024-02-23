@@ -128,11 +128,10 @@ namespace BEngineCore
 					if (_lastMousePosition != null)
 						difference = mouseMove - _lastMousePosition.Value;
 
-					float senstivity = 0.002f;
+					float senstivity = 0.1f;
 					difference *= senstivity;
 
-					_camera.rotation.X += difference.X;
-					_camera.rotation.Y += difference.Y;
+					_camera.rotation += new Vector3(-difference.X, difference.Y, 0);
 
 					_lastMousePosition = mouseMove;
 				}	
