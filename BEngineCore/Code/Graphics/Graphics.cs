@@ -2,7 +2,6 @@
 using Silk.NET.Input;
 using Silk.NET.OpenGL;
 using System.Numerics;
-using System.Runtime.InteropServices;
 using Color = System.Drawing.Color;
 using Quaternion = System.Numerics.Quaternion;
 using Vector2 = System.Numerics.Vector2;
@@ -26,7 +25,7 @@ namespace BEngineCore
 
 		// private Model _model;
 		public List<ModelRenderContext> ModelsToRender = new();
-
+		public HashSet<uint> TexturesToDelete = new();
 
 		public Dictionary<string, FrameBuffer> FrameBuffers = new();
 
@@ -71,6 +70,13 @@ namespace BEngineCore
 		{
 			gl.ClearColor(0f, 0f, 0f, 1.0f);
 			gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+			if (TexturesToDelete.Count > 0)
+			{
+				foreach (uint textureID in TexturesToDelete)
+					gl.DeleteTexture(textureID);
+				TexturesToDelete.Clear();
+			}
 
 			if (window.IsKeyPressed(Key.Escape) && (DateTime.Now - fillTime).TotalSeconds >= 0.25f)
 			{

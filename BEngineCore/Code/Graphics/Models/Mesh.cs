@@ -112,7 +112,10 @@ namespace BEngineCore
 
 		public void Dispose()
 		{
-
+			for (int i = 0; i < Textures.Length; i++)
+			{
+				Textures[i].Texture.Dispose();
+			}
 		}
 	}
 }

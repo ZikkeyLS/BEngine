@@ -1,8 +1,9 @@
 using Silk.NET.OpenGL;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
-using System.Runtime.CompilerServices;
+using StbImageSharp;
+//using SixLabors.ImageSharp;
+//using SixLabors.ImageSharp.PixelFormats;
+//using SixLabors.ImageSharp.Processing;
+//using System.Runtime.CompilerServices;
 
 namespace BEngineCore
 {
@@ -16,50 +17,53 @@ namespace BEngineCore
 
 		public uint ID => _handle;
 
-		public unsafe Texture(string path, GL gl, FlipMode fm = FlipMode.None)
+		public unsafe Texture(string path, GL gl)//, FlipMode fm = FlipMode.None)
 		{
-			Image<Rgba32> img = Image.Load<Rgba32>(path);
+			//Image<Rgba32> img = Image.Load<Rgba32>(path);
 
-			int properWidth = img.Width;
-			int properHeight = img.Height;
+			//int properWidth = img.Width;
+			//int properHeight = img.Height;
 
-			if (properWidth == properHeight && properWidth > _maxSize)
+			//if (properWidth == properHeight && properWidth > _maxSize)
+			//{
+			//	properWidth = _maxSize;
+			//	properHeight = _maxSize;
+			//}
+			//else if (properWidth > _maxSize || properHeight > _maxSize)
+			//{
+			//	if (properHeight > properWidth)
+			//	{
+			//		float aspect = (float)properWidth / properHeight;
+			//		properHeight = _maxSize;
+			//		properWidth = (int)(aspect * _maxSize);
+			//	}
+			//	else
+			//	{
+			//		float aspect = (float)properWidth / properHeight;
+			//		properWidth = _maxSize;
+			//		properHeight = (int)(aspect * _maxSize);
+			//	}
+			//}
+
+			//img.Mutate(x =>
+			//{
+			//	x.Flip(fm);
+			//	x.Resize(properWidth, properHeight);
+			//});
+
+			//_pixelBytes = new byte[img.Width * img.Height * Unsafe.SizeOf<Rgba32>()];
+			//img.CopyPixelDataTo(_pixelBytes);
+
+			using (var stream = File.OpenRead(path))
 			{
-				properWidth = _maxSize;
-				properHeight = _maxSize;
-			}
-			else if (properWidth > _maxSize || properHeight > _maxSize)
-			{
-				if (properHeight > properWidth)
+				ImageResult image = ImageResult.FromStream(stream, ColorComponents.RedGreenBlueAlpha);
+
+				fixed (void* buff = image.Data)
 				{
-					float aspect = (float)properWidth / properHeight;
-					properHeight = _maxSize;
-					properWidth = (int)(aspect * _maxSize);
-				}
-				else
-				{
-					float aspect = (float)properWidth / properHeight;
-					properWidth = _maxSize;
-					properHeight = (int)(aspect * _maxSize);
+					Load(gl, buff, (uint)image.Width, (uint)image.Height);
 				}
 			}
 
-			img.Mutate(x =>
-			{
-				x.Flip(fm);
-				x.Resize(properWidth, properHeight);
-			});
-
-			_pixelBytes = new byte[img.Width * img.Height * Unsafe.SizeOf<Rgba32>()];
-			img.CopyPixelDataTo(_pixelBytes);
-
-			fixed (void* buff = _pixelBytes)
-			{
-				Load(gl, buff, (uint)img.Width, (uint)img.Height);
-			}
-
-			img.Dispose();
-			img = null;
 			GC.Collect();
 		}
 
@@ -102,8 +106,7 @@ namespace BEngineCore
 
 		public void Dispose()
 		{
-			//In order to dispose we need to delete the opengl handle for the texure.
-			_gl.DeleteTexture(_handle);
+			ProjectAbstraction.LoadedProject.Graphics.TexturesToDelete.Add(_handle);
 		}
 	}
 }

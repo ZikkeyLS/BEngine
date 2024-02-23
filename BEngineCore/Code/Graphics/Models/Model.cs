@@ -1,11 +1,6 @@
 ﻿using Silk.NET.Assimp;
 using Silk.NET.OpenGL;
-using Silk.NET.SDL;
-using SixLabors.ImageSharp.Processing;
-using System.IO;
 using System.Numerics;
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace BEngineCore
 {
@@ -182,7 +177,6 @@ namespace BEngineCore
 					}
 				}
 
-
 				string resultPath = _directory + path.AsString;
 				if (resultPath.Contains(".fbm"))
 				{
@@ -201,6 +195,7 @@ namespace BEngineCore
 					texture.Type = typeName;
 					texture.Path = path.AsString;
 					textures.Add(texture);
+					_texturesLoaded.Add(texture);
 				}
 			}
 
@@ -212,11 +207,6 @@ namespace BEngineCore
 			for (int i = 0; i < _meshes.Count; i++)
 			{
 				_meshes[i].Dispose();
-			}
-
-			for (int i = 0; i < _texturesLoaded.Count; i++)
-			{
-				_texturesLoaded[i].Texture.Dispose();
 			}
 		}
 	}
