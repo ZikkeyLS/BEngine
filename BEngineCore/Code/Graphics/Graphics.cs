@@ -76,6 +76,8 @@ namespace BEngineCore
 				foreach (uint textureID in TexturesToDelete)
 					gl.DeleteTexture(textureID);
 				TexturesToDelete.Clear();
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
 			}
 
 			if (window.IsKeyPressed(Key.Escape) && (DateTime.Now - fillTime).TotalSeconds >= 0.25f)
