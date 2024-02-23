@@ -130,7 +130,6 @@ namespace BEngineCore
 
 					float senstivity = 0.1f;
 					difference *= senstivity;
-
 					_camera.rotation += new Vector3(-difference.X, difference.Y, 0);
 
 					_lastMousePosition = mouseMove;

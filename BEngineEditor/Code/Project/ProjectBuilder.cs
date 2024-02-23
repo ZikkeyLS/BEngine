@@ -42,6 +42,8 @@ namespace BEngineEditor
 			File.WriteAllText(assemblyFile.FullName, File.ReadAllText(assemblyFile.FullName)
 				.Replace("BEngineScriptingDLLPath", scriptDllPath));
 
+			assemblyDirectory.CreateSubdirectory("Assets");
+
 			// Build
 			DirectoryInfo buildDirectory = new DirectoryInfo(path + "/ProjectBuild");
 			buildDirectory.Rename($"{projectName}Build");

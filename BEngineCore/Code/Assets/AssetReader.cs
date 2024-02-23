@@ -24,6 +24,9 @@ namespace BEngineCore
 			AssetsDirectory = assetsDirectory;
 			Type = type;
 
+			if (Directory.Exists(assetsDirectory) == false)
+				Directory.CreateDirectory(assetsDirectory);
+
 			if (Type == AssetReaderType.Archive)
 			{
 				_packer = new();

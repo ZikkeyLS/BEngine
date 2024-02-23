@@ -20,9 +20,6 @@ namespace BEngineEditor
 			_project = project;
 			_assetReader = reader;
 
-			if (Directory.Exists(project.AssetsDirectory) == false)
-				Directory.CreateDirectory(project.AssetsDirectory);
-
 			_assetWatcher = new FileWatcher(_project.AssetsDirectory, "*.*");
 			_assetWatcher.Created += CreateAsset;
 			_assetWatcher.Renamed += RenameAsset;
