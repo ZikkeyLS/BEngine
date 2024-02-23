@@ -37,7 +37,7 @@ namespace BEngineEditor
 
 			Scripting.LoadInternalScriptingAPI();
 
-			ImGuiFontConfig fontConfig = new ImGuiFontConfig(@"Fonts\ArialRegular.ttf", 16);
+			ImGuiFontConfig fontConfig = new ImGuiFontConfig(@"Fonts\ArialRegular.ttf", 16, (a) => a.Fonts.GetGlyphRangesCyrillic());
 			_controller = new ImGuiController(gl, window, input, fontConfig);
 			ImGuiIOPtr io = ImGui.GetIO();
 			io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
