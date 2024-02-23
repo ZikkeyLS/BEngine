@@ -1,9 +1,5 @@
 using Silk.NET.OpenGL;
 using StbImageSharp;
-//using SixLabors.ImageSharp;
-//using SixLabors.ImageSharp.PixelFormats;
-//using SixLabors.ImageSharp.Processing;
-//using System.Runtime.CompilerServices;
 
 namespace BEngineCore
 {
@@ -17,54 +13,51 @@ namespace BEngineCore
 
 		public uint ID => _handle;
 
-		public unsafe Texture(string path, GL gl)//, FlipMode fm = FlipMode.None)
+		public unsafe Texture(string path, GL gl)
 		{
-			//Image<Rgba32> img = Image.Load<Rgba32>(path);
-
-			//int properWidth = img.Width;
-			//int properHeight = img.Height;
-
-			//if (properWidth == properHeight && properWidth > _maxSize)
-			//{
-			//	properWidth = _maxSize;
-			//	properHeight = _maxSize;
-			//}
-			//else if (properWidth > _maxSize || properHeight > _maxSize)
-			//{
-			//	if (properHeight > properWidth)
-			//	{
-			//		float aspect = (float)properWidth / properHeight;
-			//		properHeight = _maxSize;
-			//		properWidth = (int)(aspect * _maxSize);
-			//	}
-			//	else
-			//	{
-			//		float aspect = (float)properWidth / properHeight;
-			//		properWidth = _maxSize;
-			//		properHeight = (int)(aspect * _maxSize);
-			//	}
-			//}
-
-			//img.Mutate(x =>
-			//{
-			//	x.Flip(fm);
-			//	x.Resize(properWidth, properHeight);
-			//});
-
-			//_pixelBytes = new byte[img.Width * img.Height * Unsafe.SizeOf<Rgba32>()];
-			//img.CopyPixelDataTo(_pixelBytes);
-
 			using (var stream = File.OpenRead(path))
 			{
 				ImageResult image = ImageResult.FromStream(stream, ColorComponents.RedGreenBlueAlpha);
+
+				int properWidth = image.Width;
+				int properHeight = image.Height;
+
+				if (properWidth == properHeight && properWidth > _maxSize)
+				{
+					properWidth = _maxSize;
+					properHeight = _maxSize;
+				}
+				else if (properWidth > _maxSize || properHeight > _maxSize)
+				{
+					if (properHeight > properWidth)
+					{
+						float aspect = (float)properWidth / properHeight;
+						properHeight = _maxSize;
+						properWidth = (int)(aspect * _maxSize);
+					}
+					else
+					{
+						float aspect = (float)properWidth / properHeight;
+						properWidth = _maxSize;
+						properHeight = (int)(aspect * _maxSize);
+					}
+				}
+
+				byte[] result = image.Data; 
+				int channels = (int)image.Comp;
+
+				if (properWidth != image.Width || properHeight != image.Height)
+				{
+					result = new byte[properWidth * properHeight * channels];
+					StbImageResizeSharp.StbImageResize.stbir_resize_uint8(image.Data, image.Width, image.Height, 
+						image.Width * channels, result, properWidth, properHeight, properWidth * channels, channels);
+				}
 
 				fixed (void* buff = image.Data)
 				{
 					Load(gl, buff, (uint)image.Width, (uint)image.Height);
 				}
 			}
-
-			GC.Collect();
 		}
 
 		public unsafe Texture(GL gl, Span<byte> data, uint width, uint height)

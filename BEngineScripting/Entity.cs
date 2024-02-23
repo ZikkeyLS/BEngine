@@ -77,8 +77,6 @@ namespace BEngine
 
 			for (int i = 0; i < _scriptCopy.Count; i++)
 				_scriptCopy[i].Dispose();
-
-			GC.SuppressFinalize(this);
 		}
 	}
 }

@@ -118,20 +118,26 @@ namespace BEngineEditor
 			if (path.EndsWith(".meta") || _lastMovedAsset == path || File.Exists(path) == false || _assetReader.HasAsset(path))
 				return;
 
-			AssetMetaData asset = new AssetMetaData(GenerateID());
-			asset.Save(path);
-			_assetReader.AddAssetRaw(asset);
+			if (File.Exists(path + ".meta"))
+			{
+				_assetReader.AddAsset(path);
+			}
+			else
+			{
+				AssetMetaData asset = new AssetMetaData(GenerateID());
+				asset.Save(path);
+				_assetReader.AddAssetRaw(asset);
+			}
 		}
 
 		private void CreateSearchedAssets(string directory)
 		{
 			foreach (var file in Directory.EnumerateFiles(directory))
 			{
-				if (file.EndsWith(".meta") == false && file.EndsWith(".csproj") == false)
+				if (file.EndsWith(".meta") == false && file.EndsWith(".csproj") == false && File.Exists(file + ".meta") == false)
 				{
 					CreateAsset(file);
 				}
-
 				else if (file.EndsWith(".meta"))
 				{
 					if (File.Exists(file.Substring(0, file.LastIndexOf(".meta"))) == false)

@@ -112,7 +112,7 @@ namespace BEngineCore
 
 		public void Dispose()
 		{
-			GC.SuppressFinalize(this);
+
 		}
 	}
 }
