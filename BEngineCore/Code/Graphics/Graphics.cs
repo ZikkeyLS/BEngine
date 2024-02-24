@@ -1,7 +1,6 @@
 ﻿using BEngine;
 using Silk.NET.Input;
 using Silk.NET.OpenGL;
-using Silk.NET.SDL;
 using System.Numerics;
 using Color = System.Drawing.Color;
 using Quaternion = System.Numerics.Quaternion;
@@ -19,7 +18,6 @@ namespace BEngineCore
 	public class Graphics
 	{
 		public static GL gl { get; private set; }
-		public static Thread MainThread { get; private set; }
 
 		private Camera _camera;
 		private Shader _shader;
@@ -44,8 +42,6 @@ namespace BEngineCore
 
 		public unsafe void Initialize()
 		{
-			MainThread = Thread.CurrentThread;
-
 			gl.Enable(GLEnum.DepthTest);
 
 			gl.Enable(GLEnum.CullFace);
