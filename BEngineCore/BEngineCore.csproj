@@ -39,7 +39,7 @@
     <None Remove="EngineData\Shaders\PointLight.vert" />
     <None Remove="EngineData\Shaders\Shader.frag" />
     <None Remove="EngineData\Shaders\Shader.vert" />
-    <None Remove="EngineData\Textures\Bricks.jpg" />
+    <None Remove="EngineData\Textures\Default.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -79,7 +79,7 @@
     <Content Include="EngineData\Shaders\Shader.vert">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="EngineData\Textures\Bricks.jpg">
+    <Content Include="EngineData\Textures\Default.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
