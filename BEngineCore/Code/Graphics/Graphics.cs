@@ -1,6 +1,7 @@
 ﻿using BEngine;
 using Silk.NET.Input;
 using Silk.NET.OpenGL;
+using Silk.NET.SDL;
 using System.Numerics;
 using Color = System.Drawing.Color;
 using Quaternion = System.Numerics.Quaternion;
@@ -23,9 +24,9 @@ namespace BEngineCore
 		private Camera _camera;
 		private Shader _shader;
 
-		// private Model _model;
 		public List<ModelRenderContext> ModelsToRender = new();
 		public HashSet<uint> TexturesToDelete = new();
+		public bool EnableNativeCameraMovement = true;
 
 		public Dictionary<string, FrameBuffer> FrameBuffers = new();
 
@@ -95,53 +96,9 @@ namespace BEngineCore
 				fill = !fill;
 			}
 
-			float speed = time * 6;
-			if (window.IsKeyPressed(Key.W))
+			if (EnableNativeCameraMovement)
 			{
-				_camera.position += _camera.forward * speed;
-			}
-			if (window.IsKeyPressed(Key.S))
-			{
-				_camera.position -= _camera.forward * speed;
-			}
-			if (window.IsKeyPressed(Key.A))
-			{
-				_camera.position -= Vector3.Normalize(Vector3.Cross(_camera.forward, _camera.up)) * speed;
-			}
-			if (window.IsKeyPressed(Key.D))
-			{
-				_camera.position += Vector3.Normalize(Vector3.Cross(_camera.forward, _camera.up)) * speed;
-			}
-
-			Vector2 difference = Vector2.Zero;
-			Vector2 mouseMove = window.GetMousePosition();
-
-			if (window.IsMouseButtonPressed(MouseButton.Middle))
-			{
-				if (window.GetCursorMode() != CursorMode.Raw)
-				{
-					window.SetCursorMode(CursorMode.Raw);
-					_lastMousePosition = mouseMove;
-				}
-				else
-				{
-					if (_lastMousePosition != null)
-						difference = mouseMove - _lastMousePosition.Value;
-
-					float senstivity = 0.1f;
-					difference *= senstivity;
-					_camera.rotation += new Vector3(-difference.X, difference.Y, 0);
-
-					_lastMousePosition = mouseMove;
-				}	
-			}
-			else
-			{
-				if (window.GetCursorMode() != CursorMode.Normal)
-				{
-					window.SetCursorMode(CursorMode.Normal);
-					_lastMousePosition = mouseMove;
-				}
+				ProcessCameraMovement(window, time);
 			}
 
 			_camera.Recalculate();
@@ -197,7 +154,57 @@ namespace BEngineCore
 			}
 		}
 
+		private void ProcessCameraMovement(EngineWindow window, float time)
+		{
+			float speed = time * 6;
+			if (window.IsKeyPressed(Key.W))
+			{
+				_camera.position += _camera.forward * speed;
+			}
+			if (window.IsKeyPressed(Key.S))
+			{
+				_camera.position -= _camera.forward * speed;
+			}
+			if (window.IsKeyPressed(Key.A))
+			{
+				_camera.position -= Vector3.Normalize(Vector3.Cross(_camera.forward, _camera.up)) * speed;
+			}
+			if (window.IsKeyPressed(Key.D))
+			{
+				_camera.position += Vector3.Normalize(Vector3.Cross(_camera.forward, _camera.up)) * speed;
+			}
 
+			Vector2 difference = Vector2.Zero;
+			Vector2 mouseMove = window.GetMousePosition();
+
+			if (window.IsMouseButtonPressed(MouseButton.Middle))
+			{
+				if (window.GetCursorMode() != CursorMode.Raw)
+				{
+					window.SetCursorMode(CursorMode.Raw);
+					_lastMousePosition = mouseMove;
+				}
+				else
+				{
+					if (_lastMousePosition != null)
+						difference = mouseMove - _lastMousePosition.Value;
+
+					float senstivity = 0.1f;
+					difference *= senstivity;
+					_camera.rotation += new Vector3(-difference.X, difference.Y, 0);
+
+					_lastMousePosition = mouseMove;
+				}
+			}
+			else
+			{
+				if (window.GetCursorMode() != CursorMode.Normal)
+				{
+					window.SetCursorMode(CursorMode.Normal);
+					_lastMousePosition = mouseMove;
+				}
+			}
+		}
 	}
 
 	internal static class GraphicsUtils

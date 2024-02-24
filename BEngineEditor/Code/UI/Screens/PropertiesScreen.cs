@@ -111,25 +111,19 @@ namespace BEngineEditor
 									if (input == string.Empty && IsInClassList(field.FieldType, typeof(string)) == false)
 										continue;
 
-									try
+									object? final = null;
+									if (field.FieldType != typeof(string))
 									{
-										object? final = null;
-										if (field.FieldType != typeof(string))
+										if (double.TryParse(input, out double result))
 										{
-											input = input.Replace(",", ".");
-											final = JsonSerializer.Deserialize(input, field.FieldType);
+											final = Convert.ChangeType(result, field.FieldType);
 										}
-										else
-											final = input;
-
-										if (final != null)
-											UpdateField(field, script, sceneScript, final);
-
 									}
-									catch
-									{
+									else
+										final = input;
 
-									}
+									if (final != null)
+										UpdateField(field, script, sceneScript, final);
 								}
 							}
 							else if (IsInClassList(field.FieldType, typeof(bool)))
@@ -147,13 +141,14 @@ namespace BEngineEditor
 								string x = "0";
 								string y = "0";
 								string z = "0";
+								Vector3 initial = new Vector3(0, 0, 0);
 
 								if (fields[j] != null)
 								{
 									object? result = fields[j].GetValue(script);
 									if (result != null)
 									{
-										Vector3 initial = (Vector3)result;
+										initial = (Vector3)result;
 										x = initial.x.ToString();
 										y = initial.y.ToString();
 										z = initial.z.ToString();
@@ -161,10 +156,10 @@ namespace BEngineEditor
 								}
 								else if (sceneScriptValue != null)
 								{
-									Vector3 input = JsonSerializer.Deserialize<Vector3>(sceneScriptValue.Value);
-									x = input.x.ToString();
-									y = input.y.ToString();
-									z = input.z.ToString();
+									initial = JsonSerializer.Deserialize<Vector3>(sceneScriptValue.Value);
+									x = initial.x.ToString();
+									y = initial.y.ToString();
+									z = initial.z.ToString();
 								}
 
 								ImGui.Text(field.Name);
@@ -175,17 +170,15 @@ namespace BEngineEditor
 								{
 									x = x.Replace(".", ",");
 
-									try
-									{
-										object final = new Vector3(float.Parse(x), float.Parse(y), float.Parse(z));
+									object? final = null;
 
-										if (final != null)
-											UpdateField(field, script, sceneScript, final);
-									}
-									catch
+									if (float.TryParse(x, out float result))
 									{
-
+										final = new Vector3(result, initial.y, initial.z);
 									}
+
+									if (final != null)
+										UpdateField(field, script, sceneScript, final);
 								}
 								ImGui.SameLine(0, 5);
 								ImGui.Text("y");
@@ -194,17 +187,15 @@ namespace BEngineEditor
 								{
 									y = y.Replace(".", ",");
 
-									try
-									{
-										object final = new Vector3(float.Parse(x), float.Parse(y), float.Parse(z));
+									object? final = null;
 
-										if (final != null)
-											UpdateField(field, script, sceneScript, final);
-									}
-									catch
+									if (float.TryParse(y, out float result))
 									{
-
+										final = new Vector3(initial.x, result, initial.z);
 									}
+
+									if (final != null)
+										UpdateField(field, script, sceneScript, final);
 								}
 								ImGui.SameLine(0, 5);
 								ImGui.Text("z");
@@ -213,17 +204,15 @@ namespace BEngineEditor
 								{
 									z = z.Replace(".", ",");
 
-									try
-									{
-										object final = new Vector3(float.Parse(x), float.Parse(y), float.Parse(z));
+									object? final = null;
 
-										if (final != null)
-											UpdateField(field, script, sceneScript, final);
-									}
-									catch
+									if (float.TryParse(z, out float result))
 									{
-
+										final = new Vector3(initial.x, initial.y, result);
 									}
+
+									if (final != null)
+										UpdateField(field, script, sceneScript, final);
 								}
 								ImGui.PopItemWidth();
 							}
@@ -234,20 +223,22 @@ namespace BEngineEditor
 								string z = "0";
 								string w = "0";
 
+								Quaternion initial = new Quaternion(0, 0, 0, 0);
+
 								if (sceneScriptValue != null)
 								{
-									Quaternion input = JsonSerializer.Deserialize<Quaternion>(sceneScriptValue.Value);
-									x = input.x.ToString();
-									y = input.y.ToString();
-									z = input.z.ToString();
-									w = input.w.ToString();
+									initial = JsonSerializer.Deserialize<Quaternion>(sceneScriptValue.Value);
+									x = initial.x.ToString();
+									y = initial.y.ToString();
+									z = initial.z.ToString();
+									w = initial.w.ToString();
 								}
 								else
 								{
 									object? result = fields[j].GetValue(script);
 									if (result != null)
 									{
-										Quaternion initial = (Quaternion)result;
+										initial = (Quaternion)result;
 										x = initial.x.ToString();
 										y = initial.y.ToString();
 										z = initial.z.ToString();
@@ -264,17 +255,15 @@ namespace BEngineEditor
 								{
 									x = x.Replace(".", ",");
 
-									try
-									{
-										object final = new Quaternion(float.Parse(x), float.Parse(y), float.Parse(z), float.Parse(w));
+									object? final = null;
 
-										if (final != null)
-											UpdateField(field, script, sceneScript, final);
-									}
-									catch
+									if (float.TryParse(x, out float result))
 									{
-
+										final = new Quaternion(result, initial.y, initial.z, initial.w);
 									}
+
+									if (final != null)
+										UpdateField(field, script, sceneScript, final);
 								}
 								ImGui.SameLine(0, 5);
 								ImGui.Text("y");
@@ -282,18 +271,15 @@ namespace BEngineEditor
 								if (ImGui.InputText("##y", ref y, 128))
 								{
 									y = y.Replace(".", ",");
+									object? final = null;
 
-									try
+									if (float.TryParse(y, out float result))
 									{
-										object final = new Quaternion(float.Parse(x), float.Parse(y), float.Parse(z), float.Parse(w));
-
-										if (final != null)
-											UpdateField(field, script, sceneScript, final);
+										final = new Quaternion(initial.x, result, initial.z, initial.w);
 									}
-									catch
-									{
 
-									}
+									if (final != null)
+										UpdateField(field, script, sceneScript, final);
 								}
 								ImGui.SameLine(0, 5);
 								ImGui.Text("z");
@@ -302,17 +288,15 @@ namespace BEngineEditor
 								{
 									z = z.Replace(".", ",");
 
-									try
-									{
-										object final = new Quaternion(float.Parse(x), float.Parse(y), float.Parse(z), float.Parse(w));
+									object? final = null;
 
-										if (final != null)
-											UpdateField(field, script, sceneScript, final);
-									}
-									catch
+									if (float.TryParse(z, out float result))
 									{
-
+										final = new Quaternion(initial.x, initial.y, result, initial.w);
 									}
+
+									if (final != null)
+										UpdateField(field, script, sceneScript, final);
 								}
 								ImGui.SameLine(0, 5);
 								ImGui.Text("w");
@@ -321,17 +305,15 @@ namespace BEngineEditor
 								{
 									w = w.Replace(".", ",");
 
-									try
-									{
-										object final = new Quaternion(float.Parse(x), float.Parse(y), float.Parse(z), float.Parse(w));
+									object? final = null;
 
-										if (final != null)
-											UpdateField(field, script, sceneScript, final);
-									}
-									catch
+									if (float.TryParse(w, out float result))
 									{
-
+										final = new Quaternion(initial.x, initial.y, initial.z, result);
 									}
+
+									if (final != null)
+										UpdateField(field, script, sceneScript, final);
 								}
 								ImGui.PopItemWidth();
 							}

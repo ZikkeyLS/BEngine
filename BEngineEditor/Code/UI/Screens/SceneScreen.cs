@@ -27,6 +27,14 @@ namespace BEngineEditor
 
 			ImGui.Image((nint)_frameBuffer.GetFrameTexture(), ImGui.GetContentRegionAvail(), Vector2.UnitY, Vector2.UnitX);
 
+			bool focused =
+				ImGui.IsWindowFocused() ||
+				(ImGui.IsWindowHovered() && _projectContext.Window.IsMouseButtonPressed(Silk.NET.Input.MouseButton.Middle));
+
+			_projectContext.CurrentProject.Graphics.EnableNativeCameraMovement = focused;
+			if (focused)
+				ImGui.SetWindowFocus();
+
 			ImGui.End();
 			ImGui.PopStyleVar();
 		}
