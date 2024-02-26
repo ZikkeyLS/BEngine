@@ -45,7 +45,7 @@ namespace BEngineEditor
 			_currentProject?.Settings.Save();
 			_currentProject?.LoadedScene?.Save<Scene>();
 
-			_currentProject = new EditorProject(Path.GetFileNameWithoutExtension(slnPath), Path.GetDirectoryName(slnPath), Window.Graphics);
+			_currentProject = new EditorProject(Path.GetFileNameWithoutExtension(slnPath), Path.GetDirectoryName(slnPath), Window);
 			SearchingProject = false;
 
 			Window.Settings.ProjectHistory.Remove(new LastProject(_currentProject.Name, _currentProject.Directory));

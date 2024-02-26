@@ -38,7 +38,7 @@ namespace BEngineEditor
 			Scripting.LoadInternalScriptingAPI();
 
 			ImGuiFontConfig fontConfig = new ImGuiFontConfig(@"Fonts\ArialRegular.ttf", 16, (a) => a.Fonts.GetGlyphRangesCyrillic());
-			_controller = new ImGuiController(gl, window, input, fontConfig);
+			_controller = new ImGuiController(gl, window, inputContext, fontConfig);
 			ImGuiIOPtr io = ImGui.GetIO();
 			io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
 			io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;
@@ -83,6 +83,7 @@ namespace BEngineEditor
 		{
 			ProjectContext?.CurrentProject?.LoadedScene?.CallEvent(EventID.EditorUpdate);
 			_shortcuts.Update();
+			inputs.Clean();
 		}
 
 		private void DisplayUI()

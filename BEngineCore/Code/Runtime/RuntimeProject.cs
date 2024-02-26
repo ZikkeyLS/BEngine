@@ -4,7 +4,7 @@ namespace BEngineCore
 {
 	internal class RuntimeProject : ProjectAbstraction
 	{
-		public RuntimeProject(Graphics graphics) : base(graphics)
+		public RuntimeProject(EngineWindow window) : base(window)
 		{
 
 		}

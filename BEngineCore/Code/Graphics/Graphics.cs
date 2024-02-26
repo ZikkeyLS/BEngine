@@ -3,6 +3,8 @@ using Silk.NET.Input;
 using Silk.NET.OpenGL;
 using System.Numerics;
 using Color = System.Drawing.Color;
+using Key = Silk.NET.Input.Key;
+using MouseButton = Silk.NET.Input.MouseButton;
 using Quaternion = System.Numerics.Quaternion;
 using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;

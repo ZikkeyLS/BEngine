@@ -17,9 +17,9 @@ namespace BEngineCore
 		public Scene LoadedScene => loadedScene;
 		public Graphics Graphics => graphics;
 
-		public ProjectAbstraction(Graphics graphics)
+		public ProjectAbstraction(EngineWindow window)
 		{
-			this.graphics = graphics;
+			graphics = window.Graphics;
 		}
 
 		public void LoadProject()

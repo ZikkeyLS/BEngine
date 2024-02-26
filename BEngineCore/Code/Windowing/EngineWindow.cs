@@ -9,12 +9,14 @@ namespace BEngineCore
 	public class EngineWindow
 	{
 		protected IWindow window;
-		protected IInputContext input;
+		protected IInputContext inputContext;
+		protected Inputs inputs;
 
 		protected GL gl;
 		protected Graphics graphics;
 
 		public Graphics Graphics => graphics;
+		public Inputs Inputs => inputs;
 
 		public EngineWindow(string title = "Window", int x = 1280, int y = 720)
 		{
@@ -38,38 +40,40 @@ namespace BEngineCore
 
 		public bool IsKeyPressed(Key key)
 		{
-			return input.Keyboards[0].IsKeyPressed(key);
+			return inputContext.Keyboards[0].IsKeyPressed(key);
 		}
 
 		public bool IsMouseButtonPressed(MouseButton button)
 		{
-			return input.Mice[0].IsButtonPressed(button);
+			return inputContext.Mice[0].IsButtonPressed(button);
 		}
 
 		public void SetCursorMode(CursorMode mode)
 		{
-			if (input.Mice[0].Cursor.IsSupported(mode))
+			if (inputContext.Mice[0].Cursor.IsSupported(mode))
 			{
-				input.Mice[0].Cursor.CursorMode = mode;
+				inputContext.Mice[0].Cursor.CursorMode = mode;
 			}
 		}
 
 		public CursorMode GetCursorMode()
 		{
-			return input.Mice[0].Cursor.CursorMode;
+			return inputContext.Mice[0].Cursor.CursorMode;
 		}
 
 		public Vector2 GetMousePosition()
 		{
-			return input.Mice[0].Position;
+			return inputContext.Mice[0].Position;
 		}
 
 		protected virtual void OnLoad() 
 		{
-			input = window.CreateInput();
+			inputContext = window.CreateInput();
 
-			input.Keyboards[0].KeyChar += OnTextInput;
-			input.Mice[0].Scroll += OnScroll;
+			inputContext.Keyboards[0].KeyChar += OnTextInput;
+			inputContext.Mice[0].Scroll += OnScroll;
+
+			inputs = new Inputs(inputContext);
 
 			gl = window.CreateOpenGL();
 			graphics = new(gl);
