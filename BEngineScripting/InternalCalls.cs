@@ -20,6 +20,7 @@ namespace BEngine
 
 				LoadLoggerAssembly();
 				LoadGraphicsAssembly();
+				LoadInputsAssembly();
 			}
 		}
 
@@ -64,6 +65,80 @@ namespace BEngine
 		public static void AddRenderModel(RenderModel renderModel)
 		{
 			_addRenderModel?.Invoke(null, new object[] { renderModel });
+		}
+		#endregion
+
+		#region Inputs
+		private static MethodInfo? _isMouseConnected;
+		private static MethodInfo? _isKeyboardConnected;
+		private static MethodInfo? _getMousePosition;
+
+		private static MethodInfo? _isKeyDown;
+		private static MethodInfo? _isKeyUp;
+		private static MethodInfo? _isKeyPressed;
+
+		private static MethodInfo? _isButtonDown;
+		private static MethodInfo? _isButtonUp;
+		private static MethodInfo? _isButtonPressed;
+
+		private static void LoadInputsAssembly()
+		{
+			_isMouseConnected = GetMethod("IsMouseConnected");
+			_isKeyboardConnected = GetMethod("IsKeyboardConnected");
+			_getMousePosition = GetMethod("GetMousePosition");
+
+			_isKeyDown = GetMethod("IsKeyDown");
+			_isKeyUp = GetMethod("IsKeyUp");
+			_isKeyPressed = GetMethod("IsKeyPressed");
+
+			_isButtonDown = GetMethod("IsButtonDown");
+			_isButtonUp = GetMethod("IsButtonUp");
+			_isButtonPressed = GetMethod("IsButtonPressed");
+		}
+
+		public static bool IsMouseConnected()
+		{
+			return (bool)(_isMouseConnected?.Invoke(null, new object[] { }));
+		}
+
+		public static bool IsKeyboardConnected()
+		{
+			return (bool)(_isKeyboardConnected?.Invoke(null, new object[] { }));
+		}
+
+		public static Vector2 GetMousePosition()
+		{
+			return (Vector2)(_getMousePosition?.Invoke(null, new object[] { }));
+		}
+
+		public static bool IsKeyDown(Key key)
+		{
+			return (bool)(_isKeyDown?.Invoke(null, new object[] { key }));
+		}
+
+		public static bool IsKeyUp(Key key)
+		{
+			return (bool)(_isKeyUp?.Invoke(null, new object[] { key }));
+		}
+
+		public static bool IsKeyPressed(Key key)
+		{
+			return (bool)(_isKeyPressed?.Invoke(null, new object[] { key }));
+		}
+
+		public static bool IsButtonDown(MouseButton button)
+		{
+			return (bool)(_isButtonDown?.Invoke(null, new object[] { button }));
+		}
+
+		public static bool IsButtonUp(MouseButton button)
+		{
+			return (bool)(_isButtonUp?.Invoke(null, new object[] { button }));
+		}
+
+		public static bool IsButtonPressed(MouseButton button)
+		{
+			return (bool)(_isButtonPressed?.Invoke(null, new object[] { button }));
 		}
 		#endregion
 

@@ -37,7 +37,7 @@ namespace BEngineCore
 		public Matrix4x4 CalculateProjectionMatrix(float width, float height)
 		{
 			return Matrix4x4.CreatePerspectiveFieldOfView(float.DegreesToRadians(fov),
-					width / height,minRange, maxRange);
+					width / height, minRange, maxRange);
 		}
 	}
 }

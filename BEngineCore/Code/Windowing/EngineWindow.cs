@@ -10,13 +10,13 @@ namespace BEngineCore
 	{
 		protected IWindow window;
 		protected IInputContext inputContext;
-		protected Inputs inputs;
+		protected Input input;
 
 		protected GL gl;
 		protected Graphics graphics;
 
 		public Graphics Graphics => graphics;
-		public Inputs Inputs => inputs;
+		public Input Input => input;
 
 		public EngineWindow(string title = "Window", int x = 1280, int y = 720)
 		{
@@ -73,7 +73,7 @@ namespace BEngineCore
 			inputContext.Keyboards[0].KeyChar += OnTextInput;
 			inputContext.Mice[0].Scroll += OnScroll;
 
-			inputs = new Inputs(inputContext);
+			input = new Input(inputContext);
 
 			gl = window.CreateOpenGL();
 			graphics = new(gl);

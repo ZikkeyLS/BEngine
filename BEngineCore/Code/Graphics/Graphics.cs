@@ -125,7 +125,7 @@ namespace BEngineCore
 						float.DegreesToRadians(transform.Rotation.x),
 						float.DegreesToRadians(transform.Rotation.y),
 						float.DegreesToRadians(transform.Rotation.z)));
-					model *= Matrix4x4.CreateTranslation(transform.Position.ToNative());
+					model *= Matrix4x4.CreateTranslation(transform.Position.ToNativeProper());
 					_shader.SetMatrix4("model", model);
 
 					ModelsToRender[i].Model.Draw(_shader);
@@ -210,6 +210,11 @@ namespace BEngineCore
 		public static Vector3 ToNative(this BEngine.Vector3 vector)
 		{
 			return new Vector3(vector.x, vector.y, vector.z);
+		}
+
+		public static Vector3 ToNativeProper(this BEngine.Vector3 vector)
+		{
+			return new Vector3(-vector.x, vector.y, vector.z);
 		}
 
 		public static Quaternion ToNative(this BEngine.Quaternion vector)

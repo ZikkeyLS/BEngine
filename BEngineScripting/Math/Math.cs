@@ -6,6 +6,9 @@ namespace BEngine
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Vector2
 	{
+		public readonly static Vector2 zero = new(0, 0);
+		public readonly static Vector2 one = new(1, 1);
+
 		public float x { get; set; } = 0;
 		public float y { get; set; } = 0;
 
@@ -24,11 +27,19 @@ namespace BEngine
 		{
 			return $"Vector2 ({x};{y})";
 		}
+
+		public static implicit operator Vector2(System.Numerics.Vector2 v)
+		{
+			return new(v.X, v.Y);
+		}
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Vector3
 	{
+		public readonly static Vector3 zero = new(0, 0, 0);
+		public readonly static Vector3 one = new(1, 1, 1);
+
 		public float x { get; set; } = 0;
 		public float y { get; set; } = 0;
 		public float z { get; set; } = 0;
@@ -55,11 +66,19 @@ namespace BEngine
 		{
 			return $"Vector3 ({x};{y};{z})";
 		}
+
+		public static implicit operator Vector3(System.Numerics.Vector3 v)
+		{
+			return new(v.X, v.Y, v.Z);
+		}
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Vector4
 	{
+		public readonly static Vector4 zero = new(0, 0, 0, 0);
+		public readonly static Vector4 one = new(1, 1, 1, 1);
+
 		public float x { get; set; } = 0;
 		public float y { get; set; } = 0;
 		public float z { get; set; } = 0;
@@ -95,11 +114,20 @@ namespace BEngine
 		{
 			return $"Vector4 ({x};{y};{z};{w})";
 		}
+
+		public static implicit operator Vector4(System.Numerics.Vector4 v)
+		{
+			return new(v.X, v.Y, v.Z, v.W);
+		}
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Quaternion
 	{
+		public readonly static Quaternion identity = new(0, 0, 0, 1);
+		public readonly static Quaternion zero = new(0, 0, 0, 0);
+		public readonly static Quaternion one = new(1, 1, 1, 1);
+
 		public float x { get; set; } = 0;
 		public float y { get; set; } = 0;
 		public float z { get; set; } = 0;
@@ -140,6 +168,11 @@ namespace BEngine
 		public override string ToString()
 		{
 			return $"Quaternion ({x};{y};{z};{w})";
+		}
+
+		public static implicit operator Quaternion(System.Numerics.Quaternion q)
+		{
+			return new(q.X, q.Y, q.Z, q.W);
 		}
 	}
 }

@@ -5,6 +5,6 @@ namespace BEngine
 	{
 		public Vector3 Position = new();
 		public Vector3 Rotation = new();
-		public Vector3 Scale = new(1, 1, 1);
+		public Vector3 Scale = Vector3.one;
 	}
 }

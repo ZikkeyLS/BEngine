@@ -83,7 +83,7 @@ namespace BEngineEditor
 		{
 			ProjectContext?.CurrentProject?.LoadedScene?.CallEvent(EventID.EditorUpdate);
 			_shortcuts.Update();
-			inputs.Clean();
+			input.Clean();
 		}
 
 		private void DisplayUI()

@@ -141,7 +141,7 @@ namespace BEngineEditor
 								string x = "0";
 								string y = "0";
 								string z = "0";
-								Vector3 initial = new Vector3(0, 0, 0);
+								Vector3 initial = Vector3.zero;
 
 								if (fields[j] != null)
 								{
@@ -223,7 +223,7 @@ namespace BEngineEditor
 								string z = "0";
 								string w = "0";
 
-								Quaternion initial = new Quaternion(0, 0, 0, 0);
+								Quaternion initial = Quaternion.identity;
 
 								if (sceneScriptValue != null)
 								{

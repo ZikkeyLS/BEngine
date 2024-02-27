@@ -43,5 +43,97 @@ namespace BEngineCore
 			}
 		}
 		#endregion
+
+		#region Inputs
+		public static bool IsKeyDown(Key key)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return false;
+
+			return loadedProject.Input.IsKeyDown(key);
+		}
+
+		public static bool IsKeyUp(Key key)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return false;
+
+			return loadedProject.Input.IsKeyUp(key);
+		}
+
+		public static bool IsKeyPressed(Key key)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return false;
+
+			return loadedProject.Input.IsKeyPressed(key);
+		}
+
+		public static bool IsButtonDown(MouseButton mouseButton)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return false;
+
+			return loadedProject.Input.IsButtonDown(mouseButton);
+		}
+
+		public static bool IsButtonUp(MouseButton mouseButton)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return false;
+
+			return loadedProject.Input.IsButtonUp(mouseButton);
+		}
+
+		public static bool IsButtonPressed(MouseButton mouseButton)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return false;
+
+			return loadedProject.Input.IsButtonPressed(mouseButton);
+		}
+
+		public static bool IsKeyboardConnected()
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return false;
+
+			return loadedProject.Input.IsKeyboardConnected();
+		}
+
+		public static bool IsMouseConnected()
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return false;
+
+			return loadedProject.Input.IsMouseConnected();
+		}
+
+		public static Vector2 GetMousePosition()
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return Vector2.zero;
+
+			return loadedProject.Input.GetMousePosition();
+		}
+		#endregion
 	}
 }

@@ -1,11 +1,7 @@
-﻿using Silk.NET.Input;
-using Key = BEngine.Key;
-using MouseButton = BEngine.MouseButton;
-
-
+﻿
 namespace BEngine
 {
-	#region SilkNetKeys
+	#region Keys
 	public enum Key
 	{
 		//
@@ -499,7 +495,7 @@ namespace BEngine
 	}
 	#endregion
 
-	#region SilkNetButtons
+	#region Buttons
 	public enum MouseButton
 	{
 		//
@@ -557,138 +553,52 @@ namespace BEngine
 		Button12
 	}
 	#endregion
-}
 
-namespace BEngineCore
-{
-	public class KeyStatus
+	public class Input
 	{
-		public bool Down = false;
-		public bool Up = false;
-
-		public KeyStatus()
+		public static bool IsKeyDown(Key key)
 		{
-
-		}
-	}
-
-	public class MouseButtonStatus
-	{
-		public bool Down = false;
-		public bool Up = false;
-
-		public MouseButtonStatus()
-		{
-
-		}
-	}
-
-	public class Inputs
-	{
-		private IInputContext _inputs;
-
-		private Dictionary<Key, KeyStatus> _keys = new();
-		private Dictionary<MouseButton, MouseButtonStatus> _buttons = new();
-
-		public Inputs(IInputContext inputs)
-		{
-			_inputs = inputs;
-
-			if (IsKeyboardConnected())
-			{
-				foreach (var key in _inputs.Keyboards[0].SupportedKeys)
-				{
-					_keys.Add((Key)key, new KeyStatus());
-				}
-
-				_inputs.Keyboards[0].KeyDown += KeyDown;
-				_inputs.Keyboards[0].KeyUp += KeyUp;
-			}
-
-			if (IsMouseConnected())
-			{
-				foreach (var button in _inputs.Mice[0].SupportedButtons)
-				{
-					_buttons.Add((MouseButton)button, new MouseButtonStatus());
-				}
-
-				_inputs.Mice[0].MouseDown += MouseDown;
-				_inputs.Mice[0].MouseUp += MouseUp;
-			}
+			return InternalCalls.IsKeyDown(key);
 		}
 
-		private void KeyDown(IKeyboard arg1, Silk.NET.Input.Key arg2, int arg3)
+		public static bool IsKeyUp(Key key)
 		{
-			_keys[(Key)arg2].Down = true;
+			return InternalCalls.IsKeyUp(key);
 		}
 
-		private void KeyUp(IKeyboard arg1, Silk.NET.Input.Key arg2, int arg3)
+		public static bool IsKeyPressed(Key key)
 		{
-			_keys[(Key)arg2].Up = true;
+			return InternalCalls.IsKeyPressed(key);
 		}
 
-		private void MouseDown(IMouse arg1, Silk.NET.Input.MouseButton arg2)
+		public static bool IsButtonDown(MouseButton button)
 		{
-			_buttons[(MouseButton)arg2].Down = true;
+			return InternalCalls.IsButtonDown(button);
 		}
 
-		private void MouseUp(IMouse arg1, Silk.NET.Input.MouseButton arg2)
+		public static bool IsButtonUp(MouseButton button)
 		{
-			_buttons[(MouseButton)arg2].Up = true;
+			return InternalCalls.IsButtonUp(button);
 		}
 
-		public bool IsMouseConnected() => _inputs.Mice.Count != 0;
-
-		public bool IsButtonPressed(MouseButton button)
+		public static bool IsButtonPressed(MouseButton button)
 		{
-			if (IsMouseConnected() == false)
-				return false;
-			return _inputs.Mice[0].IsButtonPressed((Silk.NET.Input.MouseButton)button);
+			return InternalCalls.IsButtonPressed(button);
 		}
 
-		public bool IsButtonDown(MouseButton button)
+		public static bool IsKeyboardConnected()
 		{
-			return _buttons[button].Down;
+			return InternalCalls.IsKeyboardConnected();
 		}
 
-		public bool IsButtonUp(MouseButton button)
+		public static bool IsMouseConnected()
 		{
-			return _buttons[button].Up;
+			return InternalCalls.IsMouseConnected();
 		}
 
-
-		public bool IsKeyboardConnected() => _inputs.Keyboards.Count != 0;
-
-		public bool IsKeyPressed(Key key)
+		public static Vector2 GetMousePosition()
 		{
-			if (IsKeyboardConnected() == false)
-				return false;
-			return _inputs.Keyboards[0].IsKeyPressed((Silk.NET.Input.Key)key);
-		}
-
-		public bool IsKeyDown(Key key)
-		{
-			return _keys[key].Down;
-		}
-
-		public bool IsKeyUp(Key key)
-		{
-			return _keys[key].Up;
-		}
-
-		public void Clean()
-		{
-			foreach (var status in _keys.Values)
-			{
-				status.Up = false;
-				status.Down = false;
-			}
-
-			foreach (var status in _buttons.Values)
-			{
-				status.Up = false;
-				status.Down = false;
-			}
+			return InternalCalls.GetMousePosition();
 		}
 	}
 }
