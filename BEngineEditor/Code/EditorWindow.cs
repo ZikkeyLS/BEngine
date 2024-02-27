@@ -81,7 +81,12 @@ namespace BEngineEditor
 
 		protected override void OnUpdate(double time)
 		{
-			ProjectContext?.CurrentProject?.LoadedScene?.CallEvent(EventID.EditorUpdate);
+			if (ProjectContext.CurrentProject != null)
+			{
+				ProjectContext.CurrentProject.Time.RawDeltaTime = (float)time;
+				ProjectContext.CurrentProject.LoadedScene?.CallEvent(EventID.EditorUpdate);
+			}
+
 			_shortcuts.Update();
 			input.Clean();
 		}

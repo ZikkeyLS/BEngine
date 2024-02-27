@@ -135,5 +135,45 @@ namespace BEngineCore
 			return loadedProject.Input.GetMousePosition();
 		}
 		#endregion
+
+		#region Time
+		public static void SetTimeSpeed(float speed)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject != null)
+				loadedProject.Time.Speed = speed;
+		}
+
+		public static float GetTimeSpeed()
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject != null)
+				return loadedProject.Time.Speed;
+
+			return 0f;
+		}
+
+		public static float GetRawDeltaTime()
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject != null)
+				return loadedProject.Time.RawDeltaTime;
+
+			return 0f;
+		}
+
+		public static float GetDeltaTime()
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject != null)
+				return loadedProject.Time.DeltaTime;
+
+			return 0f;
+		}
+		#endregion
 	}
 }

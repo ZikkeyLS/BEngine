@@ -7,6 +7,7 @@ namespace BEngineCore
 
 		protected Graphics graphics;
 		protected Input input;
+		protected Time time = new();
 		protected Scripting scripting = new();
 		protected AssetReader reader;
 		protected Logger logger = new(true);
@@ -18,6 +19,7 @@ namespace BEngineCore
 		public Scene LoadedScene => loadedScene;
 		public Graphics Graphics => graphics;
 		public Input Input => input;
+		public Time Time => time;
 
 		public ProjectAbstraction(EngineWindow window)
 		{

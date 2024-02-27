@@ -1,5 +1,4 @@
 ﻿using BEngineScripting;
-using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -21,6 +20,7 @@ namespace BEngine
 				LoadLoggerAssembly();
 				LoadGraphicsAssembly();
 				LoadInputsAssembly();
+				LoadTimeAssembly();
 			}
 		}
 
@@ -142,5 +142,39 @@ namespace BEngine
 		}
 		#endregion
 
+		#region Time
+		private static MethodInfo? _setTimeSpeed;
+		private static MethodInfo? _getTimeSpeed;
+		private static MethodInfo? _getRawDeltaTime;
+		private static MethodInfo? _getDeltaTime;
+
+		private static void LoadTimeAssembly()
+		{
+			_setTimeSpeed = GetMethod("SetTimeSpeed");
+			_getTimeSpeed = GetMethod("GetTimeSpeed");
+			_getRawDeltaTime = GetMethod("GetRawDeltaTime");
+			_getDeltaTime = GetMethod("GetDeltaTime");
+		}
+
+		public static void SetTimeSpeed(float speed)
+		{
+			_setTimeSpeed?.Invoke(null, new object[] { speed });
+		}
+
+		public static float GetTimeSpeed()
+		{
+			return (float)(_getTimeSpeed?.Invoke(null, new object[] { }));
+		}
+
+		public static float GetRawDeltaTime()
+		{
+			return (float)(_getRawDeltaTime?.Invoke(null, new object[] { }));
+		}
+
+		public static float GetDeltaTime()
+		{
+			return (float)(_getDeltaTime?.Invoke(null, new object[] { }));
+		}
+		#endregion
 	}
 }
