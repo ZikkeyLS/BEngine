@@ -30,6 +30,9 @@ namespace BEngineCore
 
 		public Dictionary<string, FrameBuffer> FrameBuffers = new();
 
+		private const int DefaultX = 1920;
+		private const int DefaultY = 1080;
+
 		public Graphics(GL gl)
 		{
 			Graphics.gl = gl;
@@ -111,7 +114,7 @@ namespace BEngineCore
 				_shader.Use();
 
 				Matrix4x4 view = _camera.CalculateViewMatrix();
-				Matrix4x4 projection = _camera.CalculateProjectionMatrix(frame.Width, frame.Height);
+				Matrix4x4 projection = _camera.CalculateProjectionMatrix(DefaultX, DefaultY);
 
 				_shader.SetMatrix4("view", view);
 				_shader.SetMatrix4("projection", projection);
