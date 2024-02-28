@@ -1,12 +1,7 @@
-﻿
-using BEngine;
-
-
+﻿using BEngine;
 
 namespace BEngineCore
 {
-
-
 	public class InternalCalls
 	{
 		#region Logger
@@ -133,6 +128,26 @@ namespace BEngineCore
 				return Vector2.zero;
 
 			return loadedProject.Input.GetMousePosition();
+		}
+
+		public void SetCursorMode(CursorMode mode)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return;
+
+			loadedProject.Input.SetCursorMode(mode);
+		}
+
+		public CursorMode GetCursorMode()
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return CursorMode.Disabled;
+
+			return loadedProject.Input.GetCursorMode();
 		}
 		#endregion
 

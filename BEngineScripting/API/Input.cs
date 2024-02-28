@@ -554,8 +554,46 @@ namespace BEngine
 	}
 	#endregion
 
+	#region CursorMode
+	public enum CursorMode
+	{
+		//
+		// Summary:
+		//     Cursor is visible and has no restrictions on mobility.
+		Normal,
+		//
+		// Summary:
+		//     Cursor is invisible, and has no restrictions on mobility.
+		Hidden,
+		//
+		// Summary:
+		//     Cursor is invisible, and is restricted to the center of the screen.
+		//
+		// Remarks:
+		//     Only supported by GLFW, throws on SDL if used.
+		Disabled,
+		//
+		// Summary:
+		//     Cursor is invisible, and is restricted to the center of the screen. Mouse motion
+		//     is not scaled.
+		Raw
+	}
+	#endregion
+
 	public class Input
 	{
+		public CursorMode CursorMode
+		{
+			get
+			{
+				return GetCursorMode();
+			}
+			set
+			{
+				SetCursorMode(value);
+			}
+		}
+
 		public static bool IsKeyDown(Key key)
 		{
 			return InternalCalls.IsKeyDown(key);
@@ -599,6 +637,16 @@ namespace BEngine
 		public static Vector2 GetMousePosition()
 		{
 			return InternalCalls.GetMousePosition();
+		}
+
+		private static CursorMode GetCursorMode()
+		{
+			return InternalCalls.GetCursorMode();
+		}
+
+		private static void SetCursorMode(CursorMode mode)
+		{
+			InternalCalls.SetCursorMode(mode);
 		}
 	}
 }

@@ -32,6 +32,11 @@ namespace BEngine
 		{
 			return new(v.X, v.Y);
 		}
+
+		public static explicit operator System.Numerics.Vector2(Vector2 v)
+		{
+			return new(v.x, v.y);
+		}
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -70,6 +75,11 @@ namespace BEngine
 		public static implicit operator Vector3(System.Numerics.Vector3 v)
 		{
 			return new(v.X, v.Y, v.Z);
+		}
+
+		public static explicit operator System.Numerics.Vector3(Vector3 v)
+		{
+			return new(v.x, v.y, v.z);
 		}
 	}
 
@@ -118,6 +128,11 @@ namespace BEngine
 		public static implicit operator Vector4(System.Numerics.Vector4 v)
 		{
 			return new(v.X, v.Y, v.Z, v.W);
+		}
+
+		public static explicit operator System.Numerics.Vector4(Vector4 v)
+		{
+			return new(v.x, v.y, v.z, v.w);
 		}
 	}
 
@@ -173,6 +188,11 @@ namespace BEngine
 		public static implicit operator Quaternion(System.Numerics.Quaternion q)
 		{
 			return new(q.X, q.Y, q.Z, q.W);
+		}
+
+		public static explicit operator System.Numerics.Quaternion(Quaternion q)
+		{
+			return new(q.x, q.y, q.z, q.w);
 		}
 	}
 }

@@ -1,10 +1,7 @@
 ﻿using BEngine;
-using Silk.NET.Input;
 using Silk.NET.OpenGL;
 using System.Numerics;
 using Color = System.Drawing.Color;
-using Key = Silk.NET.Input.Key;
-using MouseButton = Silk.NET.Input.MouseButton;
 using Quaternion = System.Numerics.Quaternion;
 using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
@@ -20,6 +17,9 @@ namespace BEngineCore
 	public class Graphics
 	{
 		public static GL gl { get; private set; }
+
+		private EngineWindow _window;
+		private Input _input;
 
 		private Camera _camera;
 		private Shader _shader;
@@ -45,8 +45,11 @@ namespace BEngineCore
 			return buffer;
 		}
 
-		public unsafe void Initialize()
+		public unsafe void Initialize(EngineWindow window)
 		{
+			_window = window;
+			_input = window.Input;
+
 			gl.Enable(GLEnum.DepthTest);
 
 			gl.Enable(GLEnum.CullFace);
@@ -68,7 +71,7 @@ namespace BEngineCore
 		private bool fill = true;
 		private DateTime fillTime = DateTime.Now;
 
-		public unsafe void Render(EngineWindow window, float time, bool forceRender = false)
+		public unsafe void Render(float time, bool forceRender = false)
 		{
 			gl.ClearColor(0f, 0f, 0f, 1.0f);
 			gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -82,7 +85,7 @@ namespace BEngineCore
 				GC.WaitForPendingFinalizers();
 			}
 
-			if (window.IsKeyPressed(Key.Escape) && (DateTime.Now - fillTime).TotalSeconds >= 0.25f)
+			if (_input.IsKeyPressed(Key.Escape) && (DateTime.Now - fillTime).TotalSeconds >= 0.25f)
 			{
 				if (fill)
 				{
@@ -99,7 +102,7 @@ namespace BEngineCore
 
 			if (EnableNativeCameraMovement)
 			{
-				ProcessCameraMovement(window, time);
+				ProcessCameraMovement(_window, time);
 			}
 
 			_camera.Recalculate();
@@ -158,31 +161,32 @@ namespace BEngineCore
 		private void ProcessCameraMovement(EngineWindow window, float time)
 		{
 			float speed = time * 6;
-			if (window.IsKeyPressed(Key.W))
+
+			if (_input.IsKeyPressed(Key.W))
 			{
 				_camera.position += _camera.forward * speed;
 			}
-			if (window.IsKeyPressed(Key.S))
+			if (_input.IsKeyPressed(Key.S))
 			{
 				_camera.position -= _camera.forward * speed;
 			}
-			if (window.IsKeyPressed(Key.A))
+			if (_input.IsKeyPressed(Key.A))
 			{
 				_camera.position -= Vector3.Normalize(Vector3.Cross(_camera.forward, _camera.up)) * speed;
 			}
-			if (window.IsKeyPressed(Key.D))
+			if (_input.IsKeyPressed(Key.D))
 			{
 				_camera.position += Vector3.Normalize(Vector3.Cross(_camera.forward, _camera.up)) * speed;
 			}
 
 			Vector2 difference = Vector2.Zero;
-			Vector2 mouseMove = window.GetMousePosition();
+			Vector2 mouseMove = (Vector2)_input.GetMousePosition();
 
-			if (window.IsMouseButtonPressed(MouseButton.Middle))
+			if (_input.IsButtonPressed(MouseButton.Middle))
 			{
-				if (window.GetCursorMode() != CursorMode.Raw)
+				if (_input.GetCursorMode() != CursorMode.Raw)
 				{
-					window.SetCursorMode(CursorMode.Raw);
+					_input.SetCursorMode(CursorMode.Raw);
 					_lastMousePosition = mouseMove;
 				}
 				else
@@ -199,9 +203,9 @@ namespace BEngineCore
 			}
 			else
 			{
-				if (window.GetCursorMode() != CursorMode.Normal)
+				if (_input.GetCursorMode() != CursorMode.Normal)
 				{
-					window.SetCursorMode(CursorMode.Normal);
+					_input.SetCursorMode(CursorMode.Normal);
 					_lastMousePosition = mouseMove;
 				}
 			}

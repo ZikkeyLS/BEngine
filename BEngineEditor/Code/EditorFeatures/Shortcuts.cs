@@ -1,5 +1,5 @@
-﻿using BEngineCore;
-using Silk.NET.Input;
+﻿using BEngine;
+using BEngineCore;
 
 namespace BEngineEditor
 {
@@ -7,7 +7,7 @@ namespace BEngineEditor
 	{
 		private ProjectContext _projectContext;
 
-		protected EditorWindow window => _projectContext.Window;
+		private BEngineCore.Input _input => _projectContext.Window.Input;
 		private EditorProject _project => _projectContext.CurrentProject;
 		private ProjectCompiler _compiler => _projectContext.CurrentProject.Compiler;
 
@@ -24,7 +24,7 @@ namespace BEngineEditor
 			if (_projectContext.CurrentProject == null) 
 				return;
 
-			if (ControlShiftActive() && window.IsKeyPressed(Key.Q))
+			if (ControlShiftActive() && _input.IsKeyPressed(Key.Q))
 			{
 				if ((DateTime.Now - _lastOpenedEditor).TotalSeconds >= 1)
 				{
@@ -36,17 +36,17 @@ namespace BEngineEditor
 			if (_compiler.BuildingGame)
 				return;
 
-			if (ControlShiftActive() && window.IsKeyPressed(Key.F))
+			if (ControlShiftActive() && _input.IsKeyPressed(Key.F))
 			{
 				_projectContext.SearchingProject = true;
 			}
 
-			if (ControlShiftActive() && window.IsKeyPressed(Key.B))
+			if (ControlShiftActive() && _input.IsKeyPressed(Key.B))
 			{
 				_compiler.CompileScripts();
 			}
 
-			if (ControlActive() && window.IsKeyPressed(Key.S) && _project.LoadedScene != null)
+			if (ControlActive() && _input.IsKeyPressed(Key.S) && _project.LoadedScene != null)
 			{
 				if ((DateTime.Now - _lastSavedScene).TotalSeconds >= 1)
 				{
@@ -57,12 +57,12 @@ namespace BEngineEditor
 
 			if (_compiler.AssemblyLoaded && _compiler.AssemblyCompileErrors.Count == 0)
 			{
-				if (ControlShiftActive() && window.IsKeyPressed(Key.G))
+				if (ControlShiftActive() && _input.IsKeyPressed(Key.G))
 				{
 					_compiler.BuildGame();
 				}
 
-				if (ControlShiftActive() && window.IsKeyPressed(Key.R))
+				if (ControlShiftActive() && _input.IsKeyPressed(Key.R))
 				{
 					_compiler.BuildGame(true);
 				}
@@ -71,12 +71,12 @@ namespace BEngineEditor
 
 		private bool ControlActive()
 		{
-			return window.IsKeyPressed(Key.ControlLeft) || window.IsKeyPressed(Key.ControlRight);
+			return _input.IsKeyPressed(Key.ControlLeft) || _input.IsKeyPressed(Key.ControlRight);
 		}
 
 		private bool ShiftActive()
 		{
-			return window.IsKeyPressed(Key.ShiftLeft) || window.IsKeyPressed(Key.ShiftRight);
+			return _input.IsKeyPressed(Key.ShiftLeft) || _input.IsKeyPressed(Key.ShiftRight);
 		}
 
 		private bool ControlShiftActive()

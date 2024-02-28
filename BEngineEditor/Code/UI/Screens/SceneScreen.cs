@@ -29,7 +29,7 @@ namespace BEngineEditor
 
 			bool focused =
 				ImGui.IsWindowFocused() ||
-				(ImGui.IsWindowHovered() && _projectContext.Window.IsMouseButtonPressed(Silk.NET.Input.MouseButton.Middle));
+				(ImGui.IsWindowHovered() && _projectContext.Window.Input.IsButtonPressed(BEngine.MouseButton.Middle));
 
 			_projectContext.CurrentProject.Graphics.EnableNativeCameraMovement = focused;
 			if (focused)

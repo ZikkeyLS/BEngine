@@ -1,5 +1,6 @@
 ﻿using BEngine;
 using Silk.NET.Input;
+using CursorMode = BEngine.CursorMode;
 using Key = BEngine.Key;
 using MouseButton = BEngine.MouseButton;
 
@@ -110,6 +111,18 @@ namespace BEngineCore
 			return _buttons[button].Up;
 		}
 
+		public void SetCursorMode(CursorMode mode)
+		{
+			if (_input.Mice[0].Cursor.IsSupported((Silk.NET.Input.CursorMode)mode))
+			{
+				_input.Mice[0].Cursor.CursorMode = (Silk.NET.Input.CursorMode)mode;
+			}
+		}
+
+		public CursorMode GetCursorMode()
+		{
+			return (CursorMode)_input.Mice[0].Cursor.CursorMode;
+		}
 
 		public bool IsKeyPressed(Key key)
 		{

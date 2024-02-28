@@ -26,7 +26,7 @@ namespace BEngineCore
 
 		protected override void OnRender(double time)
 		{
-			graphics.Render(this, (float)time, true);
+			graphics.Render((float)time, true);
 
 			base.OnRender(time);
 		}

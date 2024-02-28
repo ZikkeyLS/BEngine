@@ -38,34 +38,6 @@ namespace BEngineCore
 			window.Run();
 		}
 
-		public bool IsKeyPressed(Key key)
-		{
-			return inputContext.Keyboards[0].IsKeyPressed(key);
-		}
-
-		public bool IsMouseButtonPressed(MouseButton button)
-		{
-			return inputContext.Mice[0].IsButtonPressed(button);
-		}
-
-		public void SetCursorMode(CursorMode mode)
-		{
-			if (inputContext.Mice[0].Cursor.IsSupported(mode))
-			{
-				inputContext.Mice[0].Cursor.CursorMode = mode;
-			}
-		}
-
-		public CursorMode GetCursorMode()
-		{
-			return inputContext.Mice[0].Cursor.CursorMode;
-		}
-
-		public Vector2 GetMousePosition()
-		{
-			return inputContext.Mice[0].Position;
-		}
-
 		protected virtual void OnLoad() 
 		{
 			inputContext = window.CreateInput();
@@ -77,7 +49,12 @@ namespace BEngineCore
 
 			gl = window.CreateOpenGL();
 			graphics = new(gl);
-			graphics.Initialize();
+			graphics.Initialize(this);
+		}
+
+		private void OnFramebufferResize(Vector2D<int> obj)
+		{
+			gl.Viewport(obj);
 		}
 
 		protected virtual void OnRender(double time) { }
@@ -85,11 +62,6 @@ namespace BEngineCore
 		protected virtual void OnUpdate(double time) { }
 
 		protected virtual void OnResize(Vector2D<int> size) { }
-
-		private void OnFramebufferResize(Vector2D<int> obj)
-		{
-			gl.Viewport(obj);
-		}
 
 		protected virtual void OnClose() { }
 

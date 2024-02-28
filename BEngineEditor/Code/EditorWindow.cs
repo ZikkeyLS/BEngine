@@ -70,7 +70,7 @@ namespace BEngineEditor
 		{
 			_controller.Update((float)time);
 
-			graphics.Render(this, (float)time);
+			graphics.Render((float)time);
 
 			ImGui.DockSpaceOverViewport();
 			DisplayUI();

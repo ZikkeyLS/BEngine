@@ -81,6 +81,9 @@ namespace BEngine
 		private static MethodInfo? _isButtonUp;
 		private static MethodInfo? _isButtonPressed;
 
+		private static MethodInfo? _getCursorMode;
+		private static MethodInfo? _setCursorMode;
+
 		private static void LoadInputsAssembly()
 		{
 			_isMouseConnected = GetMethod("IsMouseConnected");
@@ -94,6 +97,9 @@ namespace BEngine
 			_isButtonDown = GetMethod("IsButtonDown");
 			_isButtonUp = GetMethod("IsButtonUp");
 			_isButtonPressed = GetMethod("IsButtonPressed");
+
+			_getCursorMode = GetMethod("GetCursorMode");
+			_setCursorMode = GetMethod("SetCursorMode");
 		}
 
 		public static bool IsMouseConnected()
@@ -139,6 +145,16 @@ namespace BEngine
 		public static bool IsButtonPressed(MouseButton button)
 		{
 			return (bool)(_isButtonPressed?.Invoke(null, new object[] { button }));
+		}
+
+		public static CursorMode GetCursorMode()
+		{
+			return (CursorMode)(_getCursorMode?.Invoke(null, new object[] { }));
+		}
+
+		public static void SetCursorMode(CursorMode mode)
+		{
+			_setCursorMode?.Invoke(null, new object[] { mode });
 		}
 		#endregion
 
