@@ -55,8 +55,8 @@ namespace BEngineCore
 			gl.Enable(GLEnum.CullFace);
 			gl.CullFace(GLEnum.Back);
 
-			//gl.BlendFunc(GLEnum.SrcAlpha, GLEnum.OneMinusSrcAlpha);
-			//gl.Enable(GLEnum.Blend);
+			gl.Enable(GLEnum.Blend);
+			gl.BlendFunc(GLEnum.SrcAlpha, GLEnum.OneMinusSrcAlpha);
 
 			gl.ClearColor(Color.CornflowerBlue);
 

@@ -79,7 +79,7 @@ namespace BEngineEditor
 			_assemblyListener.InitializeScriptWatch(this);
 			_assemblyListener.OnScriptsChanged += (e) => _compiler.CompileScripts();
 
-			reader = new AssetReader(AssetsDirectory, AssetReaderType.Directory);
+			reader = new AssetReader([AssetsDirectory, "./EngineData/Assets"], AssetReaderType.Directory);
 			_assets = new AssetWorker(this, reader);
 
 			TryLoadLastOpenedScene();

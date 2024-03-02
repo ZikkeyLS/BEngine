@@ -18,53 +18,40 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="EngineData\Models\Rifle_fbx\**" />
-    <Compile Remove="EngineData\Models\Rifle_obj\**" />
-    <EmbeddedResource Remove="EngineData\Models\Rifle_fbx\**" />
-    <EmbeddedResource Remove="EngineData\Models\Rifle_obj\**" />
-    <None Remove="EngineData\Models\Rifle_fbx\**" />
-    <None Remove="EngineData\Models\Rifle_obj\**" />
+    <Compile Remove="EngineData\Models\**" />
+    <Compile Remove="EngineData\Textures\**" />
+    <EmbeddedResource Remove="EngineData\Models\**" />
+    <EmbeddedResource Remove="EngineData\Textures\**" />
+    <None Remove="EngineData\Models\**" />
+    <None Remove="EngineData\Textures\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="EngineData\Models\Rifle\M1 Garand Lowpoly.fbx" />
-    <None Remove="EngineData\Models\Rifle\M1 Garand.mtl" />
-    <None Remove="EngineData\Models\Rifle\M1 Garand.obj" />
-    <None Remove="EngineData\Models\Rifle\textures\LP_Checker_BaseColor.jpg" />
-    <None Remove="EngineData\Models\Rifle\textures\LP_Checker_Height.jpg" />
-    <None Remove="EngineData\Models\Rifle\textures\LP_Checker_Metallic.jpg" />
-    <None Remove="EngineData\Models\Rifle\textures\LP_Checker_Normal.jpg" />
-    <None Remove="EngineData\Models\Rifle\textures\LP_Checker_Roughness.jpg" />
+    <None Remove="EngineData\Assets\Models\Cube.mtl" />
+    <None Remove="EngineData\Assets\Models\Cube.mtl.meta" />
+    <None Remove="EngineData\Assets\Models\Cube.obj" />
+    <None Remove="EngineData\Assets\Models\Cube.obj.meta" />
+    <None Remove="EngineData\Assets\Textures\Default.jpg" />
     <None Remove="EngineData\Shaders\PointLight.frag" />
     <None Remove="EngineData\Shaders\PointLight.vert" />
     <None Remove="EngineData\Shaders\Shader.frag" />
     <None Remove="EngineData\Shaders\Shader.vert" />
-    <None Remove="EngineData\Textures\Default.jpg" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="EngineData\Models\Rifle\M1 Garand Lowpoly.fbx">
+    <Content Include="EngineData\Assets\Models\Cube.mtl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="EngineData\Models\Rifle\M1 Garand.mtl">
+    <Content Include="EngineData\Assets\Models\Cube.mtl.meta">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="EngineData\Models\Rifle\M1 Garand.obj">
+    <Content Include="EngineData\Assets\Models\Cube.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="EngineData\Models\Rifle\textures\LP_Checker_BaseColor.jpg">
+    <Content Include="EngineData\Assets\Models\Cube.obj.meta">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="EngineData\Models\Rifle\textures\LP_Checker_Height.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EngineData\Models\Rifle\textures\LP_Checker_Metallic.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EngineData\Models\Rifle\textures\LP_Checker_Normal.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EngineData\Models\Rifle\textures\LP_Checker_Roughness.jpg">
+    <Content Include="EngineData\Assets\Textures\Default.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="EngineData\Shaders\PointLight.frag">
@@ -77,9 +64,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="EngineData\Shaders\Shader.vert">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EngineData\Textures\Default.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

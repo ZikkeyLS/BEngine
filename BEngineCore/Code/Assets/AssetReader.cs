@@ -11,28 +11,30 @@ namespace BEngineCore
 	public class AssetReader
 	{
 		public readonly AssetReaderType Type;
-		public readonly string AssetsDirectory;
+		public readonly List<string> AssetsDirectories = new();
 		public readonly List<AssetMetaData> LoadedAssets = new();
 
 		public readonly ModelContext ModelContext;
 
 		private Packer? _packer;
 
-		public AssetReader(string assetsDirectory, AssetReaderType type)
+		public AssetReader(string[] assetsDirectories, AssetReaderType type)
 		{
 			ModelContext = new(this);
-			AssetsDirectory = assetsDirectory;
+			AssetsDirectories.AddRange(assetsDirectories);
 			Type = type;
 
-			if (Directory.Exists(assetsDirectory) == false)
-				Directory.CreateDirectory(assetsDirectory);
+			foreach (string assetsDirectory in assetsDirectories)
+				if (Directory.Exists(assetsDirectory) == false)
+					Directory.CreateDirectory(assetsDirectory);
 
 			if (Type == AssetReaderType.Archive)
 			{
 				_packer = new();
 			}
 
-			LoadAssets(AssetsDirectory);
+			foreach (string assetsDirectory in assetsDirectories)
+				LoadAssets(assetsDirectory);
 		}
 
 		public bool HasAsset(string path)
@@ -89,7 +91,15 @@ namespace BEngineCore
 
 		public string GetAssetPath(string guid)
 		{
-			return GetAssetPath(AssetsDirectory, guid);
+			string result = string.Empty;
+
+			foreach (string assetsDirectory in AssetsDirectories)
+			{
+				if (result == string.Empty)
+					result = GetAssetPath(assetsDirectory, guid);
+			}
+
+			return result;
 		}
 
 		public string GetAssetPath(string directory, string guid)

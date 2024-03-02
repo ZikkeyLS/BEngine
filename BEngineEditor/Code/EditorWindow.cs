@@ -1,7 +1,6 @@
 ﻿using BEngine;
 using BEngineCore;
 using ImGuiNET;
-using Silk.NET.Input;
 using Silk.NET.OpenGL.Extensions.ImGui;
 
 namespace BEngineEditor

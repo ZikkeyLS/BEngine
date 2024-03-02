@@ -139,7 +139,7 @@ namespace BEngineCore
 			}
 			else
 			{
-				load = new Texture("EngineData/Textures/Default.jpg", gl);
+				load = new Texture("EngineData/Assets/Textures/Default.jpg", gl);
 				_defaultLoaded = load;
 			}
 
