@@ -137,16 +137,19 @@ namespace BEngineCore
 
 		public void RemoveScript(SceneScript script)
 		{
-			Scripts.Remove(script);
-
 			Script? removeRuntime = Entity.Scripts.Find((current) => current.GetType().Name == script.Name &&
 				current.GetType().Namespace == script.Namespace);
 
 			if (removeRuntime != null)
 			{
+				Entity.CallEventLocal(EventID.Destroy, removeRuntime);
+				Entity.CallEventLocal(EventID.EditorDestroy, removeRuntime);
+
 				Entity.Scripts.Remove(removeRuntime);
 				removeRuntime.Dispose();
 			}
+
+			Scripts.Remove(script);
 
 			script.Dispose();
 		}

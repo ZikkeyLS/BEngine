@@ -11,8 +11,7 @@ namespace BEngine
 		{
 			get 
 			{
-				Vector3 vector3 = Quaternion.ToEuler(Rotation);
-				return vector3; 
+				return Quaternion.ToEuler(Rotation);
 			}
 			set 
 			{ 

@@ -21,10 +21,15 @@ namespace BEngine
 				return;
 
 			// get physics data
-			PhysicsBodyData data = InternalCalls.PhysicsGetBodyData(physicsID);
+			PhysicsEntryData data = InternalCalls.PhysicsGetStaticData(physicsID);
 			Transform.Position = data.Position;
 			Transform.Rotation = data.Rotation;
 			// Transform.Scale = data.Scale;
+		}
+
+		public override void OnEditorDestroy()
+		{
+			InternalCalls.PhysicsRemoveStatic(physicsID);
 		}
 
 		private bool Setup()
@@ -33,7 +38,7 @@ namespace BEngine
 
 			if (Transform != null)
 			{
-				physicsID = InternalCalls.PhysicsCreateCube(Transform.Position, Transform.Rotation, Transform.Scale);
+				physicsID = InternalCalls.PhysicsCreateStaticCube(Transform.Position, Transform.Rotation, Transform.Scale);
 				if (physicsID != string.Empty)
 					return true;
 			}

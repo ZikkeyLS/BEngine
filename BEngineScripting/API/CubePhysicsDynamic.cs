@@ -1,14 +1,13 @@
 ﻿
 namespace BEngine
 {
-	public struct PhysicsBodyData
+	public struct PhysicsEntryData
 	{
 		public Vector3 Position;
 		public Quaternion Rotation;
-		public Vector3 Scale;
 	}
 
-	public class CubePhysics : Script
+	public class CubePhysicsDynamic : Script
 	{
 		public Transform Transform { get; set; }
 
@@ -28,10 +27,15 @@ namespace BEngine
 				return;
 
 			// get physics data
-			PhysicsBodyData data = InternalCalls.PhysicsGetBodyData(physicsID);
+			PhysicsEntryData data = InternalCalls.PhysicsGetDynamicData(physicsID);
 			Transform.Position = data.Position;
 			Transform.Rotation = data.Rotation;
 			// Transform.Scale = data.Scale;
+		}
+
+		public override void OnEditorDestroy()
+		{
+			InternalCalls.PhysicsRemoveDynamic(physicsID);
 		}
 
 		private bool Setup()
@@ -40,7 +44,7 @@ namespace BEngine
 
 			if (Transform != null)
 			{
-				physicsID = InternalCalls.PhysicsCreateCube(Transform.Position, Transform.Rotation, Transform.Scale);
+				physicsID = InternalCalls.PhysicsCreateDynamicCube(Transform.Position, Transform.Rotation, Transform.Scale);
 				if (physicsID != string.Empty)
 					return true;
 			}

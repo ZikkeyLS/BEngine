@@ -192,27 +192,90 @@ namespace BEngineCore
 		#endregion
 
 		#region Physics
-		public static string PhysicsCreateCube(Vector3 position, Quaternion rotation, Vector3 scale)
+		public static string PhysicsCreateStaticCube(Vector3 position, Quaternion rotation, Vector3 scale)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
 
 			if (loadedProject == null)
 				return string.Empty;
 
-			return loadedProject.Physics.CreateCube(
+			return loadedProject.Physics.CreateStaticCube(
 				(System.Numerics.Vector3)position,
 				(System.Numerics.Quaternion)rotation,
 				(System.Numerics.Vector3)scale);
 		}
 
-		public static PhysicsBodyData PhysicsGetBodyData(string physicsID)
+		public static string PhysicsCreateDynamicCube(Vector3 position, Quaternion rotation, Vector3 scale)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return string.Empty;
+
+			return loadedProject.Physics.CreateDynamicCube(
+				(System.Numerics.Vector3)position,
+				(System.Numerics.Quaternion)rotation,
+				(System.Numerics.Vector3)scale);
+		}
+
+		public static PhysicsEntryData PhysicsGetStaticData(string physicsID)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
 
 			if (loadedProject == null)
 				return new();
 
-			return loadedProject.Physics.GetBodyData(physicsID);
+			return loadedProject.Physics.GetStaticData(physicsID);
+		}
+
+		public static PhysicsEntryData PhysicsGetDynamicData(string physicsID)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return new();
+
+			return loadedProject.Physics.GetDynamicData(physicsID);
+		}
+
+		public static void PhysicsUpdateStaticScale(string physicsID, Vector3 scale)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return;
+
+			loadedProject.Physics.UpdateStaticScale(physicsID, scale);
+		}
+
+		public static void PhysicsUpdateDynamicScale(string physicsID, Vector3 scale)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return;
+
+			loadedProject.Physics.UpdateDynamicScale(physicsID, scale);
+		}
+
+		public static void PhysicsRemoveStatic(string physicsID)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return;
+
+			loadedProject.Physics.RemoveStatic(physicsID);
+		}
+
+		public static void PhysicsRemoveDynamic(string physicsID)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return;
+
+			loadedProject.Physics.RemoveDynamic(physicsID);
 		}
 		#endregion
 	}

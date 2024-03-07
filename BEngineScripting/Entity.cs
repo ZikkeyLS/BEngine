@@ -7,7 +7,35 @@ namespace BEngine
 		public string Name;
 		internal List<Script> Scripts = new();
 		private List<Script> _scriptCopy = new List<Script>();
-	
+
+		internal void CallEventLocal(EventID id, Script script)
+		{
+			switch (id)
+			{
+				case EventID.Start:
+					script.OnStart();
+					break;
+				case EventID.Update:
+					script.OnUpdate();
+					break;
+				case EventID.Destroy:
+					script.OnDestroy();
+					break;
+				case EventID.EditorStart:
+					script.OnEditorStart();
+					break;
+				case EventID.EditorUpdate:
+					script.OnEditorUpdate();
+					break;
+				case EventID.EditorDestroy:
+					script.OnEditorDestroy();
+					break;
+				case EventID.EditorSelected:
+					script.OnEditorSelected();
+					break;
+			}
+		}
+
 		internal void CallEvent(EventID id)
 		{
 			switch (id)

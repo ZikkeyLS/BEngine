@@ -1,14 +1,10 @@
 ﻿using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuPhysics.CollisionDetection;
-using BepuPhysics.CollisionDetection.CollisionTasks;
 using BepuPhysics.Constraints;
 using BepuPhysics.Trees;
 using BepuUtilities;
 using BepuUtilities.Memory;
-using Silk.NET.Assimp;
-using Silk.NET.Input;
-using Silk.NET.Vulkan;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -323,6 +319,7 @@ namespace BEngineCore
 
 		private bool running = true;
 
+		public Dictionary<string, StaticHandle> Statics = new();
 		public Dictionary<string, BodyHandle> Bodies = new();
 
 		public Physics()
@@ -335,7 +332,7 @@ namespace BEngineCore
 			_collisionFilter = new CollidableProperty<SubgroupCollisionFilter>();
 			_bufferPool = new BufferPool();
 			_simulation = Simulation.Create(_bufferPool, new NarrowPhaseCallbacks(_collisionFilter),
-				new PoseIntegratorCallbacks(new Vector3(0, -10, 0)), new SolveDescription(8, 1));
+				new PoseIntegratorCallbacks(new Vector3(0, -0.5f, 0)), new SolveDescription(8, 1));
 			_dispatcher = new ThreadDispatcher(Environment.ProcessorCount);
 
 			//var sphere = new Box(1, 2, 1);
@@ -354,9 +351,19 @@ namespace BEngineCore
 			Run();
 		}
 
-		public string CreateCube(Vector3 position, Quaternion rotation, Vector3 scale)
+		public string CreateStaticCube(Vector3 position, Quaternion rotation, Vector3 scale)
 		{
+			var cube = new Box(scale.X, scale.Y, scale.Z);
+			StaticHandle result = _simulation.Statics.Add(new StaticDescription(position, rotation, _simulation.Shapes.Add(cube)));
 
+			ref var filters = ref _collisionFilter.Allocate(result);
+			filters = new SubgroupCollisionFilter(0);
+
+			return AttachStatic(result);
+		}
+
+		public string CreateDynamicCube(Vector3 position, Quaternion rotation, Vector3 scale)
+		{
 			var cube = new Box(scale.X, scale.Y, scale.Z);
 			var inertia = cube.ComputeInertia(1);
 			BodyHandle result = _simulation.Bodies.Add(BodyDescription.CreateDynamic(new RigidPose() { Position = position, Orientation = rotation },
@@ -368,10 +375,56 @@ namespace BEngineCore
 			return AttachBody(result);
 		}
 
-		public BEngine.PhysicsBodyData GetBodyData(string physicsID)
+		public BEngine.PhysicsEntryData GetStaticData(string physicsID)
 		{
-			BodyReference body = _simulation.Bodies[Bodies[physicsID]];
-			return new BEngine.PhysicsBodyData() { Position = body.Pose.Position, Rotation = body.Pose.Orientation, Scale = Vector3.One };
+			if (Statics.ContainsKey(physicsID) == false)
+				return new BEngine.PhysicsEntryData();
+
+			StaticReference staticReference = _simulation.Statics[Statics[physicsID]];
+
+			return new BEngine.PhysicsEntryData() { Position = staticReference.Pose.Position, Rotation = staticReference.Pose.Orientation };
+		}
+
+		public BEngine.PhysicsEntryData GetDynamicData(string physicsID)
+		{
+			if (Bodies.ContainsKey(physicsID) == false)
+				return new BEngine.PhysicsEntryData();
+
+			BodyReference bodyReference = _simulation.Bodies[Bodies[physicsID]];
+			return new BEngine.PhysicsEntryData() { Position = bodyReference.Pose.Position, Rotation = bodyReference.Pose.Orientation };
+		}
+
+		public void UpdateStaticScale(string physicsID, BEngine.Vector3 scale)
+		{
+			// TO DO
+		}
+
+		public void UpdateDynamicScale(string physicsID, BEngine.Vector3 scale)
+		{
+			// TO DO
+		}
+
+		public void RemoveDynamic(string physicsID)
+		{
+			if (Bodies.ContainsKey(physicsID) == false)
+				return;
+			_simulation.Bodies.Remove(Bodies[physicsID]);
+			Bodies.Remove(physicsID);
+		}
+
+		public void RemoveStatic(string physicsID)
+		{
+			if (Statics.ContainsKey(physicsID) == false)
+				return;
+			_simulation.Statics.Remove(Statics[physicsID]);
+			Statics.Remove(physicsID);
+		}
+
+		private string AttachStatic(StaticHandle handle)
+		{
+			string id = Guid.NewGuid().ToString();
+			Statics.Add(id, handle);
+			return id;
 		}
 
 		private string AttachBody(BodyHandle handle)
@@ -387,6 +440,18 @@ namespace BEngineCore
 			{
 				while (running)
 				{
+					Console.WriteLine("Start of physics frame");
+					foreach (var body in Bodies)
+					{
+						var bodyData = GetDynamicData(body.Key);
+						Console.WriteLine("Dynamic: " + bodyData.Position + " " + bodyData.Rotation);
+					}
+					foreach (var statico in Statics)
+					{
+						var staticData = GetStaticData(statico.Key);
+						Console.WriteLine("Static: " + staticData.Position + " " + staticData.Rotation);
+					}
+
 					_simulation.Timestep(0.02f, _dispatcher);
 					FixedUpdate();
 				}
