@@ -18,6 +18,8 @@ namespace BEngineEditor
 
 		private string? _lastName = string.Empty;
 
+		private const int precision = 5;
+
 		public override void Display()
 		{
 			ImGui.Begin("Properties", ImGuiWindowFlags.HorizontalScrollbar);
@@ -65,37 +67,98 @@ namespace BEngineEditor
 
 					if (script != null)
 					{
-						FieldInfo[] fields = script.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+						List<MemberInfo> fields = script.GetType().GetMembers(BindingFlags.Public | BindingFlags.Instance).
+							ToList().FindAll((member) => member.MemberType == MemberTypes.Field | member.MemberType == MemberTypes.Property);
 
-						for (int j = 0; j < fields.Length; j++)
+						bool searching = true;
+						while (searching)
 						{
-							FieldInfo field = fields[j];
+							bool success = true;
+							for (int j = 0; j < fields.Count; j++)
+							{
+								MemberInfo field = fields[j];
+
+								if (field.IsDefined(typeof(EditorShowAt)))
+								{
+									foreach (object attribute in field.GetCustomAttributes(true))
+									{
+										if (attribute == null)
+											continue;
+
+										EditorShowAt? forceShow = attribute as EditorShowAt;
+
+										if (forceShow == null)
+											continue;
+
+										if (j != forceShow.Placement)
+										{
+											fields.Remove(field);
+											fields.Insert(forceShow.Placement, field);
+											success = false;
+										}
+									}
+								}
+							}
+
+							if (success == false)
+								break;
+
+							searching = false;
+						}
+
+						for (int j = 0; j < fields.Count; j++)
+						{
+							MemberInfo field = fields[j];
 							SceneScriptField? sceneScriptField = selectedEntity.Scripts[i].Fields?.Find((scripField) => scripField.Name == field.Name);
 							SceneScriptValue? sceneScriptValue = sceneScriptField?.Value;
+							Type fieldType;
+
+							if (field.MemberType == MemberTypes.Field)
+							{
+								fieldType = ((FieldInfo)field).FieldType;
+							}
+							else
+							{
+								fieldType = ((PropertyInfo)field).PropertyType;
+							}
+
+							if (field.IsDefined(typeof(EditorIgnore)))
+								continue;
+
+							string fieldName = field.Name;
+
+							if (field.IsDefined(typeof(EditorName)))
+							{
+								foreach (object attribute in field.GetCustomAttributes(true))
+								{
+									if (attribute == null)
+										continue;
+
+									EditorName? editorName = attribute as EditorName;
+
+									if (editorName == null)
+										continue;
+
+									fieldName = editorName.Name;
+								}
+							}
 
 							ImGui.PushID(field.Name);
 
-							if (IsInClassList(field.FieldType, typeof(string), typeof(int),
+							if (IsInClassList(fieldType, typeof(string), typeof(int),
 								typeof(float), typeof(double), typeof(uint), typeof(byte), typeof(sbyte),
 								typeof(short), typeof(ushort)))
 							{
 								string input = string.Empty;
 
-								if (fields[j] != null)
-								{
-									object? result = fields[j].GetValue(script);
-									if (result != null)
-										input = result.ToString();
-								}
-								else if (sceneScriptValue != null)
-								{
-									input = sceneScriptValue.Value.ToString();
-								}
+								object? fieldResult = GetScriptValue(field, script);
+								if (fieldResult != null)
+									input = fieldResult.ToString();
 
 								if (input == null)
 									input = string.Empty;
 
-								if (IsInClassList(field.FieldType, typeof(string)))
+								if (IsInClassList(fieldType, typeof(string)))
 								{
 									if (input != string.Empty)
 										input = input.Substring(1, input.Length - 2);
@@ -103,20 +166,20 @@ namespace BEngineEditor
 								else
 									input = input.Replace(".", ",");
 
-								if (ImGui.InputText(field.Name, ref input, 128))
+								if (ImGui.InputText(fieldName, ref input, 128))
 								{
 									if (input == null)
 										continue;
 
-									if (input == string.Empty && IsInClassList(field.FieldType, typeof(string)) == false)
+									if (input == string.Empty && IsInClassList(fieldType, typeof(string)) == false)
 										continue;
 
 									object? final = null;
-									if (field.FieldType != typeof(string))
+									if (fieldType != typeof(string))
 									{
 										if (double.TryParse(input, out double result))
 										{
-											final = Convert.ChangeType(result, field.FieldType);
+											final = Convert.ChangeType(result, fieldType);
 										}
 									}
 									else
@@ -126,43 +189,33 @@ namespace BEngineEditor
 										UpdateField(field, script, sceneScript, final);
 								}
 							}
-							else if (IsInClassList(field.FieldType, typeof(bool)))
+							else if (IsInClassList(fieldType, typeof(bool)))
 							{
-								bool input = (bool)field.GetValue(script);
+								bool input = (bool)GetScriptValue(field, script);
 								bool result = input;
 
-								if (ImGui.Checkbox(field.Name, ref result))
+								if (ImGui.Checkbox(fieldName, ref result))
 								{
 									UpdateField(field, script, sceneScript, result);
 								}
 							}
-							else if (IsInClassList(field.FieldType, typeof(Vector3)))
+							else if (IsInClassList(fieldType, typeof(Vector3)))
 							{
 								string x = "0";
 								string y = "0";
 								string z = "0";
 								Vector3 initial = Vector3.zero;
 
-								if (fields[j] != null)
+								object? resultField = GetScriptValue(field, script);
+								if (resultField != null)
 								{
-									object? result = fields[j].GetValue(script);
-									if (result != null)
-									{
-										initial = (Vector3)result;
-										x = initial.x.ToString();
-										y = initial.y.ToString();
-										z = initial.z.ToString();
-									}
-								}
-								else if (sceneScriptValue != null)
-								{
-									initial = JsonSerializer.Deserialize<Vector3>(sceneScriptValue.Value);
-									x = initial.x.ToString();
-									y = initial.y.ToString();
-									z = initial.z.ToString();
+									initial = (Vector3)resultField;
+									x = Math.Round(initial.x, precision).ToString();
+									y = Math.Round(initial.y, precision).ToString();
+									z = Math.Round(initial.z, precision).ToString();
 								}
 
-								ImGui.Text(field.Name);
+								ImGui.Text(fieldName);
 								ImGui.PushItemWidth(ImGui.GetWindowSize().X / 6);
 								ImGui.Text("x");
 								ImGui.SameLine();
@@ -216,7 +269,7 @@ namespace BEngineEditor
 								}
 								ImGui.PopItemWidth();
 							}
-							else if (IsInClassList(field.FieldType, typeof(Quaternion)))
+							else if (IsInClassList(fieldType, typeof(Quaternion)))
 							{
 								string x = "0";
 								string y = "0";
@@ -225,29 +278,17 @@ namespace BEngineEditor
 
 								Quaternion initial = Quaternion.identity;
 
-								if (sceneScriptValue != null)
+								object? fieldResult = GetScriptValue(field, script);
+								if (fieldResult != null)
 								{
-									initial = JsonSerializer.Deserialize<Quaternion>(sceneScriptValue.Value);
-									x = initial.x.ToString();
-									y = initial.y.ToString();
-									z = initial.z.ToString();
-									w = initial.w.ToString();
-								}
-								else
-								{
-									object? result = fields[j].GetValue(script);
-									if (result != null)
-									{
-										initial = (Quaternion)result;
-										x = initial.x.ToString();
-										y = initial.y.ToString();
-										z = initial.z.ToString();
-										w = initial.w.ToString();
-									}
+									initial = (Quaternion)fieldResult;
+									x = Math.Round(initial.x, precision).ToString();
+									y = Math.Round(initial.y, precision).ToString();
+									z = Math.Round(initial.z, precision).ToString();
+									w = Math.Round(initial.w, precision).ToString();
 								}
 
-
-								ImGui.Text(field.Name);
+								ImGui.Text(fieldName);
 								ImGui.PushItemWidth(ImGui.GetWindowSize().X / 6);
 								ImGui.Text("x");
 								ImGui.SameLine();
@@ -317,23 +358,15 @@ namespace BEngineEditor
 								}
 								ImGui.PopItemWidth();
 							}
-							else if (IsInClassList(field.FieldType, typeof(BEngine.Model)))
+							else if (IsInClassList(fieldType, typeof(BEngine.Model)))
 							{
 								string input = string.Empty;
 
 								if (fields[j] != null)
 								{
-									BEngine.Model? result = (BEngine.Model?)fields[j].GetValue(script);
+									BEngine.Model? result = (BEngine.Model?)GetScriptValue(field, script);
 									if (result != null)
 										input = result.GUID;
-								}
-								else if (sceneScriptValue != null)
-								{
-									BEngine.Model? model = JsonSerializer.Deserialize<BEngine.Model>(sceneScriptValue.Value);
-									if (model != null)
-									{
-										input = model.GUID;
-									}
 								}
 
 								if (input == null)
@@ -499,11 +532,24 @@ namespace BEngineEditor
 			ImGui.End();
 		}
 
-		private void UpdateField(FieldInfo field, Script script, SceneScript sceneScript, object final)
+		private object? GetScriptValue(MemberInfo field, Script script)
+		{
+			if (field.MemberType == MemberTypes.Field)
+				return ((FieldInfo)field).GetValue(script);
+			else if (field.MemberType == MemberTypes.Property)
+				return ((PropertyInfo)field).GetValue(script);
+
+			return null;
+		}
+
+		private void UpdateField(MemberInfo field, Script script, SceneScript sceneScript, object final)
 		{
 			try
 			{
-				field.SetValue(script, final);
+				if (field.MemberType == MemberTypes.Field)
+					((FieldInfo)field).SetValue(script, final);
+				else if (field.MemberType == MemberTypes.Property)
+					((PropertyInfo)field).SetValue(script, final);
 
 				if (sceneScript.ContainsField(field.Name))
 				{

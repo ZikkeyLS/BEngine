@@ -190,5 +190,30 @@ namespace BEngineCore
 			return 0f;
 		}
 		#endregion
+
+		#region Physics
+		public static string PhysicsCreateCube(Vector3 position, Quaternion rotation, Vector3 scale)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return string.Empty;
+
+			return loadedProject.Physics.CreateCube(
+				(System.Numerics.Vector3)position,
+				(System.Numerics.Quaternion)rotation,
+				(System.Numerics.Vector3)scale);
+		}
+
+		public static PhysicsBodyData PhysicsGetBodyData(string physicsID)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return new();
+
+			return loadedProject.Physics.GetBodyData(physicsID);
+		}
+		#endregion
 	}
 }

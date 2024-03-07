@@ -21,6 +21,7 @@ namespace BEngine
 				LoadGraphicsAssembly();
 				LoadInputsAssembly();
 				LoadTimeAssembly();
+				LoadPhysicsAssembly();
 			}
 		}
 
@@ -190,6 +191,27 @@ namespace BEngine
 		public static float GetDeltaTime()
 		{
 			return (float)(_getDeltaTime?.Invoke(null, new object[] { }));
+		}
+		#endregion
+
+		#region Physics
+		private static MethodInfo? _physicsCreateCube;
+		private static MethodInfo? _physicsGetBodyData;
+
+		private static void LoadPhysicsAssembly()
+		{
+			_physicsCreateCube = GetMethod("PhysicsCreateCube");
+			_physicsGetBodyData = GetMethod("PhysicsGetBodyData");
+		}
+
+		public static string PhysicsCreateCube(Vector3 position, Quaternion rotation, Vector3 scale)
+		{
+			return (string)(_physicsCreateCube?.Invoke(null, new object[] { position, rotation, scale }));
+		}
+
+		public static PhysicsBodyData PhysicsGetBodyData(string physicsID)
+		{
+			return (PhysicsBodyData)(_physicsGetBodyData?.Invoke(null, new object[] { physicsID }));
 		}
 		#endregion
 	}

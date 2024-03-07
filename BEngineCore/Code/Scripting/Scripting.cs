@@ -95,6 +95,7 @@ namespace BEngineCore
 		{
 			_scripts.Add(new CachedScript(typeof(BEngine.Transform)));
 			_scripts.Add(new CachedScript(typeof(BEngine.ModelRenderer)));
+			_scripts.Add(new CachedScript(typeof(BEngine.CubePhysics)));
 			_scripts.Add(new CachedScript(typeof(BEngine.Camera)));
 		}
 

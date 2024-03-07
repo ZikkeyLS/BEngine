@@ -6,6 +6,7 @@ namespace BEngineCore
 		public static ProjectAbstraction LoadedProject { get; private set; }
 
 		protected Graphics graphics;
+		protected Physics physics;
 		protected Input input;
 		protected Time time = new();
 		protected Scripting scripting = new();
@@ -18,11 +19,13 @@ namespace BEngineCore
 		public Logger Logger => logger;
 		public Scene LoadedScene => loadedScene;
 		public Graphics Graphics => graphics;
+		public Physics Physics => physics;
 		public Input Input => input;
 		public Time Time => time;
 
 		public ProjectAbstraction(EngineWindow window)
 		{
+			physics = window.Physics;
 			graphics = window.Graphics;
 			input = window.Input;
 		}

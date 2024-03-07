@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Runtime.InteropServices;
 
 namespace BEngine
@@ -176,8 +177,94 @@ namespace BEngine
 
 		public static Quaternion FromEuler(float x, float y, float z)
 		{
-			System.Numerics.Quaternion result = System.Numerics.Quaternion.CreateFromYawPitchRoll(x, y, z);
-			return new Quaternion(result.X, result.Y, result.Z, result.W);
+			x = float.DegreesToRadians(x);
+			y = float.DegreesToRadians(y);
+			z = float.DegreesToRadians(z);
+
+			float rollOver2 = z * 0.5f;
+			float sinRollOver2 = (float)Math.Sin((double)rollOver2);
+			float cosRollOver2 = (float)Math.Cos((double)rollOver2);
+			float pitchOver2 = x * 0.5f;
+			float sinPitchOver2 = (float)Math.Sin((double)pitchOver2);
+			float cosPitchOver2 = (float)Math.Cos((double)pitchOver2);
+			float yawOver2 = y * 0.5f;
+			float sinYawOver2 = (float)Math.Sin((double)yawOver2);
+			float cosYawOver2 = (float)Math.Cos((double)yawOver2);
+
+			Quaternion result = identity;
+			result.w = cosYawOver2 * cosPitchOver2 * cosRollOver2 + sinYawOver2 * sinPitchOver2 * sinRollOver2;
+			result.x = cosYawOver2 * sinPitchOver2 * cosRollOver2 + sinYawOver2 * cosPitchOver2 * sinRollOver2;
+			result.y = sinYawOver2 * cosPitchOver2 * cosRollOver2 - cosYawOver2 * sinPitchOver2 * sinRollOver2;
+			result.z = cosYawOver2 * cosPitchOver2 * sinRollOver2 - sinYawOver2 * sinPitchOver2 * cosRollOver2;
+
+
+			return new Quaternion(result.x, result.y, result.z, result.w);
+		}
+
+		public static Quaternion FromEuler(Vector3 euler)
+		{
+			return FromEuler(euler.x, euler.y, euler.z);
+		}
+
+		public static Vector3 ToEuler(Quaternion q)
+		{
+			float sqw = q.w * q.w;
+			float sqx = q.x * q.x;
+			float sqy = q.y * q.y;
+			float sqz = q.z * q.z;
+			float unit = sqx + sqy + sqz + sqw; // if normalised is one, otherwise is correction factor
+			float test = q.x * q.w - q.y * q.z;
+			Vector3 v = Vector3.zero;
+
+			if (test > 0.4995f * unit)
+			{ // singularity at north pole
+				v.y = (float)(2f * Math.Atan2(q.y, q.x));
+				v.x = (float)(Math.PI / 2);
+				v.z = 0;
+
+				v.x = float.RadiansToDegrees(v.x);
+				v.y = float.RadiansToDegrees(v.y);
+				v.z = float.RadiansToDegrees(v.z);
+				return NormalizeAngles(v);
+			}
+			if (test < -0.4995f * unit)
+			{ // singularity at south pole
+				v.y = (float)(-2f * Math.Atan2(q.y, q.x));
+				v.x = (float)(-Math.PI / 2);
+				v.z = 0;
+
+				v.x = float.RadiansToDegrees(v.x);
+				v.y = float.RadiansToDegrees(v.y);
+				v.z = float.RadiansToDegrees(v.z);
+				return NormalizeAngles(v);
+			}
+
+			Quaternion q1 = new Quaternion(q.w, q.z, q.x, q.y);
+			v.y = (float)Math.Atan2(2f * q1.x * q1.w + 2f * q1.y * q1.z, 1 - 2f * (q1.z * q1.z + q1.w * q1.w));     // Yaw
+			v.x = (float)Math.Asin(2f * (q1.x * q1.z - q1.w * q1.y));                             // Pitch
+			v.z = (float)Math.Atan2(2f * q1.x * q1.y + 2f * q1.z * q1.w, 1 - 2f * (q1.y * q1.y + q1.z * q1.z));      // Roll
+
+			v.x = float.RadiansToDegrees(v.x);
+			v.y = float.RadiansToDegrees(v.y);
+			v.z = float.RadiansToDegrees(v.z);
+			return NormalizeAngles(v);
+		}
+
+		static Vector3 NormalizeAngles(Vector3 angles)
+		{
+			angles.x = NormalizeAngle(angles.x);
+			angles.y = NormalizeAngle(angles.y);
+			angles.z = NormalizeAngle(angles.z);
+			return angles;
+		}
+
+		static float NormalizeAngle(float angle)
+		{
+			while (angle > 360)
+				angle -= 360;
+			while (angle < 0)
+				angle += 360;
+			return angle;
 		}
 
 		public override string ToString()

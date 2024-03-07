@@ -14,7 +14,9 @@ namespace BEngineCore
 
 		protected GL gl;
 		protected Graphics graphics;
+		protected Physics physics;
 
+		public Physics Physics => physics;
 		public Graphics Graphics => graphics;
 		public Input Input => input;
 
@@ -50,6 +52,9 @@ namespace BEngineCore
 			gl = window.CreateOpenGL();
 			graphics = new(gl);
 			graphics.Initialize(this);
+
+			physics = new();
+			physics.Initialize();
 		}
 
 		private void OnFramebufferResize(Vector2D<int> obj)
