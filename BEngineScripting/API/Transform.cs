@@ -6,7 +6,7 @@ namespace BEngine
 		public Vector3 Position = new();
 		[EditorIgnore] public Quaternion Rotation = new();
 
-		[EditorName("Rotation")][EditorShowAt(1)] 
+		[EditorName("Rotation")] [EditorShowAt(1)] 
 		public Vector3 EulerRotation 
 		{
 			get 
