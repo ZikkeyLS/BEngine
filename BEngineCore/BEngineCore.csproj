@@ -86,6 +86,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BEngineScripting\BEngineScripting.csproj" />
+    <ProjectReference Include="..\PhysX\MagicPhysX\MagicPhysX.csproj" />
   </ItemGroup>
 
 </Project>

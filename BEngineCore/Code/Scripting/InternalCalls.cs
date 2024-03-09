@@ -225,7 +225,7 @@ namespace BEngineCore
 			if (loadedProject == null)
 				return new();
 
-			return loadedProject.Physics.GetStaticData(physicsID);
+			return loadedProject.Physics.GetActorData(physicsID);
 		}
 
 		public static PhysicsEntryData PhysicsGetDynamicData(string physicsID)
@@ -235,7 +235,7 @@ namespace BEngineCore
 			if (loadedProject == null)
 				return new();
 
-			return loadedProject.Physics.GetDynamicData(physicsID);
+			return loadedProject.Physics.GetActorData(physicsID);
 		}
 
 		public static void PhysicsUpdateStaticScale(string physicsID, Vector3 scale)
@@ -265,7 +265,7 @@ namespace BEngineCore
 			if (loadedProject == null)
 				return;
 
-			loadedProject.Physics.RemoveStatic(physicsID);
+			loadedProject.Physics.PreRemoveStatic(physicsID);
 		}
 
 		public static void PhysicsRemoveDynamic(string physicsID)
@@ -275,7 +275,7 @@ namespace BEngineCore
 			if (loadedProject == null)
 				return;
 
-			loadedProject.Physics.RemoveDynamic(physicsID);
+			loadedProject.Physics.PreRemoveDynamic(physicsID);
 		}
 		#endregion
 	}

@@ -89,6 +89,9 @@ namespace BEngineCore
 
 		public void RemoveEntity(SceneEntity entity)
 		{
+			entity.Entity.CallEvent(EventID.Destroy);
+			entity.Entity.CallEvent(EventID.EditorDestroy);
+
 			List<SceneEntity> removeAlso = new();
 			for (int i = 0; i < Entities.Count; i++)
 			{

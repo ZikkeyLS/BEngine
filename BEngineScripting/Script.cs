@@ -6,11 +6,13 @@ namespace BEngine
 		Start,
 		Update,
 		Destroy,
+		FixedUpdate,
 
 		EditorStart = 100,
 		EditorUpdate,
+		EditorFixedUpdate,
 		EditorDestroy,
-		EditorSelected
+		EditorSelected,
 	}
 
 	public class Script : ICloneable, IDisposable
@@ -27,6 +29,11 @@ namespace BEngine
 
 		}
 
+		public virtual void OnFixedUpdate()
+		{
+
+		}
+
 		public virtual void OnDestroy()
 		{
 
@@ -34,6 +41,11 @@ namespace BEngine
 
 
 		public virtual void OnEditorStart()
+		{
+
+		}
+
+		public virtual void OnEditorFixedUpdate()
 		{
 
 		}

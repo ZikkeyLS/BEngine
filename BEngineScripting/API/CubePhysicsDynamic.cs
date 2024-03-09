@@ -30,6 +30,7 @@ namespace BEngine
 			PhysicsEntryData data = InternalCalls.PhysicsGetDynamicData(physicsID);
 			Transform.Position = data.Position;
 			Transform.Rotation = data.Rotation;
+			Console.WriteLine(Transform.Position);
 			// Transform.Scale = data.Scale;
 		}
 

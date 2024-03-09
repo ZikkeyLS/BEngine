@@ -48,6 +48,10 @@ namespace BEngine
 					for (int i = 0; i < Scripts.Count; i++)
 						Scripts[i]?.OnUpdate();
 					break;
+				case EventID.FixedUpdate:
+					for (int i = 0; i < Scripts.Count; i++)
+						Scripts[i]?.OnFixedUpdate();
+					break;
 				case EventID.Destroy:
 					for (int i = 0; i < Scripts.Count; i++)
 						Scripts[i]?.OnDestroy();
@@ -59,6 +63,10 @@ namespace BEngine
 				case EventID.EditorUpdate:
 					for (int i = 0; i < Scripts.Count; i++)
 						Scripts[i]?.OnEditorUpdate();
+					break;
+				case EventID.EditorFixedUpdate:
+					for (int i = 0; i < Scripts.Count; i++)
+						Scripts[i]?.OnEditorFixedUpdate();
 					break;
 				case EventID.EditorDestroy:
 					for (int i = 0; i < Scripts.Count; i++)
