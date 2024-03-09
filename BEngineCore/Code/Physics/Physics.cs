@@ -223,22 +223,12 @@ namespace BEngineCore
 
 		}
 
-		public void UpdateStaticScale(string physicsID, BEngine.Vector3 scale)
+		public void UpdateActorScale(string physicsID, BEngine.Vector3 scale)
 		{
 			// TO DO
 		}
 
-		public void UpdateDynamicScale(string physicsID, BEngine.Vector3 scale)
-		{
-			// TO DO
-		}
-
-		public void PreRemoveStatic(string physicsID)
-		{
-			_removeActors.Add(physicsID);
-		}
-
-		public void PreRemoveDynamic(string physicsID)
+		public void PreRemoveActor(string physicsID)
 		{
 			_removeActors.Add(physicsID);
 		}

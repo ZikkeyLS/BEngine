@@ -218,7 +218,7 @@ namespace BEngineCore
 				(System.Numerics.Vector3)scale);
 		}
 
-		public static PhysicsEntryData PhysicsGetStaticData(string physicsID)
+		public static PhysicsEntryData PhysicsGetActorData(string physicsID)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
 
@@ -228,54 +228,24 @@ namespace BEngineCore
 			return loadedProject.Physics.GetActorData(physicsID);
 		}
 
-		public static PhysicsEntryData PhysicsGetDynamicData(string physicsID)
-		{
-			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
-
-			if (loadedProject == null)
-				return new();
-
-			return loadedProject.Physics.GetActorData(physicsID);
-		}
-
-		public static void PhysicsUpdateStaticScale(string physicsID, Vector3 scale)
+		public static void PhysicsUpdateActorScale(string physicsID, Vector3 scale)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
 
 			if (loadedProject == null)
 				return;
 
-			loadedProject.Physics.UpdateStaticScale(physicsID, scale);
+			loadedProject.Physics.UpdateActorScale(physicsID, scale);
 		}
 
-		public static void PhysicsUpdateDynamicScale(string physicsID, Vector3 scale)
+		public static void PhysicsRemoveActor(string physicsID)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
 
 			if (loadedProject == null)
 				return;
 
-			loadedProject.Physics.UpdateDynamicScale(physicsID, scale);
-		}
-
-		public static void PhysicsRemoveStatic(string physicsID)
-		{
-			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
-
-			if (loadedProject == null)
-				return;
-
-			loadedProject.Physics.PreRemoveStatic(physicsID);
-		}
-
-		public static void PhysicsRemoveDynamic(string physicsID)
-		{
-			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
-
-			if (loadedProject == null)
-				return;
-
-			loadedProject.Physics.PreRemoveDynamic(physicsID);
+			loadedProject.Physics.PreRemoveActor(physicsID);
 		}
 		#endregion
 	}

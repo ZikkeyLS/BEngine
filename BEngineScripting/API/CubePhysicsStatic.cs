@@ -21,7 +21,7 @@ namespace BEngine
 				return;
 
 			// get physics data
-			PhysicsEntryData data = InternalCalls.PhysicsGetStaticData(physicsID);
+			PhysicsEntryData data = InternalCalls.PhysicsGetActorData(physicsID);
 			Transform.Position = data.Position;
 			Transform.Rotation = data.Rotation;
 			// Transform.Scale = data.Scale;
@@ -29,7 +29,7 @@ namespace BEngine
 
 		public override void OnEditorDestroy()
 		{
-			InternalCalls.PhysicsRemoveStatic(physicsID);
+			InternalCalls.PhysicsRemoveActor(physicsID);
 		}
 
 		private bool Setup()

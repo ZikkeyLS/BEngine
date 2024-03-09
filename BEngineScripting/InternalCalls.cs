@@ -198,14 +198,11 @@ namespace BEngine
 		private static MethodInfo? _physicsCreateDynamicCube;
 		private static MethodInfo? _physicsCreateStaticCube;
 
-		private static MethodInfo? _physicsGetDynamicData;
-		private static MethodInfo? _physicsGetStaticData;
+		private static MethodInfo? _physicsGetActorData;
 
-		private static MethodInfo? _physicsUpdateStaticScale;
-		private static MethodInfo? _physicsUpdateDynamicScale;
+		private static MethodInfo? _physicsUpdateActorScale;
 
-		private static MethodInfo? _physicsRemoveStatic;
-		private static MethodInfo? _physicsRemoveDynamic;
+		private static MethodInfo? _physicsRemoveActor;
 
 
 		private static void LoadPhysicsAssembly()
@@ -213,14 +210,9 @@ namespace BEngine
 			_physicsCreateStaticCube = GetMethod("PhysicsCreateStaticCube");
 			_physicsCreateDynamicCube = GetMethod("PhysicsCreateDynamicCube");
 
-			_physicsGetStaticData = GetMethod("PhysicsGetStaticData");
-			_physicsGetDynamicData = GetMethod("PhysicsGetDynamicData");
-
-			_physicsUpdateStaticScale = GetMethod("PhysicsUpdateStaticScale");
-			_physicsUpdateDynamicScale = GetMethod("PhysicsUpdateDynamicScale");
-
-			_physicsRemoveStatic = GetMethod("PhysicsRemoveStatic");
-			_physicsRemoveDynamic = GetMethod("PhysicsRemoveDynamic");
+			_physicsGetActorData = GetMethod("PhysicsGetActorData");
+			_physicsUpdateActorScale = GetMethod("PhysicsUpdateActorScale");
+			_physicsRemoveActor = GetMethod("PhysicsRemoveActor");
 		}
 
 		public static string PhysicsCreateStaticCube(Vector3 position, Quaternion rotation, Vector3 scale)
@@ -233,34 +225,19 @@ namespace BEngine
 			return (string)(_physicsCreateDynamicCube?.Invoke(null, new object[] { position, rotation, scale }));
 		}
 
-		public static PhysicsEntryData PhysicsGetStaticData(string physicsID)
+		public static PhysicsEntryData PhysicsGetActorData(string physicsID)
 		{
-			return (PhysicsEntryData)(_physicsGetStaticData?.Invoke(null, new object[] { physicsID }));
+			return (PhysicsEntryData)(_physicsGetActorData?.Invoke(null, new object[] { physicsID }));
 		}
 
-		public static PhysicsEntryData PhysicsGetDynamicData(string physicsID)
+		public static void PhysicsUpdateActorScale(string physicsID, Vector3 scale)
 		{
-			return (PhysicsEntryData)(_physicsGetDynamicData?.Invoke(null, new object[] { physicsID }));
+			_physicsUpdateActorScale?.Invoke(null, new object[] { physicsID, scale });
 		}
 
-		public static void PhysicsUpdateStaticScale(string physicsID, Vector3 scale)
+		public static void PhysicsRemoveActor(string physicsID)
 		{
-			_physicsUpdateStaticScale?.Invoke(null, new object[] { physicsID, scale });
-		}
-
-		public static void PhysicsUpdateDynamicScale(string physicsID, Vector3 scale)
-		{
-			_physicsUpdateDynamicScale?.Invoke(null, new object[] { physicsID, scale });
-		}
-
-		public static void PhysicsRemoveStatic(string physicsID)
-		{
-			_physicsRemoveStatic?.Invoke(null, new object[] { physicsID });
-		}
-
-		public static void PhysicsRemoveDynamic(string physicsID)
-		{
-			_physicsRemoveDynamic?.Invoke(null, new object[] { physicsID });
+			_physicsRemoveActor?.Invoke(null, new object[] { physicsID });
 		}
 
 		#endregion

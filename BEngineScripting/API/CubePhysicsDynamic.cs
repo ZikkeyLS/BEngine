@@ -27,7 +27,7 @@ namespace BEngine
 				return;
 
 			// get physics data
-			PhysicsEntryData data = InternalCalls.PhysicsGetDynamicData(physicsID);
+			PhysicsEntryData data = InternalCalls.PhysicsGetActorData(physicsID);
 			Transform.Position = data.Position;
 			Transform.Rotation = data.Rotation;
 			Console.WriteLine(Transform.Position);
@@ -36,7 +36,7 @@ namespace BEngine
 
 		public override void OnEditorDestroy()
 		{
-			InternalCalls.PhysicsRemoveDynamic(physicsID);
+			InternalCalls.PhysicsRemoveActor(physicsID);
 		}
 
 		private bool Setup()
