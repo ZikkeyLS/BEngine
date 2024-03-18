@@ -16,7 +16,8 @@ namespace BEngineCore
 
 			scripting.ReadScriptAssembly(AppDomain.CurrentDomain.FriendlyName + "Assembly.dll");
 			reader = new AssetReader(["./"], AssetReaderType.Directory);
-			Scene? test = TryLoadScene("a736c7ae-d289-43e0-b865-558b3f4df5f9", true, false);
+
+			Scene? test = TryLoadScene("a5dc155e-2e0c-4b0d-952d-33bcee4c57a7", true, false);
 
 			// init AssetReader with.zip reader feature
 		}
@@ -24,6 +25,7 @@ namespace BEngineCore
 		public override void OnSceneLoaded()
 		{
 			base.OnSceneLoaded();
+			StartRuntime();
 			LoadedScene?.CallEvent(EventID.Start);
 		}
 	}

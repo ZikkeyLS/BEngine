@@ -51,6 +51,7 @@ namespace BEngineCore
 			AssetMetaData? asset = AssetMetaData.Load(path);
 			if (asset != null)
 			{
+				asset.Path = path + ".meta";
 				AddAssetRaw(asset);
 			}
 		}
@@ -58,8 +59,8 @@ namespace BEngineCore
 		public void AddAssetRaw(AssetMetaData asset)
 		{
 			LoadedAssets.Add(asset);
-			string path = GetAssetPath(asset.GUID);
-			if (path.EndsWith(".obj") || path.EndsWith(".fbx") || path.EndsWith(".gltf"))
+			string assetPath = asset.GetAssetPath();
+			if (assetPath.EndsWith(".obj") || assetPath.EndsWith(".fbx") || assetPath.EndsWith(".gltf"))
 			{
 				ModelContext.AddGUID(asset.GUID);
 			}
@@ -91,78 +92,16 @@ namespace BEngineCore
 
 		public string GetAssetPath(string guid)
 		{
-			string result = string.Empty;
-
-			foreach (string assetsDirectory in AssetsDirectories)
-			{
-				if (result == string.Empty)
-					result = GetAssetPath(assetsDirectory, guid);
-			}
-
-			return result;
-		}
-
-		public string GetAssetPath(string directory, string guid)
-		{
-			foreach (var file in Directory.EnumerateFiles(directory))
-			{
-				if (file.EndsWith(".meta"))
-				{
-					if (GetMetaID(file, false) == guid)
-						return file.Substring(0, file.LastIndexOf(".meta"));
-				}
-			}
-
-			foreach (var subDir in Directory.EnumerateDirectories(directory))
-			{
-				try
-				{
-					DirectoryInfo subInfo = new DirectoryInfo(subDir);
-
-					if (subInfo.Name != "bin" && subInfo.Name != "obj")
-						return GetAssetPath(subDir, guid);
-				}
-				catch
-				{
-
-				}
-			}
-
+			AssetMetaData? data = LoadedAssets.Find((asset) => asset.GUID == guid);
+			if (data != null)
+				return data.GetAssetPath();
 			return string.Empty;
 		}
 
-
-		public string GetMetaPath(string guid, string directory)
+		public string GetMetaPath(string guid)
 		{
-			string result = string.Empty;
-
-			foreach (var file in Directory.EnumerateFiles(directory))
-			{
-				if (file.EndsWith(".meta"))
-				{
-					string metaID = GetMetaID(file, false);
-
-					if (guid == metaID)
-						result = file;
-				}
-			}
-
-			foreach (var subDir in Directory.EnumerateDirectories(directory))
-			{
-				try
-				{
-					DirectoryInfo subInfo = new DirectoryInfo(subDir);
-
-					if (subInfo.Name != "bin" && subInfo.Name != "obj")
-						return result + GetMetaPath(guid, subDir);
-				}
-				catch
-				{
-
-				}
-			}
-
-			return result;
+			AssetMetaData? data = LoadedAssets.Find((asset) => asset.GUID == guid);
+			return data != null ? data.Path : string.Empty;
 		}
 
 		public string GetMetaID(string path, bool includeXMLEnd = true)

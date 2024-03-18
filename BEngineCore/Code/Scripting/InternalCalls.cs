@@ -39,7 +39,7 @@ namespace BEngineCore
 		}
 		#endregion
 
-		#region Inputs
+		#region Input
 		public static bool IsKeyDown(Key key)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
@@ -235,7 +235,7 @@ namespace BEngineCore
 			if (loadedProject == null)
 				return;
 
-			loadedProject.Physics.UpdateActorScale(physicsID, scale);
+			loadedProject.Physics.UpdateActorScale(physicsID, (System.Numerics.Vector3)scale);
 		}
 
 		public static void PhysicsRemoveActor(string physicsID)
@@ -245,7 +245,7 @@ namespace BEngineCore
 			if (loadedProject == null)
 				return;
 
-			loadedProject.Physics.PreRemoveActor(physicsID);
+			loadedProject.Physics.RemoveActor(physicsID);
 		}
 		#endregion
 	}

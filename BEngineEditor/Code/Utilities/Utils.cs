@@ -44,7 +44,14 @@ namespace BEngineEditor
 			foreach (FileInfo file in dir.GetFiles())
 			{
 				string targetFilePath = Path.Combine(destinationDirectory, file.Name);
-				file.CopyTo(targetFilePath, true);
+				try
+				{
+					file.CopyTo(targetFilePath, true);
+				}
+				catch
+				{
+
+				}
 			}
 
 			// If recursive and copying subdirectories, recursively call this method

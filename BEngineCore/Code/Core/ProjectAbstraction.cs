@@ -23,6 +23,8 @@ namespace BEngineCore
 		public Input Input => input;
 		public Time Time => time;
 
+		public bool Runtime { get; private set; } = false;
+
 		public ProjectAbstraction(EngineWindow window)
 		{
 			physics = window.Physics;
@@ -33,8 +35,17 @@ namespace BEngineCore
 		public void LoadProject()
 		{
 			LoadedProject = this;
-
 			LoadProjectData();
+		}
+
+		public void StartRuntime()
+		{
+			Runtime = true;
+		}
+
+		public void StopRuntime()
+		{
+			Runtime = false;
 		}
 
 		public virtual void LoadProjectData()

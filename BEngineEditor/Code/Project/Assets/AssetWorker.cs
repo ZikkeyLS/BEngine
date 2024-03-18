@@ -34,7 +34,7 @@ namespace BEngineEditor
 
 			for (int i = 0; i < _assetReader.LoadedAssets.Count; i++)
 			{
-				string path = _assetReader.GetMetaPath(_assetReader.LoadedAssets[i].GUID, _project.AssetsDirectory);
+				string path = _assetReader.GetMetaPath(_assetReader.LoadedAssets[i].GUID);
 
 				if (path == string.Empty)
 				{
@@ -97,12 +97,23 @@ namespace BEngineEditor
 				}
 				else if (newPath.EndsWith(".obj") || newPath.EndsWith(".fbx") || newPath.EndsWith(".gltf"))
 				{
-					string guid = _assetReader.GetMetaID(oldPath + @".meta");
+					string guid = _assetReader.GetMetaID(oldPath + ".meta");
 					if (guid != string.Empty)
 						_assetReader.ModelContext.GUIDMoved(guid, newPath);
 				}
 
-				File.Move(oldPath + @".meta", newPath + @".meta", true);
+				if (File.Exists(oldPath + ".meta"))
+				{
+					string guid = _assetReader.GetMetaID(oldPath + ".meta");
+					AssetMetaData? assetMeta = _assetReader.LoadedAssets.Find((asset) => asset.GUID == guid);
+					if (assetMeta != null)
+					{
+						assetMeta.Path = newPath + ".meta";
+						assetMeta.Save();
+					}
+
+					File.Move(oldPath + ".meta", newPath + ".meta", true);
+				}
 			}
 			catch
 			{
@@ -121,8 +132,8 @@ namespace BEngineEditor
 			}
 			else
 			{
-				AssetMetaData asset = new AssetMetaData(GenerateID());
-				asset.Save(path);
+				AssetMetaData asset = new AssetMetaData(GenerateID(), path + ".meta");
+				asset.Save();
 				_assetReader.AddAssetRaw(asset);
 			}
 		}

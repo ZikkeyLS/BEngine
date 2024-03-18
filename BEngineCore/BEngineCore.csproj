@@ -69,8 +69,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BepuPhysics" Version="2.4.0" />
-    <PackageReference Include="BepuUtilities" Version="2.4.0" />
     <PackageReference Include="Costura.Fody" Version="5.7.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -86,7 +84,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BEngineScripting\BEngineScripting.csproj" />
-    <ProjectReference Include="..\PhysX\MagicPhysX\MagicPhysX.csproj" />
+    <ProjectReference Include="..\external\MagicPhysX\MagicPhysX.csproj" />
   </ItemGroup>
 
 </Project>

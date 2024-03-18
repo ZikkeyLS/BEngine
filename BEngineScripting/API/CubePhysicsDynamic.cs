@@ -11,30 +11,28 @@ namespace BEngine
 	{
 		public Transform Transform { get; set; }
 
-		public string physicsID;
+		public string physicsID = string.Empty;
 
 		public override void OnEditorStart()
 		{
 			Setup();
 		}
 
-		public override void OnEditorUpdate()
+		public override void OnEditorFixedUpdate()
 		{
-			if (Transform == null)
-				Setup();
-
 			if (Transform == null || physicsID == string.Empty)
+			{
+				Setup();
 				return;
+			}
 
-			// get physics data
 			PhysicsEntryData data = InternalCalls.PhysicsGetActorData(physicsID);
 			Transform.Position = data.Position;
 			Transform.Rotation = data.Rotation;
-			Console.WriteLine(Transform.Position);
-			// Transform.Scale = data.Scale;
+			InternalCalls.PhysicsUpdateActorScale(physicsID, Transform.Scale);
 		}
 
-		public override void OnEditorDestroy()
+		public override void OnDestroy()
 		{
 			InternalCalls.PhysicsRemoveActor(physicsID);
 		}
@@ -42,7 +40,6 @@ namespace BEngine
 		private bool Setup()
 		{
 			Transform = GetScript<Transform>();
-
 			if (Transform != null)
 			{
 				physicsID = InternalCalls.PhysicsCreateDynamicCube(Transform.Position, Transform.Rotation, Transform.Scale);

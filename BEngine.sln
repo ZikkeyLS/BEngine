@@ -14,9 +14,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PhysX", "PhysX", "{BCB95B00-6214-406E-B6D8-E0D3690D66E4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "external", "external", "{BCB95B00-6214-406E-B6D8-E0D3690D66E4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MagicPhysX", "PhysX\MagicPhysX\MagicPhysX.csproj", "{612C7D92-6C59-4ADD-8F70-6A9E89B688ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MagicPhysX", "external\MagicPhysX\MagicPhysX.csproj", "{612C7D92-6C59-4ADD-8F70-6A9E89B688ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
