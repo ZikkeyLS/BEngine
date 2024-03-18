@@ -78,8 +78,22 @@ namespace BEngineEditor
 			ProjectContext.CurrentProject?.Logger.InsertSafeLogs();
 		}
 
+		int fps = 0;
+		float time = 0;
+
+
 		protected override void OnUpdate(double time)
 		{
+			this.time += (float)time;
+			fps += 1;
+			if (this.time >= 1)
+			{
+				Console.WriteLine(fps);
+				fps = 0;
+				this.time = 0;
+			}
+
+
 			if (ProjectContext.CurrentProject != null)
 			{
 				ProjectContext.CurrentProject.Time.RawDeltaTime = (float)time;

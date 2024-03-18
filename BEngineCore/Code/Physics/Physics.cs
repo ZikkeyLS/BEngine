@@ -160,7 +160,18 @@ namespace BEngineCore
 
 					project.LoadedScene.CallEvent(BEngine.EventID.EditorFixedUpdate);
 				}
-				Thread.Sleep((int)(ProjectAbstraction.LoadedProject.Time.RawDeltaTime * 1000));
+
+				currentTime += 1f / FixedFrames;
+				fps += 1;
+				
+				if (currentTime > 1)
+				{
+					Console.WriteLine(fps);
+					fps = 0;
+					currentTime = 0;
+				}
+
+				Thread.Sleep((int)(1f / FixedFrames * 1000));
 			}
 		}
 

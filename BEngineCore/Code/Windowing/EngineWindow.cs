@@ -25,6 +25,7 @@ namespace BEngineCore
 			WindowOptions options = WindowOptions.Default;
 			options.Title = title;
 			options.Size = new Vector2D<int>(x, y);
+			options.VSync = false;
 			window = Window.Create(options);
 
 			window.Load += OnLoad;
