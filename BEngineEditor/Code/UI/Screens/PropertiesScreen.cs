@@ -160,8 +160,8 @@ namespace BEngineEditor
 
 								if (IsInClassList(fieldType, typeof(string)))
 								{
-									if (input != string.Empty)
-										input = input.Substring(1, input.Length - 2);
+									//if (input != string.Empty)
+									//	input = input.Substring(1, input.Length - 2);
 								}
 								else
 									input = input.Replace(".", ",");

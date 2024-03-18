@@ -7,12 +7,12 @@ namespace BEngine
 
 		public string physicsID = string.Empty;
 
-		public override void OnEditorStart()
+		public override void OnStart()
 		{
 			Setup();
 		}
 
-		public override void OnEditorFixedUpdate()
+		public override void OnFixedUpdate()
 		{
 			if (Transform == null || physicsID == string.Empty)
 			{
