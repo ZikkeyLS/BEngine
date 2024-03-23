@@ -1,4 +1,5 @@
 ﻿using BEngineCore;
+using System.Xml.Linq;
 
 namespace BEngineEditor
 {
@@ -45,7 +46,13 @@ namespace BEngineEditor
 			_currentProject?.Settings.Save();
 			_currentProject?.LoadedScene?.Save<Scene>();
 
-			_currentProject = new EditorProject(Path.GetFileNameWithoutExtension(slnPath), Path.GetDirectoryName(slnPath), Window);
+			string name = Path.GetFileNameWithoutExtension(slnPath);
+			string directory = Path.GetDirectoryName(slnPath);
+
+			ProjectBuilder.RegenerateProjectStructure(directory, name,
+				Directory.GetCurrentDirectory() + @"\BEngineCore.dll",
+				Directory.GetCurrentDirectory() + @"\BEngineScripting.dll");
+			_currentProject = new EditorProject(name, directory, Window);
 			SearchingProject = false;
 
 			Window.Settings.ProjectHistory.Remove(new LastProject(_currentProject.Name, _currentProject.Directory));

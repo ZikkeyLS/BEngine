@@ -1,4 +1,6 @@
-﻿namespace BEngineEditor
+﻿using BEngineCore;
+
+namespace BEngineEditor
 {
 	public class AssemblyListener
 	{
