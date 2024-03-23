@@ -75,7 +75,7 @@ namespace BEngineEditor
 				_assemblyCompilation.Start();
 				_assemblyCompilation.BeginOutputReadLine();
 
-				_assemblyCompilation.StandardInput.WriteLine($"dotnet build {_project.ProjectAssemblyDirectory} -c {mode}");
+				_assemblyCompilation.StandardInput.WriteLine($@"dotnet build ""{_project.ProjectAssemblyDirectory}"" -c {mode}");
 				_assemblyCompilation.StandardInput.Flush();
 				_assemblyCompilation.StandardInput.Close();
 			}
@@ -107,7 +107,7 @@ namespace BEngineEditor
 			_buildCompilation.Start();
 			_buildCompilation.BeginOutputReadLine();
 
-			_buildCompilation.StandardInput.WriteLine($"dotnet build {_project.ProjectBuildDirectory} -c {mode} -r {_project.Settings.BuildOS} -m:2");
+			_buildCompilation.StandardInput.WriteLine($@"dotnet build ""{_project.ProjectBuildDirectory}"" -c {mode} -r {_project.Settings.BuildOS} -m:2");
 			_buildCompilation.StandardInput.Flush();
 			_buildCompilation.StandardInput.Close();
 		}
