@@ -1,6 +1,5 @@
 ﻿using BEngine;
 using BEngineCore;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace BEngineEditor
 {
@@ -30,7 +29,8 @@ namespace BEngineEditor
 
 	public class EditorProject : ProjectAbstraction
 	{
-		private AssetWorker _assets;
+		private AssetWriter _assetWriter;
+		private AssetWatcher _assets;
 		private ProjectCompiler _compiler;
 		private AssemblyListener _assemblyListener;
 		public SelectedElement? SelectedElement;
@@ -41,7 +41,7 @@ namespace BEngineEditor
 
 		public AssemblyListener AssemblyListener => _assemblyListener;
 		public ProjectCompiler Compiler => _compiler;
-		public AssetWorker AssetWorker => _assets;
+		public AssetWriter AssetWriter => _assetWriter;
 
 		public string SolutionPath => $@"{Directory}\{Name}.sln";
 		public string ProjectAssemblyDirectory => $@"{Directory}\{Name}Assembly";
@@ -80,7 +80,9 @@ namespace BEngineEditor
 			_assemblyListener.OnScriptsChanged += (e) => _compiler.CompileScripts();
 
 			reader = new AssetReader([AssetsDirectory, "./EngineData/Assets"], AssetReaderType.Directory);
-			_assets = new AssetWorker(this, reader);
+
+			_assetWriter = new AssetWriter(AssetsDirectory, reader);
+			_assets = new AssetWatcher(AssetsDirectory, _assetWriter);
 
 			TryLoadLastOpenedScene();
 		}

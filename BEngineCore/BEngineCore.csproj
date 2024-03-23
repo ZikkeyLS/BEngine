@@ -31,6 +31,14 @@
     <None Remove="EngineData\Assets\Models\Cube.mtl.meta" />
     <None Remove="EngineData\Assets\Models\Cube.obj" />
     <None Remove="EngineData\Assets\Models\Cube.obj.meta" />
+    <None Remove="EngineData\Assets\Models\Cylinder.mtl" />
+    <None Remove="EngineData\Assets\Models\Cylinder.mtl.meta" />
+    <None Remove="EngineData\Assets\Models\Cylinder.obj" />
+    <None Remove="EngineData\Assets\Models\Cylinder.obj.meta" />
+    <None Remove="EngineData\Assets\Models\Sphere.mtl" />
+    <None Remove="EngineData\Assets\Models\Sphere.mtl.meta" />
+    <None Remove="EngineData\Assets\Models\Sphere.obj" />
+    <None Remove="EngineData\Assets\Models\Sphere.obj.meta" />
     <None Remove="EngineData\Assets\Textures\Default.jpg" />
     <None Remove="EngineData\Shaders\PointLight.frag" />
     <None Remove="EngineData\Shaders\PointLight.vert" />
@@ -49,6 +57,30 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="EngineData\Assets\Models\Cube.obj.meta">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Assets\Models\Cylinder.mtl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Assets\Models\Cylinder.mtl.meta">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Assets\Models\Cylinder.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Assets\Models\Cylinder.obj.meta">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Assets\Models\Sphere.mtl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Assets\Models\Sphere.mtl.meta">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Assets\Models\Sphere.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Assets\Models\Sphere.obj.meta">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="EngineData\Assets\Textures\Default.jpg">

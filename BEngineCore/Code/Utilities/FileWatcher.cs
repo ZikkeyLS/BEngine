@@ -1,5 +1,5 @@
 ﻿
-namespace BEngineEditor
+namespace BEngineCore
 {
 	public class FileWatcher
 	{

@@ -21,50 +21,63 @@ namespace BEngineEditor
 
 		public void Update()
 		{
-			if (_projectContext.CurrentProject == null) 
+			if (_project == null)
 				return;
 
-			if (ControlShiftActive() && _input.IsKeyPressed(Key.Q))
+			MainActions();
+			AdditionalActions();
+		}
+
+		private void MainActions()
+		{
+			if (ControlShiftActive() && _input.IsKeyDown(Key.Q))
 			{
-				if ((DateTime.Now - _lastOpenedEditor).TotalSeconds >= 1)
-				{
-					_lastOpenedEditor = DateTime.Now;
-					Utils.OpenWithDefaultProgram(_projectContext.CurrentProject.SolutionPath);
-				}
+				Utils.OpenWithDefaultProgram(_projectContext.CurrentProject.SolutionPath);
 			}
 
 			if (_compiler.BuildingGame)
 				return;
 
-			if (ControlShiftActive() && _input.IsKeyPressed(Key.F))
+			if (ControlShiftActive() && _input.IsKeyDown(Key.F))
 			{
 				_projectContext.SearchingProject = true;
 			}
 
-			if (ControlShiftActive() && _input.IsKeyPressed(Key.B))
+			if (ControlShiftActive() && _input.IsKeyDown(Key.B))
 			{
 				_compiler.CompileScripts();
 			}
 
-			if (ControlActive() && _input.IsKeyPressed(Key.S) && _project.LoadedScene != null)
+			if (ControlActive() && _input.IsKeyDown(Key.S) && _project.LoadedScene != null)
 			{
-				if ((DateTime.Now - _lastSavedScene).TotalSeconds >= 1)
-				{
-					_lastSavedScene = DateTime.Now;
-					_project.LoadedScene.Save<Scene>();
-				}			
+				_project.LoadedScene.Save<Scene>();
 			}
 
 			if (_compiler.AssemblyLoaded && _compiler.AssemblyCompileErrors.Count == 0)
 			{
-				if (ControlShiftActive() && _input.IsKeyPressed(Key.G))
+				if (ControlShiftActive() && _input.IsKeyDown(Key.G))
 				{
 					_compiler.BuildGame();
 				}
 
-				if (ControlShiftActive() && _input.IsKeyPressed(Key.R))
+				if (ControlShiftActive() && _input.IsKeyDown(Key.R))
 				{
 					_compiler.BuildGame(true);
+				}
+			}
+		}
+
+		private void AdditionalActions()
+		{
+			if (_input.IsKeyDown(Key.F2))
+			{
+				if (_project.Runtime)
+				{
+					_project.StopRuntime();
+				}
+				else
+				{
+					_project.StartRuntime();
 				}
 			}
 		}

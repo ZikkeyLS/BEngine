@@ -29,7 +29,7 @@ namespace BEngineEditor
 
 		private string _rootAssetsDirectory => _currentProject.AssetsDirectory;
 		private Logger _logger => _currentProject.Logger;
-		private AssetWorker _assetWorker => _currentProject.AssetWorker;
+		private AssetWriter _assetWriter => _currentProject.AssetWriter;
 
 		private const string _moveEntryExplorer = "MoveEntryExplorer";
 
@@ -175,7 +175,7 @@ namespace BEngineEditor
 
 							if (_copyPath != fileCopyPath)
 							{
-								_assetWorker.RenameAsset(_copyPath, fileCopyPath);
+								_assetWriter.RenameAsset(_copyPath, fileCopyPath);
 								File.Copy(_copyPath, fileCopyPath, true);
 							}
 								
@@ -202,7 +202,7 @@ namespace BEngineEditor
 
 							if (_copyPath != fileCutPath)
 							{
-								_assetWorker.RenameAsset(_copyPath, fileCutPath);
+								_assetWriter.RenameAsset(_copyPath, fileCutPath);
 								File.Move(_cutPath, fileCutPath, true);
 							}
 						}
@@ -272,7 +272,7 @@ namespace BEngineEditor
 						Utils.OpenWithDefaultProgram(entryPath);
 					}
 
-					_assetWorker.CreateAsset(entryPath);
+					_assetWriter.CreateAsset(entryPath);
 				}
 			}
 
@@ -296,7 +296,7 @@ namespace BEngineEditor
 					{
 						if (_lastSavePath.Contains('.'))
 						{
-							_assetWorker.RenameAsset(entryPath, _lastSavePath);
+							_assetWriter.RenameAsset(entryPath, _lastSavePath);
 							new FileInfo(entryPath).Rename(_lastSavePath);
 						}
 					}
@@ -378,7 +378,7 @@ namespace BEngineEditor
 
 							string fileCopyPath = entryPath + @"\" + entry.EntryName;
 
-							_assetWorker.RenameAsset(entry.EntryPath, fileCopyPath);
+							_assetWriter.RenameAsset(entry.EntryPath, fileCopyPath);
 							File.Move(entry.EntryPath, fileCopyPath, true);
 						}
 	

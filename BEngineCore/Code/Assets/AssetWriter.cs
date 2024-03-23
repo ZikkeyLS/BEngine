@@ -1,34 +1,20 @@
-﻿using BEngineCore;
-using System.IO;
-
-namespace BEngineEditor
+﻿
+namespace BEngineCore
 {
-	public class AssetWorker
+	public class AssetWriter
 	{
 		private AssetReader _assetReader;
 
-		private EditorProject _project;
-
-		private FileWatcher _assetWatcher;
-		private Timer _timer;
-
-		private const int MSDelay = 10000;
+		private readonly string _path;
 		private string _lastMovedAsset = string.Empty;
 
-		public AssetWorker(EditorProject project, AssetReader reader)
+		public AssetWriter(string path, AssetReader reader)
 		{
-			_project = project;
 			_assetReader = reader;
-
-			_assetWatcher = new FileWatcher(_project.AssetsDirectory, "*.*");
-			_assetWatcher.Created += CreateAsset;
-			_assetWatcher.Renamed += RenameAsset;
-			_assetWatcher.Deleted += RemoveAsset;
-
-			_timer = new Timer((a) => { UpdateData(); }, null, 0, MSDelay);
+			_path = path;
 		}
 
-		private void UpdateData()
+		public void UpdateData()
 		{
 			List<AssetMetaData> removeData = new List<AssetMetaData>();
 
@@ -47,7 +33,7 @@ namespace BEngineEditor
 				_assetReader.LoadedAssets.Remove(removeData[i]);
 			}
 
-			CreateSearchedAssets(_project.AssetsDirectory);
+			CreateSearchedAssets(_path);
 
 			//_project.Logger.LogMessage(_loadedAssets.Count.ToString());
 			//for (int i = 0; i < _loadedAssets.Count; i++)
