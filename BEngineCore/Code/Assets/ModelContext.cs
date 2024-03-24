@@ -4,7 +4,7 @@
 	{
 		private AssetReader _assetReader;
 
-		public readonly List<string> GUIDs = new();
+		public readonly List<AssetMetaData> Assets = new();
 		public readonly Dictionary<string, Model> Loaded = new();
 
 		public ModelContext(AssetReader reader)
@@ -30,15 +30,13 @@
 			}
 		}
 
-		public void AddGUID(string guid)
+		public void AddGUID(AssetMetaData asset)
 		{
-			GUIDs.Add(guid);
+			Assets.Add(asset);
 		}
 
 		public void GUIDMoved(string guid, string newPath)
 		{
-			GUIDs.Add(guid);
-
 			if (Loaded.TryGetValue(guid, out Model? value))
 			{
 				value.Dispose();
@@ -46,13 +44,14 @@
 			}
 		}
 
-		public void RemoveGUID(string guid)
+		public void RemoveGUID(AssetMetaData asset)
 		{
-			Loaded.TryGetValue(guid, out Model? result);
-			if (result != null)
+			Assets.Remove(asset);
+		
+			if (Loaded.TryGetValue(asset.GUID, out Model? value))
 			{
-				Loaded.Remove(guid);
-				result.Dispose();
+				value.Dispose();
+				Loaded.Remove(asset.GUID);
 			}
 		}
 	}

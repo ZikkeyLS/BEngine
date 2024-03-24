@@ -58,7 +58,7 @@ namespace BEngineCore
 			{
 				if (path.EndsWith(".obj") || path.EndsWith(".fbx") || path.EndsWith(".gltf"))
 				{
-					_assetReader.ModelContext.RemoveGUID(guid);
+					_assetReader.ModelContext.RemoveGUID(foundAsset);
 				}
 
 				_assetReader.LoadedAssets.Remove(foundAsset);

@@ -18,7 +18,10 @@ namespace BEngineEditor
 
 		private string? _lastName = string.Empty;
 
-		private const int precision = 5;
+		private const int Precision = 5;
+
+		private const float SizeOffset = 4f;
+		private const float RelevantOffset = 20f;
 
 		public override void Display()
 		{
@@ -210,13 +213,13 @@ namespace BEngineEditor
 								if (resultField != null)
 								{
 									initial = (Vector3)resultField;
-									x = Math.Round(initial.x, precision).ToString();
-									y = Math.Round(initial.y, precision).ToString();
-									z = Math.Round(initial.z, precision).ToString();
+									x = Math.Round(initial.x, Precision).ToString();
+									y = Math.Round(initial.y, Precision).ToString();
+									z = Math.Round(initial.z, Precision).ToString();
 								}
 
 								ImGui.Text(fieldName);
-								ImGui.PushItemWidth(ImGui.GetWindowSize().X / 6);
+								ImGui.PushItemWidth(ImGui.GetWindowSize().X / SizeOffset);
 								ImGui.Text("x");
 								ImGui.SameLine();
 								if (ImGui.InputText("##x", ref x, 128))
@@ -282,14 +285,14 @@ namespace BEngineEditor
 								if (fieldResult != null)
 								{
 									initial = (Quaternion)fieldResult;
-									x = Math.Round(initial.x, precision).ToString();
-									y = Math.Round(initial.y, precision).ToString();
-									z = Math.Round(initial.z, precision).ToString();
-									w = Math.Round(initial.w, precision).ToString();
+									x = Math.Round(initial.x, Precision).ToString();
+									y = Math.Round(initial.y, Precision).ToString();
+									z = Math.Round(initial.z, Precision).ToString();
+									w = Math.Round(initial.w, Precision).ToString();
 								}
 
 								ImGui.Text(fieldName);
-								ImGui.PushItemWidth(ImGui.GetWindowSize().X / 6);
+								ImGui.PushItemWidth(ImGui.GetWindowSize().X / SizeOffset);
 								ImGui.Text("x");
 								ImGui.SameLine();
 								if (ImGui.InputText("##x", ref x, 128))
@@ -372,17 +375,31 @@ namespace BEngineEditor
 								if (input == null)
 									input = string.Empty;
 
-								ImGui.TextWrapped($"Current model id:\n{input}");
+								string textOutput = string.Empty;
+								string basePath = string.Empty;
+								AssetMetaData? initialAsset = _reader.ModelContext.Assets.Find((asset) => asset.GUID == input);
+								if (initialAsset == null)
+								{
+									textOutput = $"(!Missing) Current model id:\n{input}";
+								}
+								else
+								{
+									basePath = Path.GetFileName(initialAsset.GetAssetPath());
+									textOutput = $"Model:\n{basePath}";
+								}
+
+								ImGui.TextWrapped(textOutput);
 								ImGui.Button("Select Another Model");
 								if (ImGui.BeginPopupContextItem("Select Another Model", ImGuiPopupFlags.MouseButtonLeft))
 								{
 									if (ImGui.BeginListBox("Select Model"))
 									{
-										foreach (string modelID in _reader.ModelContext.GUIDs)
+										foreach (AssetMetaData asset in _reader.ModelContext.Assets)
 										{
-											if (ImGui.Selectable(modelID))
+											basePath = Path.GetFileName(asset.GetAssetPath());
+											if (ImGui.Selectable(basePath))
 											{
-												object final = new BEngine.Model() { GUID = modelID };
+												object final = new BEngine.Model() { GUID = asset.GUID };
 
 												if (final != null)
 													UpdateField(field, script, sceneScript, final);
@@ -500,8 +517,7 @@ namespace BEngineEditor
 					}
 				}
 
-				ImGui.SetCursorPosX((ImGui.GetWindowWidth() - 125) / 4);
-
+				ImGui.SetCursorPosX(ImGui.GetWindowSize().X / SizeOffset + RelevantOffset);
 				ImGui.Button("Add Script", new System.Numerics.Vector2(100, 60));
 				if (ImGui.BeginPopupContextItem("Add Script", ImGuiPopupFlags.MouseButtonLeft))
 				{

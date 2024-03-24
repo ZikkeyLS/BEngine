@@ -62,7 +62,7 @@ namespace BEngineCore
 			string assetPath = asset.GetAssetPath();
 			if (assetPath.EndsWith(".obj") || assetPath.EndsWith(".fbx") || assetPath.EndsWith(".gltf"))
 			{
-				ModelContext.AddGUID(asset.GUID);
+				ModelContext.AddGUID(asset);
 			}
 		}
 

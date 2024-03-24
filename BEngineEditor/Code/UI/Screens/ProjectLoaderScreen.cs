@@ -80,6 +80,7 @@ namespace BEngineEditor
 			{
 				if (project.Directory != string.Empty)
 				{
+					ImGui.PushID(project.SolutionPath);
 					if (ImGui.Button(project.Name, new Vector2(150, 25)))
 					{
 						if (File.Exists(project.SolutionPath))
@@ -91,6 +92,7 @@ namespace BEngineEditor
 							window.Settings.ProjectHistory.Remove(project);
 						}			
 					}
+					ImGui.PopID();
 				}
 			}
 
