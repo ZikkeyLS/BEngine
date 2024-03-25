@@ -15,7 +15,7 @@ namespace BEngineEditor
 
 		private ProjectLoaderScreen _projectLoader = new();
 		private MenuBarScreen _menuBar = new();
-		private AssemblyStatusScreen _assemblyStatus = new();
+		private ConsoleScreen _assemblyStatus = new();
 		private ProjectExplorerScreen _projectExplorer = new();
 		private SceneScreen _scene = new();
 		private HierarchyScreen _hierarchy = new();

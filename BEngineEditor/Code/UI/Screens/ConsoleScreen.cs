@@ -1,9 +1,16 @@
-﻿using ImGuiNET;
+﻿using BEngineCore;
+using ImGuiNET;
 using System.Numerics;
 
 namespace BEngineEditor
 {
-	internal class AssemblyStatusScreen : Screen
+	public class ConsoleLogData
+	{
+		public LogData Data;
+		public BigInteger Count;
+	}
+
+	internal class ConsoleScreen : Screen
 	{
 		private ProjectContext _projectContext;
 
@@ -13,9 +20,9 @@ namespace BEngineEditor
 		private HashSet<string> _compileWarnings => _compiler.AssemblyCompileWarnings;
 		private ProjectCompiler _compiler => _projectContext.CurrentProject.Compiler;
 
-		private HashSet<string> _logErrors => _projectContext.CurrentProject.Logger.ErrorsLogs;
-		private HashSet<string> _logWarnings => _projectContext.CurrentProject.Logger.WarningsLogs;
-		private List<string> _logMessages => _projectContext.CurrentProject.Logger.MessageLogs;
+		private HashSet<LogData> _logErrors => _projectContext.CurrentProject.Logger.ErrorsLogs;
+		private HashSet<LogData> _logWarnings => _projectContext.CurrentProject.Logger.WarningsLogs;
+		private List<LogData> _logMessages => _projectContext.CurrentProject.Logger.MessageLogs;
 
 		private Vector4 _white = new Vector4(1, 1, 1, 1);
 		private Vector4 _black = new Vector4(0, 0, 0, 1);
@@ -25,6 +32,10 @@ namespace BEngineEditor
 
 		private bool _showMessages = true;
 		private bool _showWarnings = true;
+		private bool _stackLogs = true;
+
+		private Dictionary<string, ConsoleLogData> _compactWarningData = new();
+		private Dictionary<string, ConsoleLogData> _compactMessageData = new();
 
 		protected override void Setup()
 		{
@@ -33,7 +44,7 @@ namespace BEngineEditor
 
 		public override void Display()
 		{
-			ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowViewport().Size.X, 
+			ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowViewport().Size.X,
 				ImGui.GetWindowViewport().Size.Y / 5), ImGuiCond.FirstUseEver);
 
 			ImGui.Begin("Assembly Status");
@@ -65,12 +76,22 @@ namespace BEngineEditor
 			ImGui.PopStyleColor();
 			ImGui.PopStyleColor();
 
+			ImGui.SameLine(0, 5);
+
+			ImGui.PushStyleColor(ImGuiCol.Button, _stackLogs ? _greed : _red);
+			ImGui.PushStyleColor(ImGuiCol.Text, _black);
+			if (ImGui.Button("Stack Logs"))
+			{
+				_stackLogs = !_stackLogs;
+			}
+			ImGui.PopStyleColor();
+			ImGui.PopStyleColor();
+
 			ImGui.SameLine();
 
 			ImGui.Separator();
 
 			int logID = 0;
-
 
 			if (_compiler.BuildingGame)
 			{
@@ -107,9 +128,9 @@ namespace BEngineEditor
 				GenerateLog(ref logID, error, _red);
 			}
 
-			foreach (string error in _logErrors)
+			foreach (LogData error in _logErrors)
 			{
-				GenerateLog(ref logID, error, _red);
+				GenerateLog(ref logID, error.ToString(), _red);
 			}
 		}
 
@@ -120,30 +141,85 @@ namespace BEngineEditor
 				GenerateLog(ref logID, warning, _yellow);
 			}
 
-			foreach (string warning in _logWarnings)
+			if (_stackLogs)
 			{
-				GenerateLog(ref logID, warning, _yellow);
+				_compactWarningData = new();
+
+				foreach (LogData warning in _logWarnings)
+				{
+					if (_compactWarningData.ContainsKey(warning.Data))
+					{
+						_compactWarningData[warning.Data].Count += 1;
+						_compactWarningData[warning.Data].Data.Time = warning.Time;
+						continue;
+					}
+					else
+					{
+						_compactWarningData.Add(warning.Data, new ConsoleLogData() { Count = 1, Data = warning });
+					}
+				}
+
+				foreach (var warning in _compactWarningData)
+					GenerateLog(ref logID, warning.Value.Data.ToString(), _white, warning.Value.Count);
+			}
+			else
+			{
+				foreach (LogData warning in _logWarnings)
+				{
+					GenerateLog(ref logID, warning.ToString(), _yellow);
+				}
 			}
 		}
 
 		private void DisplayMessages(ref int logID)
 		{
-			foreach (string message in _logMessages)
+			if (_stackLogs)
 			{
-				GenerateLog(ref logID, message, _white);
+				_compactMessageData = new();
+
+				foreach (LogData message in _logMessages)
+				{
+					if (_compactMessageData.ContainsKey(message.Data))
+					{
+						_compactMessageData[message.Data].Count += 1;
+						_compactMessageData[message.Data].Data.Time = message.Time;
+						continue;
+					}
+					else
+					{
+						_compactMessageData.Add(message.Data, new ConsoleLogData() { Count = 1, Data = message });
+					}
+				}
+
+				foreach (var message in _compactMessageData)
+					GenerateLog(ref logID, message.Value.Data.ToString(), _white, message.Value.Count);
+			}
+			else
+			{
+				foreach (LogData message in _logMessages)
+				{
+					GenerateLog(ref logID, message.ToString(), _white);
+				}
 			}
 		}
 
-		private void GenerateLog(ref int logID, string data, Vector4 color)
+		private void GenerateLog(ref int logID, string data, Vector4 color) => GenerateLog(ref logID, data, color, new BigInteger(0));
+
+		private void GenerateLog(ref int logID, string data, Vector4 color, BigInteger count)
 		{
 			ImGui.PushID(logID);
-			ImGui.PushItemWidth(ImGui.GetWindowSize().X);
 			ImGui.PushStyleColor(ImGuiCol.FrameBg, Vector4.Zero);
 			ImGui.PushStyleColor(ImGuiCol.Text, color);
+			ImGui.PushItemWidth(ImGui.GetWindowSize().X * 0.9f);
 			ImGui.InputText(string.Empty, ref data, 1024, ImGuiInputTextFlags.ReadOnly);
-			ImGui.PopStyleColor();
-			ImGui.PopStyleColor();
 			ImGui.PopItemWidth();
+			if (count > 1)
+			{
+				ImGui.SameLine();
+				ImGui.Text(count.ToString());
+			}
+			ImGui.PopStyleColor();
+			ImGui.PopStyleColor();
 			ImGui.PopID();
 			logID += 1;
 		}

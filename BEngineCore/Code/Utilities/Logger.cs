@@ -1,5 +1,17 @@
-﻿namespace BEngineCore
+﻿
+namespace BEngineCore
 {
+	public struct LogData
+	{
+		public string Time;
+		public string Data;
+
+		public override string ToString()
+		{
+			return Time + " " + Data;
+		}
+	}
+
 	public class Logger
 	{
 		public static Logger? Main { get; private set; } = null;
@@ -7,13 +19,13 @@
 		public bool EnableFileLogs = false;
 		public string FileLogPath = "RuntimeLogs.txt";
 
-		public List<string> MessageLogs { get; private set; } = new();
-		public HashSet<string> WarningsLogs { get; private set; } = new();
-		public HashSet<string> ErrorsLogs { get; private set; } = new();
+		public List<LogData> MessageLogs { get; private set; } = new();
+		public HashSet<LogData> WarningsLogs { get; private set; } = new();
+		public HashSet<LogData> ErrorsLogs { get; private set; } = new();
 
-		private List<string> _safeMessageLogs = new();
-		private HashSet<string> _safeWarningsLogs = new();
-		private HashSet<string> _safeErrorsLogs = new();
+		private List<LogData> _safeMessageLogs = new();
+		private HashSet<LogData> _safeWarningsLogs = new();
+		private HashSet<LogData> _safeErrorsLogs = new();
 
 		public Logger(bool isMain = false)
 		{
@@ -34,34 +46,34 @@
 
 		public void LogMessage(string message)
 		{
-			string formatted = LogFormat(message);
-			_safeMessageLogs.Add(formatted);
+			LogData format = new LogData() { Data = message, Time = GetTime() };
+			_safeMessageLogs.Add(format);
 
 			if (EnableFileLogs)
-				File.AppendAllText(FileLogPath, formatted + "\n");
+				File.AppendAllText(FileLogPath, format.ToString() + "\n");
 		}
 
 		public void LogWarning(string warning)
 		{
-			string formatted = LogFormat(warning);
-			_safeWarningsLogs.Add(LogFormat(warning));
+			LogData format = new LogData() { Data = warning, Time = GetTime() };
+			_safeWarningsLogs.Add(format);
 
 			if (EnableFileLogs)
-				File.AppendAllText(FileLogPath, formatted + "\n");
+				File.AppendAllText(FileLogPath, format.ToString() + "\n");
 		}
 
 		public void LogError(string error)
 		{
-			string formatted = LogFormat(error);
-			_safeErrorsLogs.Add(LogFormat(error));
+			LogData format = new LogData() { Data = error, Time = GetTime() };
+			_safeErrorsLogs.Add(format);
 
 			if (EnableFileLogs)
-				File.AppendAllText(FileLogPath, formatted + "\n");
+				File.AppendAllText(FileLogPath, format.ToString() + "\n");
 		}
 
-		private string LogFormat(string input)
+		private string GetTime()
 		{
-			return $"[{DateTime.Now.ToString("HH:mm:ss")}] {input}";
+			return $"[{DateTime.Now.ToString("HH:mm:ss")}]";
 		}
 
 		public void ClearLogs()
