@@ -34,8 +34,9 @@ namespace BEngineCore
 			{
 				FileSystemWatcher subWatcher = new FileSystemWatcher(directory, _filter);
 				subWatcher.EnableRaisingEvents = true;
-				subWatcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-									   | NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.Size | NotifyFilters.CreationTime;
+				subWatcher.NotifyFilter = NotifyFilters.LastWrite
+									   | NotifyFilters.FileName | NotifyFilters.DirectoryName 
+									   | NotifyFilters.Size | NotifyFilters.CreationTime;
 				subWatcher.Created += (a, e) => Created?.Invoke(e.FullPath);
 				subWatcher.Deleted += (a, e) => Deleted?.Invoke(e.FullPath);
 				subWatcher.Changed += (a, e) => Changed?.Invoke(e.FullPath);
