@@ -5,6 +5,17 @@ using System.Reflection;
 
 namespace BEngineEditor
 {
+	public class ScriptData
+	{
+		public Dictionary<string, FieldData> Data = new();
+	}
+
+	public struct ScriptDragData
+	{
+		public SceneEntity entity;
+		public SceneScript script;
+	}
+
 	public class PropertiesScreen : Screen
 	{
 		private ProjectContext _projectContext => window.ProjectContext;
@@ -16,13 +27,17 @@ namespace BEngineEditor
 #pragma warning restore CS8603 // Possible null reference return.
 
 		private string? _lastName = string.Empty;
+		private ScriptData? _copyScriptData = null;
 
 		private const int Precision = 5;
 
 		private const float SizeOffset = 4f;
 		private const float RelevantOffset = 20f;
+		private const float PaddingX = 10f;
+		private const float PaddingY = 10f;
+		private const string ScriptOrderPayload = "ScriptOrderPayload";
 
-		public override void Display()
+		public override unsafe void Display()
 		{
 			ImGui.Begin("Properties", ImGuiWindowFlags.HorizontalScrollbar);
 
@@ -54,18 +69,43 @@ namespace BEngineEditor
 					selectedEntity.SetName(newName);
 				}
 
-				ImGui.Separator();
+				System.Numerics.Vector4 currentColor = *ImGui.GetStyleColorVec4(ImGuiCol.Header);
+				Vector4 colorMultiplied = System.Numerics.Vector4.Multiply(currentColor, 256f);
+				byte[] resultColor = [(byte)(colorMultiplied.x), (byte)(colorMultiplied.y), (byte)colorMultiplied.z, (byte)colorMultiplied.w];
+
+				ImGui.Dummy(new System.Numerics.Vector2(0, PaddingY));
 
 				for (int i = 0; i < selectedEntity.Scripts.Count; i++)
 				{
 					string fullName = selectedEntity.Scripts[i].Namespace + "." + selectedEntity.Scripts[i].Name;
-
-					ImGui.PushID(fullName);
-					ImGui.BeginGroup();
-					ImGui.Text(fullName);
-
 					SceneScript sceneScript = selectedEntity.Scripts[i];
 					Script? script = selectedEntity.GetScriptInstance(sceneScript);
+
+					ImGui.ColorButton("DropArea" + i, currentColor,
+											ImGuiColorEditFlags.NoTooltip |
+											ImGuiColorEditFlags.NoPicker | 
+											ImGuiColorEditFlags.NoDragDrop, 
+											new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, PaddingY));
+					Drop(sceneScript, i);
+
+					ImGui.PushID(fullName); 
+
+					ImGui.GetWindowDrawList().ChannelsSplit(2);
+					ImGui.GetWindowDrawList().ChannelsSetCurrent(1);
+
+					float resultYPadding = PaddingY;
+					resultYPadding *= 1f;
+					ImGui.Dummy(new System.Numerics.Vector2(0, resultYPadding));
+
+					ImGui.Dummy(new System.Numerics.Vector2(0, 0));
+					ImGui.SameLine();
+					ImGui.BeginGroup();
+
+					if (ImGui.Button(fullName, new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X - PaddingX, 40)))
+					{
+
+					}
+					Drag(selectedEntity, sceneScript);
 
 					if (script != null)
 					{
@@ -114,6 +154,10 @@ namespace BEngineEditor
 							SceneScriptField? sceneScriptField = selectedEntity.Scripts[i].Fields?.Find((scripField) => scripField.Name == field.Name);
 							SceneScriptValue? sceneScriptValue = sceneScriptField?.Value;
 							Type fieldType;
+							object? resultField = GetScriptValue(field, script);
+
+							if (selectedEntity.Entity == resultField)
+								continue;
 
 							if (field.MemberType == MemberTypes.Field)
 							{
@@ -146,6 +190,8 @@ namespace BEngineEditor
 							}
 
 							ImGui.PushID(field.Name);
+
+							ImGui.Text(fieldName);
 
 							if (IsInClassList(fieldType, typeof(string), typeof(int),
 								typeof(float), typeof(double), typeof(uint), typeof(byte), typeof(sbyte),
@@ -208,7 +254,6 @@ namespace BEngineEditor
 								string z = "0";
 								Vector3 initial = Vector3.zero;
 
-								object? resultField = GetScriptValue(field, script);
 								if (resultField != null)
 								{
 									initial = (Vector3)resultField;
@@ -217,7 +262,6 @@ namespace BEngineEditor
 									z = Math.Round(initial.z, Precision).ToString();
 								}
 
-								ImGui.Text(fieldName);
 								ImGui.PushItemWidth(ImGui.GetWindowSize().X / SizeOffset);
 								ImGui.Text("x");
 								ImGui.SameLine();
@@ -290,7 +334,6 @@ namespace BEngineEditor
 									w = Math.Round(initial.w, Precision).ToString();
 								}
 
-								ImGui.Text(fieldName);
 								ImGui.PushItemWidth(ImGui.GetWindowSize().X / SizeOffset);
 								ImGui.Text("x");
 								ImGui.SameLine();
@@ -363,10 +406,11 @@ namespace BEngineEditor
 							else if (IsInClassList(fieldType, typeof(BEngine.Model)))
 							{
 								string input = string.Empty;
+								object? fieldResult = GetScriptValue(field, script);
 
-								if (fields[j] != null)
+								if (fieldResult != null)
 								{
-									BEngine.Model? result = (BEngine.Model?)GetScriptValue(field, script);
+									BEngine.Model? result = (BEngine.Model?)fieldResult;
 									if (result != null)
 										input = result.GUID;
 								}
@@ -375,7 +419,7 @@ namespace BEngineEditor
 									input = string.Empty;
 
 								string textOutput = string.Empty;
-								string basePath = string.Empty;
+								string basePath = "None";
 								AssetMetaData? initialAsset = _reader.ModelContext.Assets.Find((asset) => asset.GUID == input);
 								if (initialAsset == null)
 								{
@@ -384,7 +428,7 @@ namespace BEngineEditor
 								else
 								{
 									basePath = Path.GetFileName(initialAsset.GetAssetPath());
-									textOutput = $"Model:\n{basePath}";
+									textOutput = $"{basePath}";
 								}
 
 								ImGui.TextWrapped(textOutput);
@@ -409,6 +453,56 @@ namespace BEngineEditor
 									}
 									ImGui.EndListBox();
 									ImGui.EndPopup();
+								}
+							}
+							else if (IsInClassList(fieldType, typeof(Key)))
+							{
+								Key initialKey = Key.Unknown;
+								object? fieldResult = GetScriptValue(field, script);
+
+								if (fieldResult != null)
+								{
+									initialKey = (Key)fieldResult;
+								}
+
+								if (ImGui.BeginCombo($"##{initialKey}", initialKey.ToString(), ImGuiComboFlags.HeightLargest))
+								{
+									foreach (Key key in Enum.GetValues<Key>())
+									{
+										if (ImGui.Selectable(key.ToString()))
+										{
+											object final = key;
+
+											if (final != null)
+												UpdateField(field, script, sceneScript, final);
+										}
+									}
+									ImGui.EndCombo();
+								}
+							}
+							else if (IsInClassList(fieldType, typeof(MouseButton)))
+							{
+								MouseButton initialButton = MouseButton.Unknown;
+								object? fieldResult = GetScriptValue(field, script);
+
+								if (fieldResult != null)
+								{
+									initialButton = (MouseButton)fieldResult;
+								}
+
+								if (ImGui.BeginCombo($"##{initialButton}", initialButton.ToString()))
+								{
+									foreach (MouseButton button in Enum.GetValues<MouseButton>())
+									{
+										if (ImGui.Selectable(button.ToString()))
+										{
+											object final = button;
+
+											if (final != null)
+												UpdateField(field, script, sceneScript, final);
+										}
+									}
+									ImGui.EndCombo();
 								}
 							}
 
@@ -506,16 +600,57 @@ namespace BEngineEditor
 					ImGui.EndGroup();
 					ImGui.PopID();
 
+					ImGui.GetWindowDrawList().ChannelsSetCurrent(0);
+
+					float windowX = ImGui.GetWindowPos().X + ImGui.GetWindowContentRegionMax().X;
+					System.Numerics.Vector2 minWindow = ImGui.GetItemRectMin();
+					minWindow.X -= PaddingX;
+					minWindow.Y -= PaddingY;
+					System.Numerics.Vector2 maxWindow = ImGui.GetItemRectMax();
+					if (windowX > maxWindow.X)
+						maxWindow.X = windowX;
+					maxWindow.Y += PaddingY;
+
+					ImGui.GetWindowDrawList().AddRect(minWindow, maxWindow, BitConverter.ToUInt32(resultColor, 0), 5.0f, ImDrawFlags.RoundCornersAll, 3.0f);
+					ImGui.GetWindowDrawList().ChannelsMerge();
+
 					if (ImGui.BeginPopupContextItem(fullName, ImGuiPopupFlags.MouseButtonRight))
 					{
+						if (ImGui.Selectable("Copy"))
+						{
+							_copyScriptData = new ScriptData() { 
+								Data = selectedEntity.CopyScriptData(selectedEntity.Scripts[i])
+							};
+						}
+						if (_copyScriptData != null && ImGui.Selectable("Paste"))
+						{
+							selectedEntity.PasteScriptData(selectedEntity.Scripts[i], _copyScriptData.Data);
+						}
+						if (ImGui.Selectable("Reset"))
+						{
+							selectedEntity.ResetScript(selectedEntity.Scripts[i]);
+						}
 						if (ImGui.Selectable("Delete"))
 						{
 							selectedEntity.RemoveScript(selectedEntity.Scripts[i]);
 						}
 						ImGui.EndPopup();
 					}
+
+					ImGui.Dummy(new System.Numerics.Vector2(0, resultYPadding));
 				}
 
+				if (selectedEntity.Scripts.Count != 0)
+				{
+					ImGui.ColorButton("DropArea" + (selectedEntity.Scripts.Count), currentColor,
+						ImGuiColorEditFlags.NoTooltip |
+						ImGuiColorEditFlags.NoPicker |
+						ImGuiColorEditFlags.NoDragDrop,
+						new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, PaddingY));
+					Drop(selectedEntity.Scripts.Last(), selectedEntity.Scripts.Count);
+				}
+
+				ImGui.Dummy(new System.Numerics.Vector2(0, PaddingY));
 				ImGui.SetCursorPosX(ImGui.GetWindowSize().X / SizeOffset + RelevantOffset);
 				ImGui.Button("Add Script", new System.Numerics.Vector2(100, 60));
 				if (ImGui.BeginPopupContextItem("Add Script", ImGuiPopupFlags.MouseButtonLeft))
@@ -545,6 +680,43 @@ namespace BEngineEditor
 			}
 
 			ImGui.End();
+		}
+
+		private unsafe void Drag(SceneEntity entity, SceneScript script)
+		{
+			if (ImGui.BeginDragDropSource())
+			{
+				ScriptDragData data = new ScriptDragData() { entity = entity, script = script };
+				ImGui.SetDragDropPayload(ScriptOrderPayload, (IntPtr)(&data), (uint)sizeof(ScriptDragData));
+				ImGui.Text("Script");
+				ImGui.Text($"{script.Name} ({script.Namespace}.{script.Name})");
+				ImGui.EndDragDropSource();
+			}
+		}
+
+		private unsafe void Drop(SceneScript script, int i)
+		{
+			if (ImGui.BeginDragDropTarget())
+			{
+				var payload = ImGui.AcceptDragDropPayload(ScriptOrderPayload);
+
+				if (payload.NativePtr != null)
+				{
+					var entryPointer = (ScriptDragData*)payload.Data;
+					ScriptDragData entry = entryPointer[0];
+
+					int currentID = entry.entity.Scripts.IndexOf(entry.script);
+					if (currentID != i)
+					{
+						entry.entity.Scripts.Insert(i, entry.script);
+						if (currentID >= i)
+							currentID += 1;
+						entry.entity.Scripts.RemoveAt(currentID);
+					}
+				}
+
+				ImGui.EndDragDropTarget();
+			}
 		}
 
 		private object? GetScriptValue(MemberInfo field, Script script)

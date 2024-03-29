@@ -1,5 +1,6 @@
 ﻿using BEngineCore;
 using ImGuiNET;
+using System.Globalization;
 
 namespace BEngineEditor
 {
@@ -11,14 +12,14 @@ namespace BEngineEditor
 
 		private const string HierarchyPayload = "HierarchyPayload";
 
-		private struct Entry
-		{
-			public string GUID;
-		}
+		private System.Numerics.Vector4 currentColor;
 
-		public override void Display()
+		private const int PaddingY = 5;
+
+		public unsafe override void Display()
 		{
 			ImGui.Begin("Hierarchy", ImGuiWindowFlags.HorizontalScrollbar);
+			currentColor = *ImGui.GetStyleColorVec4(ImGuiCol.Header);
 
 			bool open = ImGui.TreeNodeEx(_scene.SceneName, ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.Leaf);
 
@@ -30,6 +31,16 @@ namespace BEngineEditor
 					{
 						ShowEntitiesRecursively(_entities[i], _entities[i]);
 					}
+				}
+
+				if (_entities.Count != 0)
+				{
+					ImGui.ColorButton("DropArea" + _entities.Count, currentColor,
+						ImGuiColorEditFlags.NoTooltip |
+						ImGuiColorEditFlags.NoPicker |
+						ImGuiColorEditFlags.NoDragDrop,
+						new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, PaddingY));
+					DropPosition(null);
 				}
 
 				ImGui.TreePop();
@@ -50,6 +61,14 @@ namespace BEngineEditor
 				flags |= ImGuiTreeNodeFlags.Leaf;
 
 			ImGui.PushID(current.GUID);
+
+			ImGui.ColorButton("DropArea" + (current.GUID), currentColor,
+				ImGuiColorEditFlags.NoTooltip |
+				ImGuiColorEditFlags.NoPicker |
+				ImGuiColorEditFlags.NoDragDrop,
+				new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, PaddingY));
+			DropPosition(current);
+
 			bool open = ImGui.TreeNodeEx(current.Name, flags);
 
 			if (ImGui.IsItemClicked())
@@ -76,12 +95,45 @@ namespace BEngineEditor
 
 			if (open)
 			{
-				for (int i = 0; i < current.Children.Count; i++)
+				if (current.Children.Count == 0)
 				{
-					ShowEntitiesRecursively(_entities.Find((entity) => entity == current.Children[i]), root);
+					ImGui.TreePop();
+					return;
 				}
 
+				List<SceneEntity> sorted = current.Children.ToList();
+				SortChildren(sorted);
+
+				for (int i = 0; i < sorted.Count; i++)
+				{
+					ShowEntitiesRecursively(sorted[i], root);
+				}
+
+				ImGui.ColorButton("DropArea" + (sorted.Count), currentColor,
+					ImGuiColorEditFlags.NoTooltip |
+					ImGuiColorEditFlags.NoPicker |
+					ImGuiColorEditFlags.NoDragDrop,
+					new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, PaddingY));
+				DropPosition(null);
+
 				ImGui.TreePop();
+			}
+		}
+
+		private void SortChildren(List<SceneEntity> entities)
+		{
+			SceneEntity temp;
+			for (int write = 0; write < entities.Count; write++)
+			{
+				for (int sort = 0; sort < entities.Count - 1; sort++)
+				{
+					if (_entities.IndexOf(entities[sort]) > _entities.IndexOf(entities[sort + 1]))
+					{
+						temp = entities[sort + 1];
+						entities[sort + 1] = entities[sort];
+						entities[sort] = temp;
+					}
+				}
 			}
 		}
 
@@ -102,14 +154,57 @@ namespace BEngineEditor
 		{
 			if (ImGui.BeginDragDropSource())
 			{
-				Entry entry = new Entry() { GUID = entity.GUID };
-				ImGui.SetDragDropPayload(HierarchyPayload, (IntPtr)(&entry), (uint)sizeof(Entry));
+				ImGui.SetDragDropPayload(HierarchyPayload, (IntPtr)(&entity), (uint)sizeof(SceneEntity));
 				ImGui.Text("Entity");
 				ImGui.Text($"{entity.Name} ({entity.GUID})");
 				ImGui.EndDragDropSource();
 			}
 
 			Drop(entity);
+		}
+
+		private unsafe void DropPosition(SceneEntity entity)
+		{
+			if (ImGui.BeginDragDropTarget())
+			{
+				var payload = ImGui.AcceptDragDropPayload(HierarchyPayload);
+
+				if (payload.NativePtr != null)
+				{
+					var entryPointer = (SceneEntity*)payload.Data;
+					SceneEntity entry = entryPointer[0];
+
+					if (entity != null && entity != entry)
+					{
+						int entryIndex = _entities.IndexOf(entry);
+						int entityIndex = _entities.IndexOf(entity);
+
+						if (entity.Parent != null)
+						{
+							if (entity.Parent != entry.Parent)
+								entry.SetParent(entity.Parent);
+						}
+						else if (entry.Parent != null)
+						{
+							entry.ClearParent();
+						}
+
+						_entities.Insert(entityIndex, entry);
+						if (entryIndex >= entityIndex)
+							entryIndex += 1;
+						_entities.RemoveAt(entryIndex);
+					}
+					else if (entity == null)
+					{
+						int entryIndex = _entities.IndexOf(entry);
+
+						_entities.RemoveAt(entryIndex);
+						_entities.Add(entry);
+					}
+				}
+
+				ImGui.EndDragDropTarget();
+			}
 		}
 
 		private unsafe void Drop(SceneEntity entity)
@@ -120,18 +215,12 @@ namespace BEngineEditor
 
 				if (payload.NativePtr != null)
 				{
-					var entryPointer = (Entry*)payload.Data;
-					Entry entry = entryPointer[0];
+					var entryPointer = (SceneEntity*)payload.Data;
+					SceneEntity entry = entryPointer[0];
 
-					SceneEntity? drop = _scene.GetEntity(entry.GUID);
-
-					if (drop != null)
+					if (entry != null)
 					{
-						if (entity.ChildOf(drop) == false)
-						{
-							entity.AddChild(drop);
-							drop.SetParent(entity);
-						}
+						entry.SetParent(entity);
 					}
 				}
 

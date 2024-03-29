@@ -9,42 +9,42 @@ namespace BEngine
 
 	public class ModelRenderer : Script
 	{
-		public Transform Transform { get; set; }
+		private Transform _transform;
 
 		public Model Model;
 
 		public override void OnStart()
 		{
-			Transform = GetScript<Transform>();
+			_transform = GetScript<Transform>();
 		}
 
 		public override void OnUpdate()
 		{
-			if (Transform == null)
+			if (_transform == null)
 			{
-				Transform = GetScript<Transform>();
+				_transform = GetScript<Transform>();
 				return;
 			}
 
 			if (Model != null && Model.GUID != string.Empty)
-				InternalCalls.AddRenderModel(new RenderModel() { Model = Model, Transform = Transform });
+				InternalCalls.AddRenderModel(new RenderModel() { Model = Model, Transform = _transform });
 		}
 
 		public override void OnEditorStart()
 		{
-			Transform = GetScript<Transform>();
+			_transform = GetScript<Transform>();
 		}
 
 		public override void OnEditorUpdate()
 		{
-			if (Transform == null)
+			if (_transform == null)
 			{
-				Transform = GetScript<Transform>();
+				_transform = GetScript<Transform>();
 				return;
 			}
 
 			if (Model != null && Model.GUID != string.Empty)
-				InternalCalls.AddRenderModel(new RenderModel() { Model = Model, Transform = Transform });
+				InternalCalls.AddRenderModel(new RenderModel() { Model = Model, Transform = _transform });
 		}
 	}
 }

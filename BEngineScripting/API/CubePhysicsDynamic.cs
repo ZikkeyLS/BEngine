@@ -9,7 +9,7 @@ namespace BEngine
 
 	public class CubePhysicsDynamic : Script
 	{
-		public Transform Transform { get; set; }
+		private Transform _transform;
 
 		public string physicsID = string.Empty;
 
@@ -20,16 +20,16 @@ namespace BEngine
 
 		public override void OnFixedUpdate()
 		{
-			if (Transform == null || physicsID == string.Empty)
+			if (_transform == null || physicsID == string.Empty)
 			{
 				Setup();
 				return;
 			}
 
 			PhysicsEntryData data = InternalCalls.PhysicsGetActorData(physicsID);
-			Transform.Position = data.Position;
-			Transform.Rotation = data.Rotation;
-			InternalCalls.PhysicsUpdateActorScale(physicsID, Transform.Scale);
+			_transform.Position = data.Position;
+			_transform.Rotation = data.Rotation;
+			InternalCalls.PhysicsUpdateActorScale(physicsID, _transform.Scale);
 		}
 
 		public override void OnDestroy()
@@ -39,10 +39,10 @@ namespace BEngine
 
 		private bool Setup()
 		{
-			Transform = GetScript<Transform>();
-			if (Transform != null)
+			_transform = GetScript<Transform>();
+			if (_transform != null)
 			{
-				physicsID = InternalCalls.PhysicsCreateDynamicCube(Transform.Position, Transform.Rotation, Transform.Scale);
+				physicsID = InternalCalls.PhysicsCreateDynamicCube(_transform.Position, _transform.Rotation, _transform.Scale);
 				if (physicsID != string.Empty)
 					return true;
 			}
