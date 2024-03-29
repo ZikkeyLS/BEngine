@@ -11,17 +11,28 @@ namespace BEngineEditor
 		private ProjectCompiler _compiler => _projectContext.CurrentProject.Compiler;
 		private ProjectSettings _settings => _projectContext.CurrentProject.Settings;
 
+		private Texture engineIcon;
+
 		protected override void Setup()
 		{
 			_projectContext = window.ProjectContext;
+			engineIcon = new Texture("Icons/BEngineLogo.png", Graphics.gl);	
 		}
 
 		public override void Display()
 		{
+			ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, new System.Numerics.Vector2(0, 15));
 			ImGui.BeginMainMenuBar();
 
+			ImGui.SetCursorPosY(2);
+			ImGui.Image((nint)engineIcon.ID, new System.Numerics.Vector2(40, 40));
+
 			if (_projectContext.CurrentProject == null)
+			{
+				ImGui.EndMainMenuBar();
+				ImGui.PopStyleVar();
 				return;
+			}
 
 			if (ImGui.BeginMenu("Actions"))
 			{
@@ -83,6 +94,7 @@ namespace BEngineEditor
 			}
 
 			ImGui.EndMainMenuBar();
+			ImGui.PopStyleVar();
 		}
 	}
 }

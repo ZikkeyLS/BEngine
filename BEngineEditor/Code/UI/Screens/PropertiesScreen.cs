@@ -37,6 +37,8 @@ namespace BEngineEditor
 		private const float PaddingY = 10f;
 		private const string ScriptOrderPayload = "ScriptOrderPayload";
 
+		private bool _dragging = false;
+
 		public override unsafe void Display()
 		{
 			ImGui.Begin("Properties", ImGuiWindowFlags.HorizontalScrollbar);
@@ -81,12 +83,15 @@ namespace BEngineEditor
 					SceneScript sceneScript = selectedEntity.Scripts[i];
 					Script? script = selectedEntity.GetScriptInstance(sceneScript);
 
-					ImGui.ColorButton("DropArea" + i, currentColor,
-											ImGuiColorEditFlags.NoTooltip |
-											ImGuiColorEditFlags.NoPicker | 
-											ImGuiColorEditFlags.NoDragDrop, 
-											new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, PaddingY));
-					Drop(sceneScript, i);
+					if (_dragging)
+					{
+						ImGui.ColorButton("DropArea" + i, currentColor,
+						ImGuiColorEditFlags.NoTooltip |
+						ImGuiColorEditFlags.NoPicker |
+						ImGuiColorEditFlags.NoDragDrop,
+						new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, PaddingY));
+						Drop(sceneScript, i);
+					}
 
 					ImGui.PushID(fullName); 
 
@@ -640,7 +645,7 @@ namespace BEngineEditor
 					ImGui.Dummy(new System.Numerics.Vector2(0, resultYPadding));
 				}
 
-				if (selectedEntity.Scripts.Count != 0)
+				if (selectedEntity.Scripts.Count != 0 && _dragging)
 				{
 					ImGui.ColorButton("DropArea" + (selectedEntity.Scripts.Count), currentColor,
 						ImGuiColorEditFlags.NoTooltip |
@@ -686,11 +691,19 @@ namespace BEngineEditor
 		{
 			if (ImGui.BeginDragDropSource())
 			{
+				_dragging = true;
 				ScriptDragData data = new ScriptDragData() { entity = entity, script = script };
 				ImGui.SetDragDropPayload(ScriptOrderPayload, (IntPtr)(&data), (uint)sizeof(ScriptDragData));
 				ImGui.Text("Script");
 				ImGui.Text($"{script.Name} ({script.Namespace}.{script.Name})");
 				ImGui.EndDragDropSource();
+			}
+
+			ImGuiPayloadPtr payload = ImGui.GetDragDropPayload();
+			if ((payload.NativePtr == null && _dragging) ||
+				(payload.NativePtr != null && payload.IsDataType(ScriptOrderPayload) == false && _dragging))
+			{
+				_dragging = false;
 			}
 		}
 
@@ -702,6 +715,7 @@ namespace BEngineEditor
 
 				if (payload.NativePtr != null)
 				{
+					_dragging = false;
 					var entryPointer = (ScriptDragData*)payload.Data;
 					ScriptDragData entry = entryPointer[0];
 

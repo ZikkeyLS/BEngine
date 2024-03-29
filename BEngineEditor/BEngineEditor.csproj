@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <ApplicationIcon>Icons\BEngineLogo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -45,6 +46,7 @@
     <Content Include="Fonts\ArialRegular.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Icons\BEngineLogo.ico" />
     <Content Include="ProjectTemplate\Project.sln.temp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -68,6 +70,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BEngineCore\BEngineCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Icons\BEngineLogo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
