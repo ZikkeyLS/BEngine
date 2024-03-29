@@ -25,9 +25,9 @@ namespace BEngineEditor
 
 		private CommonResolver _commonResolver = new();
 		private BoolResolver _boolResolver = new();
-		private Vector3Resolver _vector2Resolver = new();
+		private Vector2Resolver _vector2Resolver = new();
 		private Vector3Resolver _vector3Resolver = new();
-		private Vector3Resolver _vector4Resolver = new();
+		private Vector4Resolver _vector4Resolver = new();
 		private QuaternionResolver _quaternionResolver = new();
 		private ModelResolver _modelResolver = new();
 		private KeyResolver _keyResolver = new();
@@ -166,7 +166,15 @@ namespace BEngineEditor
 				System.Numerics.Vector2 minWindow = ImGui.GetItemRectMin() - new System.Numerics.Vector2(PaddingX, PaddingY);
 				System.Numerics.Vector2 maxWindow = ImGui.GetItemRectMax() + new System.Numerics.Vector2(0, PaddingY);
 				if (windowX > maxWindow.X)
-					maxWindow.X = windowX + PaddingX;
+				{
+					maxWindow.X = windowX;
+				}
+				else
+				{
+					maxWindow.X += PaddingX;
+					ImGui.SameLine();
+					ImGui.Dummy(new System.Numerics.Vector2(PaddingX, 0));
+				}
 
 				ImGui.GetWindowDrawList().AddRect(minWindow, maxWindow, BitConverter.ToUInt32(resultColor, 0), 5.0f, ImDrawFlags.RoundCornersAll, 3.0f);
 				ImGui.GetWindowDrawList().ChannelsMerge();
