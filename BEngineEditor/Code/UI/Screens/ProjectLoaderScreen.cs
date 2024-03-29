@@ -57,7 +57,7 @@ namespace BEngineEditor
 			}
 			else
 			{
-				ImGui.TextColored(new Vector4(1, 0, 0, 1), "Invalid path: This directory already exists or name is empty!");
+				ImGui.TextColored(ColorConstants.Red, "Invalid path: This directory already exists or name is empty!");
 			}
 
 			ImGui.Separator();

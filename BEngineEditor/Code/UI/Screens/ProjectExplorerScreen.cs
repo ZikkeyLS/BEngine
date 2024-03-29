@@ -6,6 +6,13 @@ namespace BEngineEditor
 {
 	internal class ProjectExplorerScreen : Screen
 	{
+		private struct Entry
+		{
+			public string EntryPath;
+			public string EntryName;
+			public bool IsFile;
+		}
+
 		private ProjectContext _projectContext;
 
 		private const int BothSideSpacing = 10;
@@ -26,19 +33,12 @@ namespace BEngineEditor
 		private string _lastSavePath = string.Empty;
 
 		private EditorProject _currentProject => _projectContext.CurrentProject;
-
-		private string _rootAssetsDirectory => _currentProject.AssetsDirectory;
 		private Logger _logger => _currentProject.Logger;
 		private AssetWriter _assetWriter => _currentProject.AssetWriter;
+		private string _rootAssetsDirectory => _currentProject.AssetsDirectory;
+
 
 		private const string _moveEntryExplorer = "MoveEntryExplorer";
-
-		private struct Entry
-		{
-			public string EntryPath;
-			public string EntryName;
-			public bool IsFile;
-		}
 
 		protected override void Setup()
 		{
@@ -47,11 +47,11 @@ namespace BEngineEditor
 
 		public override void Display()
 		{
-			ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, ImGui.GetWindowSize().Y / 5), ImGuiCond.FirstUseEver);
+			ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, ImGui.GetWindowSize().Y / 5f), ImGuiCond.FirstUseEver);
 
 			ImGui.Begin("Project");
 
-			int leftOffset = (int)(ImGui.GetWindowSize().X / 100 * LeftExplorerPercentage);
+			int leftOffset = (int)(ImGui.GetWindowSize().X / 100f * LeftExplorerPercentage);
 
 			ImGui.Columns(2);
 			ImGui.SetColumnWidth(0, leftOffset);
@@ -72,7 +72,7 @@ namespace BEngineEditor
 
 		private void ShowDirectory(int leftOffset)
 		{
-			int itemSide = (int)(ImGui.GetWindowSize().X / 100 * ItemSidePercentage);
+			int itemSide = (int)(ImGui.GetWindowSize().X / 100f * ItemSidePercentage);
 
 			ImGui.PushID(0);
 			if (ImGui.Button("Assets"))

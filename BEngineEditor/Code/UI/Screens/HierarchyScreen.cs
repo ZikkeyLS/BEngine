@@ -10,10 +10,6 @@ namespace BEngineEditor
 		private Scene _scene => _projectContext.CurrentProject.LoadedScene;
 		private List<SceneEntity> _entities => _scene.Entities;
 
-		private const string HierarchyPayload = "HierarchyPayload";
-
-		private System.Numerics.Vector4 currentColor;
-
 		private const int PaddingY = 5;
 
 		private bool _dragging = false;
@@ -21,7 +17,6 @@ namespace BEngineEditor
 		public unsafe override void Display()
 		{
 			ImGui.Begin("Hierarchy", ImGuiWindowFlags.HorizontalScrollbar);
-			currentColor = *ImGui.GetStyleColorVec4(ImGuiCol.Header);
 
 			bool open = ImGui.TreeNodeEx(_scene.SceneName, ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.Leaf);
 
@@ -37,11 +32,7 @@ namespace BEngineEditor
 
 				if (_entities.Count != 0 && _dragging)
 				{
-					ImGui.ColorButton("DropArea" + _entities.Count, currentColor,
-						ImGuiColorEditFlags.NoTooltip |
-						ImGuiColorEditFlags.NoPicker |
-						ImGuiColorEditFlags.NoDragDrop,
-						new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, PaddingY));
+					GUIPresets.CreateDropArea(_entities.Count, PaddingY);
 					DropPosition(null);
 				}
 
@@ -66,11 +57,7 @@ namespace BEngineEditor
 
 			if (_dragging)
 			{
-				ImGui.ColorButton("DropArea" + (current.GUID), currentColor,
-					ImGuiColorEditFlags.NoTooltip |
-					ImGuiColorEditFlags.NoPicker |
-					ImGuiColorEditFlags.NoDragDrop,
-					new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, PaddingY));
+				GUIPresets.CreateDropArea(current.GUID, PaddingY);
 				DropPosition(current);
 			}
 
@@ -94,6 +81,7 @@ namespace BEngineEditor
 				{
 					_scene.RemoveEntity(current);
 				}
+
 				ImGui.EndPopup();
 			}
 			ImGui.PopID();
@@ -116,11 +104,7 @@ namespace BEngineEditor
 
 				if (_dragging)
 				{
-					ImGui.ColorButton("DropArea" + (sorted.Count), currentColor,
-						ImGuiColorEditFlags.NoTooltip |
-						ImGuiColorEditFlags.NoPicker |
-						ImGuiColorEditFlags.NoDragDrop,
-						new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, PaddingY));
+					GUIPresets.CreateDropArea(sorted.Count, PaddingY);
 					DropPosition(null);
 				}
 
@@ -163,7 +147,7 @@ namespace BEngineEditor
 			if (ImGui.BeginDragDropSource())
 			{
 				_dragging = true;
-				ImGui.SetDragDropPayload(HierarchyPayload, (IntPtr)(&entity), (uint)sizeof(SceneEntity));
+				ImGui.SetDragDropPayload(PayloadConstants.HierarchyPayload, (IntPtr)(&entity), (uint)sizeof(SceneEntity));
 				ImGui.Text("Entity");
 				ImGui.Text($"{entity.Name} ({entity.GUID})");
 				ImGui.EndDragDropSource();
@@ -171,7 +155,7 @@ namespace BEngineEditor
 
 			ImGuiPayloadPtr payload = ImGui.GetDragDropPayload();
 			if ((payload.NativePtr == null && _dragging) || 
-				(payload.NativePtr != null && payload.IsDataType(HierarchyPayload) == false && _dragging))
+				(payload.NativePtr != null && payload.IsDataType(PayloadConstants.HierarchyPayload) == false && _dragging))
 			{
 				_dragging = false;
 			}
@@ -183,7 +167,7 @@ namespace BEngineEditor
 		{
 			if (ImGui.BeginDragDropTarget())
 			{
-				var payload = ImGui.AcceptDragDropPayload(HierarchyPayload);
+				var payload = ImGui.AcceptDragDropPayload(PayloadConstants.HierarchyPayload);
 
 				if (payload.NativePtr != null)
 				{
@@ -228,7 +212,7 @@ namespace BEngineEditor
 		{
 			if (ImGui.BeginDragDropTarget())
 			{
-				var payload = ImGui.AcceptDragDropPayload(HierarchyPayload);
+				var payload = ImGui.AcceptDragDropPayload(PayloadConstants.HierarchyPayload);
 
 				if (payload.NativePtr != null)
 				{

@@ -7,12 +7,14 @@ namespace BEngineEditor
 	public class SceneScreen : Screen
 	{
 		private ProjectContext _projectContext => window.ProjectContext;
-		private Scene _openedScene => _projectContext.CurrentProject.LoadedScene;
 
 		private FrameBuffer _frameBuffer;
 
 		protected override void Setup()
 		{
+			if (additional == null || additional.Length == 0)
+				return;
+
 			_frameBuffer = (FrameBuffer)additional[0];
 		}
 

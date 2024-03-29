@@ -16,7 +16,7 @@ namespace BEngineEditor
 		protected override void Setup()
 		{
 			_projectContext = window.ProjectContext;
-			engineIcon = new Texture("Icons/BEngineLogo.png", Graphics.gl);	
+			engineIcon = new Texture(EditorGlobals.IconPath, Graphics.gl);	
 		}
 
 		public override void Display()
