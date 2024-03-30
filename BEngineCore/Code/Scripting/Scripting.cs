@@ -96,8 +96,8 @@ namespace BEngineCore
 			_scripts.Add(new CachedScript(typeof(BEngine.Transform)));
 			_scripts.Add(new CachedScript(typeof(BEngine.ModelRenderer)));
 			_scripts.Add(new CachedScript(typeof(BEngine.Camera)));
-			_scripts.Add(new CachedScript(typeof(BEngine.CubePhysicsDynamic)));
-			_scripts.Add(new CachedScript(typeof(BEngine.CubePhysicsStatic)));
+			_scripts.Add(new CachedScript(typeof(BEngine.Rigidbody)));
+			_scripts.Add(new CachedScript(typeof(BEngine.CubeCollider)));
 		}
 
 		public static void LoadInternalScriptingAPI()

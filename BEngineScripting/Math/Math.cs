@@ -29,6 +29,36 @@ namespace BEngine
 			return $"Vector2 ({x};{y})";
 		}
 
+		public static bool operator ==(Vector2 a, Vector2 b)
+		{
+			return a.x == b.x && a.y == b.y;
+		}
+
+		public static bool operator !=(Vector2 a, Vector2 b)
+		{
+			return a.x != b.x || a.y != b.y;
+		}
+
+		public static Vector2 operator +(Vector2 a, Vector2 b) 
+		{
+			return new Vector2(a.x + b.x, a.y + b.y);
+		}
+
+		public static Vector2 operator -(Vector2 a, Vector2 b)
+		{
+			return new Vector2(a.x - b.x, a.y - b.y);
+		}
+
+		public static Vector2 operator *(Vector2 a, Vector2 b)
+		{
+			return new Vector2(a.x * b.x, a.y * b.y);
+		}
+
+		public static Vector2 operator /(Vector2 a, Vector2 b)
+		{
+			return new Vector2(a.x / b.x, a.y / b.y);
+		}
+
 		public static implicit operator Vector2(System.Numerics.Vector2 v)
 		{
 			return new(v.X, v.Y);
@@ -71,6 +101,36 @@ namespace BEngine
 		public override string ToString()
 		{
 			return $"Vector3 ({x};{y};{z})";
+		}
+
+		public static bool operator ==(Vector3 a, Vector3 b)
+		{
+			return a.x == b.x && a.y == b.y && a.z == b.z;
+		}
+
+		public static bool operator !=(Vector3 a, Vector3 b)
+		{
+			return a.x != b.x || a.y != b.y || a.z != b.z;
+		}
+
+		public static Vector3 operator +(Vector3 a, Vector3 b)
+		{
+			return new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
+		}
+
+		public static Vector3 operator -(Vector3 a, Vector3 b)
+		{
+			return new Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
+		}
+
+		public static Vector3 operator *(Vector3 a, Vector3 b)
+		{
+			return new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
+		}
+
+		public static Vector3 operator /(Vector3 a, Vector3 b)
+		{
+			return new Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
 		}
 
 		public static implicit operator Vector3(System.Numerics.Vector3 v)
@@ -124,6 +184,36 @@ namespace BEngine
 		public override string ToString()
 		{
 			return $"Vector4 ({x};{y};{z};{w})";
+		}
+
+		public static bool operator ==(Vector4 a, Vector4 b)
+		{
+			return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
+		}
+
+		public static bool operator !=(Vector4 a, Vector4 b)
+		{
+			return a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w;
+		}
+
+		public static Vector4 operator +(Vector4 a, Vector4 b)
+		{
+			return new Vector4(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w);
+		}
+
+		public static Vector4 operator -(Vector4 a, Vector4 b)
+		{
+			return new Vector4(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w);
+		}
+
+		public static Vector4 operator *(Vector4 a, Vector4 b)
+		{
+			return new Vector4(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w);
+		}
+
+		public static Vector4 operator /(Vector4 a, Vector4 b)
+		{
+			return new Vector4(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w);
 		}
 
 		public static implicit operator Vector4(System.Numerics.Vector4 v)
@@ -271,6 +361,36 @@ namespace BEngine
 		{
 			return $"Quaternion ({x};{y};{z};{w})";
 		}
+
+		public static bool operator ==(Quaternion a, Quaternion b)
+		{
+			return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
+		}
+
+		public static bool operator !=(Quaternion a, Quaternion b)
+		{
+			return a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w;
+		}
+
+		public static Quaternion operator +(Quaternion a, Quaternion b)
+		{
+			return new Quaternion(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w);
+		}
+
+		public static Quaternion operator -(Quaternion a, Quaternion b)
+		{
+			return new Quaternion(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w);
+		}
+
+		public static Quaternion operator *(Quaternion a, Quaternion b)
+		{
+			return new Quaternion(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w);
+		}
+		public static Quaternion operator /(Quaternion a, Quaternion b)
+		{
+			return new Quaternion(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w);
+		}
+
 
 		public static implicit operator Quaternion(System.Numerics.Quaternion q)
 		{

@@ -192,7 +192,7 @@ namespace BEngineCore
 		#endregion
 
 		#region Physics
-		public static string PhysicsCreateStaticCube(Vector3 position, Quaternion rotation, Vector3 scale)
+		public static string PhysicsCreateCube(Vector3 position, Quaternion rotation, Vector3 scale)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
 
@@ -200,19 +200,6 @@ namespace BEngineCore
 				return string.Empty;
 
 			return loadedProject.Physics.CreateStaticCube(
-				(System.Numerics.Vector3)position,
-				(System.Numerics.Quaternion)rotation,
-				(System.Numerics.Vector3)scale);
-		}
-
-		public static string PhysicsCreateDynamicCube(Vector3 position, Quaternion rotation, Vector3 scale)
-		{
-			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
-
-			if (loadedProject == null)
-				return string.Empty;
-
-			return loadedProject.Physics.CreateDynamicCube(
 				(System.Numerics.Vector3)position,
 				(System.Numerics.Quaternion)rotation,
 				(System.Numerics.Vector3)scale);
@@ -246,6 +233,36 @@ namespace BEngineCore
 				return;
 
 			loadedProject.Physics.RemoveActor(physicsID);
+		}
+
+		public static void PhysicsChangeKinematic(string physicsID, bool kinematic)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return;
+
+			loadedProject.Physics.ChangeKinematic(physicsID, kinematic);
+		}
+
+		public static void PhysicsChangeDynamic(string physicsID, bool dynamic)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return;
+
+			loadedProject.Physics.ChangeDynamic(physicsID, dynamic);
+		}
+
+		public static void PhysicsApplyTransform(string physicsID, Vector3 position, Quaternion rotation)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return;
+
+			loadedProject.Physics.ApplyTransform(physicsID, (System.Numerics.Vector3)position, (System.Numerics.Quaternion)rotation);
 		}
 		#endregion
 	}

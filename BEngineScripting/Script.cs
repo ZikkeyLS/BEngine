@@ -21,7 +21,7 @@ namespace BEngine
 
 		public virtual void OnStart()
 		{
-
+			
 		}
 
 		public virtual void OnUpdate()

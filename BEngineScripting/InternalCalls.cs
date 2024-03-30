@@ -195,34 +195,37 @@ namespace BEngine
 		#endregion
 
 		#region Physics
-		private static MethodInfo? _physicsCreateDynamicCube;
-		private static MethodInfo? _physicsCreateStaticCube;
+		private static MethodInfo? _physicsCreateCube;
 
 		private static MethodInfo? _physicsGetActorData;
-
 		private static MethodInfo? _physicsUpdateActorScale;
-
 		private static MethodInfo? _physicsRemoveActor;
 
+		private static MethodInfo? _physicsChangeKinematic;
+		private static MethodInfo? _physicsChangeDynamic;
+
+		private static MethodInfo? _physicsApplyTransform;
 
 		private static void LoadPhysicsAssembly()
 		{
-			_physicsCreateStaticCube = GetMethod("PhysicsCreateStaticCube");
-			_physicsCreateDynamicCube = GetMethod("PhysicsCreateDynamicCube");
+			_physicsCreateCube = GetMethod("PhysicsCreateCube");
 
 			_physicsGetActorData = GetMethod("PhysicsGetActorData");
 			_physicsUpdateActorScale = GetMethod("PhysicsUpdateActorScale");
 			_physicsRemoveActor = GetMethod("PhysicsRemoveActor");
+
+			_physicsUpdateActorScale = GetMethod("PhysicsUpdateActorScale");
+			_physicsRemoveActor = GetMethod("PhysicsRemoveActor");
+
+			_physicsChangeKinematic = GetMethod("PhysicsChangeKinematic");
+			_physicsChangeDynamic = GetMethod("PhysicsChangeDynamic");
+
+			_physicsApplyTransform = GetMethod("PhysicsApplyTransform");
 		}
 
-		public static string PhysicsCreateStaticCube(Vector3 position, Quaternion rotation, Vector3 scale)
+		public static string PhysicsCreateCube(Vector3 position, Quaternion rotation, Vector3 scale)
 		{
-			return (string)(_physicsCreateStaticCube?.Invoke(null, new object[] { position, rotation, scale }));
-		}
-
-		public static string PhysicsCreateDynamicCube(Vector3 position, Quaternion rotation, Vector3 scale)
-		{
-			return (string)(_physicsCreateDynamicCube?.Invoke(null, new object[] { position, rotation, scale }));
+			return (string)(_physicsCreateCube?.Invoke(null, new object[] { position, rotation, scale }));
 		}
 
 		public static PhysicsEntryData PhysicsGetActorData(string physicsID)
@@ -238,6 +241,21 @@ namespace BEngine
 		public static void PhysicsRemoveActor(string physicsID)
 		{
 			_physicsRemoveActor?.Invoke(null, new object[] { physicsID });
+		}
+
+		public static void PhysicsChangeKinematic(string physicsID, bool kinematic)
+		{
+			_physicsChangeKinematic?.Invoke(null, new object[] { physicsID, kinematic });
+		}
+
+		public static void PhysicsChangeDynamic(string physicsID, bool dynamic)
+		{
+			_physicsChangeDynamic?.Invoke(null, new object[] { physicsID, dynamic });
+		}
+
+		public static void ApplyTransform(string physicsID, Vector3 position, Quaternion rotation)
+		{
+			_physicsApplyTransform?.Invoke(null, new object[] { physicsID, position, rotation });
 		}
 
 		#endregion

@@ -98,6 +98,10 @@ namespace BEngineEditor
 			{
 				ProjectContext.CurrentProject.Time.RawDeltaTime = (float)time;
 				ProjectContext.CurrentProject.LoadedScene?.CallEvent(EventID.EditorUpdate);
+				if (ProjectContext.CurrentProject.Runtime)
+				{
+					ProjectContext.CurrentProject.LoadedScene?.CallEvent(EventID.Update);
+				}
 			}
 
 			_shortcuts.Update();
