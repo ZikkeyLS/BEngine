@@ -45,7 +45,7 @@ namespace BEngine
 
 			if (_lastPosition != transform.Position || _lastRotation != transform.Rotation)
 			{
-				InternalCalls.ApplyTransform(physicsID, transform.Position, transform.Rotation);
+				InternalCalls.PhysicsApplyTransform(physicsID, transform.Position, transform.Rotation);
 			}
 
 			PhysicsEntryData data = InternalCalls.PhysicsGetActorData(physicsID);

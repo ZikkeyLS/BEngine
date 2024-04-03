@@ -22,7 +22,39 @@ namespace BEngine
 				_kinematic = value;
 			}
 		}
-		
+
+		[EditorIgnore]
+		public Vector3 Velocity
+		{
+			get
+			{
+				if (_collider != null)
+					return InternalCalls.PhysicsGetVelocity(_collider.PhysicsID);
+				else
+					return Vector3.zero;
+			}
+			set
+			{
+				InternalCalls.PhysicsSetVelocity(_collider.PhysicsID, value);
+			}
+		}
+
+		[EditorIgnore]
+		public Vector3 AngularVelocity
+		{
+			get
+			{
+				if (_collider != null)
+					return InternalCalls.PhysicsGetAngularVelocity(_collider.PhysicsID);
+				else
+					return Vector3.zero;
+			}
+			set
+			{
+				InternalCalls.PhysicsSetAngularVelocity(_collider.PhysicsID, value);
+			}
+		}
+
 		private Collider _collider;
 		private bool _kinematic;
 
@@ -36,6 +68,7 @@ namespace BEngine
 			if (_collider == null)
 			{
 				Setup();
+				return;
 			}
 		}
 

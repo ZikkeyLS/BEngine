@@ -205,6 +205,10 @@ namespace BEngine
 		private static MethodInfo? _physicsChangeDynamic;
 
 		private static MethodInfo? _physicsApplyTransform;
+		private static MethodInfo? _physicsSetVelocity;
+		private static MethodInfo? _physicsSetAngularVelocity;
+		private static MethodInfo? _physicsGetVelocity;
+		private static MethodInfo? _physicsGetAngularVelocity;
 
 		private static void LoadPhysicsAssembly()
 		{
@@ -221,6 +225,11 @@ namespace BEngine
 			_physicsChangeDynamic = GetMethod("PhysicsChangeDynamic");
 
 			_physicsApplyTransform = GetMethod("PhysicsApplyTransform");
+			_physicsSetVelocity = GetMethod("PhysicsSetVelocity");
+			_physicsSetAngularVelocity = GetMethod("PhysicsSetAngularVelocity");
+
+			_physicsGetVelocity = GetMethod("PhysicsGetVelocity");
+			_physicsGetAngularVelocity = GetMethod("PhysicsGetAngularVelocity");
 		}
 
 		public static string PhysicsCreateCube(Vector3 position, Quaternion rotation, Vector3 scale)
@@ -253,9 +262,29 @@ namespace BEngine
 			_physicsChangeDynamic?.Invoke(null, new object[] { physicsID, dynamic });
 		}
 
-		public static void ApplyTransform(string physicsID, Vector3 position, Quaternion rotation)
+		public static void PhysicsApplyTransform(string physicsID, Vector3 position, Quaternion rotation)
 		{
 			_physicsApplyTransform?.Invoke(null, new object[] { physicsID, position, rotation });
+		}
+
+		public static void PhysicsSetVelocity(string physicsID, Vector3 velocity)
+		{
+			_physicsSetVelocity?.Invoke(null, new object[] { physicsID, velocity });
+		}
+
+		public static void PhysicsSetAngularVelocity(string physicsID, Vector3 velocity)
+		{
+			_physicsSetAngularVelocity?.Invoke(null, new object[] { physicsID, velocity });
+		}
+
+		public static Vector3 PhysicsGetVelocity(string physicsID)
+		{
+			return (Vector3)(_physicsGetVelocity?.Invoke(null, new object[] { physicsID }));
+		}
+
+		public static Vector3 PhysicsGetAngularVelocity(string physicsID)
+		{
+			return (Vector3)(_physicsGetAngularVelocity?.Invoke(null, new object[] { physicsID }));
 		}
 
 		#endregion

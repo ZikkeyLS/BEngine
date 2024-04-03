@@ -1,9 +1,7 @@
 ﻿using BEngine;
 using MagicPhysX;
-using Silk.NET.Vulkan.Video;
-using System;
+using Silk.NET.Input;
 using System.Collections.Concurrent;
-using System.Numerics;
 using System.Text;
 using static BEngine.Collider;
 using static MagicPhysX.NativeMethods;
@@ -19,14 +17,22 @@ namespace BEngineCore
 		public unsafe PxMaterial* Material;
 		public unsafe PxTransform Transform;
 		public ColliderType ColliderType;
+		public Vector3 Velocity;
+		public Vector3 AngularVelocity;
 		public bool Dynamic;
 		public bool Kinematic;
 	}
 
 	public struct ChangeActorScale
 	{
-		public PhysicsEntity entity;
-		public Vector3 scale;
+		public PhysicsEntity Entity;
+		public Vector3 Scale;
+	}
+
+	public struct ChangeActorVelocity
+	{
+		public PhysicsEntity Entity;
+		public Vector3 Velocity;
 	}
 
 	public class Physics
@@ -48,6 +54,8 @@ namespace BEngineCore
 		private List<PhysicsEntity> _swipeActors = new();
 		private List<PhysicsEntity> _changeKinematic = new();
 		private List<PhysicsEntity> _applyTransform = new();
+		private List<ChangeActorVelocity> _applyVelocity = new();
+		private List<ChangeActorVelocity> _applyAngularVelocity = new();
 
 		public ConcurrentDictionary<string, PhysicsEntity> Actors = new();
 
@@ -130,61 +138,13 @@ namespace BEngineCore
 
 		private unsafe void FixedUpdate()
 		{
-			for (int i = 0; i < _removeActors.Count; i++)
-			{
-				scene->RemoveActorMut(_removeActors[i].Actor, true);
-			}
-			_removeActors.Clear();
-
-			for (int i = 0; i < _addActors.Count; i++)
-			{
-				scene->AddActorMut(_addActors[i].Actor, null);
-			}
-			_addActors.Clear();
-
-			for (int i = 0; i < _swipeActors.Count; i++)
-			{
-				PhysicsEntity entity = _swipeActors[i];
-
-				scene->RemoveActorMut(entity.Actor, true);
-
-				PxActor* actor;
-				PxTransform transform = entity.Transform;
-				if (entity.Dynamic)
-				{
-					actor = (PxActor*)physics->PhysPxCreateDynamic1(&transform, entity.Shape, 0.5f);
-				}
-				else
-				{
-					actor = (PxActor*)physics->PhysPxCreateStatic1(&transform, entity.Shape);
-				}
-
-				entity.Actor = actor;
-				scene->AddActorMut(actor, null);
-			}
-			_swipeActors.Clear();
-
-			for (int i = 0; i < _changeKinematic.Count; i++)
-			{
-				PhysicsEntity entity = _changeKinematic[i];
-
-				PxRigidBody_setRigidBodyFlag_mut((PxRigidBody*)entity.Actor, PxRigidBodyFlag.Kinematic, entity.Kinematic);
-				if (entity.Kinematic == false)
-				{
-					// To remove sleeping state we need to apply global pose again
-					PxTransform transform = entity.Transform;
-					PxRigidActor_setGlobalPose_mut((PxRigidActor*)entity.Actor, &transform, true);
-				}
-			}
-			_changeKinematic.Clear();
-
-			for (int i = 0; i < _applyTransform.Count; i++)
-			{
-				PhysicsEntity entity = _applyTransform[i];
-				PxTransform transform = entity.Transform;
-				PxRigidActor_setGlobalPose_mut((PxRigidActor*)entity.Actor, &transform, true);
-			}
-			_applyTransform.Clear();
+			RemoveActors();
+			AddActors();
+			SwipeActors();
+			ChangeKinematic();
+			ApplyTransform();
+			ApplyVelocity();
+			ApplyAngularVelocity();
 
 			foreach (var actor in Actors)
 			{
@@ -192,6 +152,12 @@ namespace BEngineCore
 					continue;
 				PxTransform transform = PxRigidActor_getGlobalPose((PxRigidActor*)actor.Value.Actor);
 				actor.Value.Transform = transform;
+
+				if (actor.Value.Dynamic)
+				{
+					actor.Value.Velocity = PxRigidBody_getLinearVelocity((PxRigidBody*)actor.Value.Actor);
+					actor.Value.AngularVelocity = PxRigidBody_getAngularVelocity((PxRigidBody*)actor.Value.Actor);
+				}
 			}
 
 			if (ProjectAbstraction.LoadedProject != null)
@@ -229,6 +195,101 @@ namespace BEngineCore
 			}
 		}
 
+		private unsafe void RemoveActors()
+		{
+			for (int i = 0; i < _removeActors.Count; i++)
+			{
+				scene->RemoveActorMut(_removeActors[i].Actor, true);
+			}
+			_removeActors.Clear();
+		}
+
+		private unsafe void AddActors()
+		{
+			for (int i = 0; i < _addActors.Count; i++)
+			{
+				scene->AddActorMut(_addActors[i].Actor, null);
+			}
+			_addActors.Clear();
+		}
+
+		private unsafe void SwipeActors()
+		{
+			for (int i = 0; i < _swipeActors.Count; i++)
+			{
+				PhysicsEntity entity = _swipeActors[i];
+
+				scene->RemoveActorMut(entity.Actor, true);
+
+				PxActor* actor;
+				PxTransform transform = entity.Transform;
+				if (entity.Dynamic)
+				{
+					actor = (PxActor*)physics->PhysPxCreateDynamic1(&transform, entity.Shape, 0.5f);
+				}
+				else
+				{
+					actor = (PxActor*)physics->PhysPxCreateStatic1(&transform, entity.Shape);
+				}
+
+				entity.Actor = actor;
+				scene->AddActorMut(actor, null);
+			}
+			_swipeActors.Clear();
+		}
+
+		private unsafe void ChangeKinematic()
+		{
+			for (int i = 0; i < _changeKinematic.Count; i++)
+			{
+				PhysicsEntity entity = _changeKinematic[i];
+
+				PxRigidBody_setRigidBodyFlag_mut((PxRigidBody*)entity.Actor, PxRigidBodyFlag.Kinematic, entity.Kinematic);
+				if (entity.Kinematic == false)
+				{
+					// To remove sleeping state we need to apply global pose again
+					PxTransform transform = entity.Transform;
+					PxRigidActor_setGlobalPose_mut((PxRigidActor*)entity.Actor, &transform, true);
+				}
+			}
+			_changeKinematic.Clear();
+		}
+
+		private unsafe void ApplyTransform()
+		{
+			for (int i = 0; i < _applyTransform.Count; i++)
+			{
+				PhysicsEntity entity = _applyTransform[i];
+				PxTransform transform = entity.Transform;
+				PxRigidActor_setGlobalPose_mut((PxRigidActor*)entity.Actor, &transform, true);
+			}
+			_applyTransform.Clear();
+		}
+
+		private unsafe void ApplyVelocity()
+		{
+			for (int i = 0; i < _applyVelocity.Count; i++)
+			{
+				PhysicsEntity entity = _applyVelocity[i].Entity;
+				PxVec3 velocity = _applyVelocity[i].Velocity;
+				((PxRigidDynamic*)entity.Actor)->SetLinearVelocityMut(&velocity, false);
+				entity.Velocity = velocity;
+			}
+			_applyVelocity.Clear();
+		}
+
+		private unsafe void ApplyAngularVelocity()
+		{
+			for (int i = 0; i < _applyAngularVelocity.Count; i++)
+			{
+				PhysicsEntity entity = _applyAngularVelocity[i].Entity;
+				PxVec3 velocity = _applyVelocity[i].Velocity;
+				((PxRigidDynamic*)entity.Actor)->SetAngularVelocityMut(&velocity, false);
+				entity.AngularVelocity = velocity;
+			}
+			_applyAngularVelocity.Clear();
+		}
+
 		private unsafe void Clear()
 		{
 			// Clear existing objects
@@ -264,6 +325,22 @@ namespace BEngineCore
 			actor.Transform.p = position;
 			actor.Transform.q = rotation;
 			_applyTransform.Add(actor);
+		}
+
+		public void ApplyVelocity(string physicsID, Vector3 velocity)
+		{
+			if (Actors.TryGetValue(physicsID, out PhysicsEntity? actor) == false)
+				return;
+
+			_applyVelocity.Add(new ChangeActorVelocity() { Entity = actor, Velocity = velocity });
+		}
+
+		public void ApplyAngularVelocity(string physicsID, Vector3 velocity)
+		{
+			if (Actors.TryGetValue(physicsID, out PhysicsEntity? actor) == false)
+				return;
+
+			_applyAngularVelocity.Add(new ChangeActorVelocity() { Entity = actor, Velocity = velocity });
 		}
 
 		public unsafe string CreateStaticCube(Vector3 position, Quaternion rotation, Vector3 scale)
@@ -323,6 +400,22 @@ namespace BEngineCore
 			PxTransform transform = Actors[physicsID].Transform;
 
 			return new PhysicsEntryData() { Position = (Vector3)transform.p, Rotation = (Quaternion)transform.q };
+		}
+
+		public unsafe Vector3 GetVelocity(string physicsID)
+		{
+			if (Actors.ContainsKey(physicsID) == false)
+				return Vector3.Zero;
+
+			return Actors[physicsID].Velocity;
+		}
+
+		public unsafe Vector3 GetAngularVelocity(string physicsID)
+		{
+			if (Actors.ContainsKey(physicsID) == false)
+				return Vector3.Zero;
+
+			return Actors[physicsID].AngularVelocity;
 		}
 
 		public unsafe void RemoveActor(string physicsID)

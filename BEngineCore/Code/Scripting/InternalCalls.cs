@@ -215,6 +215,26 @@ namespace BEngineCore
 			return loadedProject.Physics.GetActorData(physicsID);
 		}
 
+		public static Vector3 PhysicsGetVelocity(string physicsID)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return new();
+
+			return loadedProject.Physics.GetVelocity(physicsID);
+		}
+
+		public static Vector3 PhysicsGetAngularVelocity(string physicsID)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return new();
+
+			return loadedProject.Physics.GetAngularVelocity(physicsID);
+		}
+
 		public static void PhysicsUpdateActorScale(string physicsID, Vector3 scale)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
@@ -263,6 +283,26 @@ namespace BEngineCore
 				return;
 
 			loadedProject.Physics.ApplyTransform(physicsID, (System.Numerics.Vector3)position, (System.Numerics.Quaternion)rotation);
+		}
+
+		public static void PhysicsSetVelocity(string physicsID, Vector3 velocity)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return;
+
+			loadedProject.Physics.ApplyVelocity(physicsID, (System.Numerics.Vector3)velocity);
+		}
+
+		public static void PhysicsSetAngularVelocity(string physicsID, Vector3 velocity)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return;
+
+			loadedProject.Physics.ApplyAngularVelocity(physicsID, (System.Numerics.Vector3)velocity);
 		}
 		#endregion
 	}
