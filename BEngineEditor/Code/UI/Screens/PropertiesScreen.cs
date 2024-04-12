@@ -1,5 +1,6 @@
 ﻿using BEngine;
 using BEngineCore;
+using BEngineScripting;
 using ImGuiNET;
 using System.Reflection;
 
@@ -32,6 +33,7 @@ namespace BEngineEditor
 		private ModelResolver _modelResolver = new();
 		private KeyResolver _keyResolver = new();
 		private MouseButtonResolver _mouseButtonResolver = new();
+		private ColorResolver _colorResolver = new();
 
 		private ProjectContext _projectContext => window.ProjectContext;
 		private Scripting _scripting => _projectContext.CurrentProject.Scripting;
@@ -343,6 +345,10 @@ namespace BEngineEditor
 				else if (TypeResolver.IsInClassList(fieldType, typeof(MouseButton)))
 				{
 					resultResolver = _mouseButtonResolver;
+				}
+				else if (TypeResolver.IsInClassList(fieldType, typeof(Color)))
+				{
+					resultResolver = _colorResolver;
 				}
 
 				resultResolver?.Resolve(new TypeResolver.ResolverData()
