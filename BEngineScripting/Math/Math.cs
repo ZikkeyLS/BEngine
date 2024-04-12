@@ -404,9 +404,9 @@ namespace BEngine
 	}
 	public static class Math
 	{
-        public const float E = (float)System.Math.E;
-        public const float PI = (float)System.Math.PI;
-        public const float Tau = (float)System.Math.Tau;
+        public const float E = 2.718281828f;
+        public const float PI = 3.141592653f;
+        public const float Tau = 6.283185307f;
 
         public static int Abs(int a)
         {
