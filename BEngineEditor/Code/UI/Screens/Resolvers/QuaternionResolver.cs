@@ -1,5 +1,6 @@
 ﻿using BEngine;
 using ImGuiNET;
+using Math = BEngine.Math;
 
 namespace BEngineEditor
 {
