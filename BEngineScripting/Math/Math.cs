@@ -272,14 +272,14 @@ namespace BEngine
 			z = float.DegreesToRadians(z);
 
 			float rollOver2 = z * 0.5f;
-			float sinRollOver2 = (float)Math.Sin(rollOver2);
-			float cosRollOver2 = (float)Math.Cos(rollOver2);
+			float sinRollOver2 = Math.Sin(rollOver2);
+			float cosRollOver2 = Math.Cos(rollOver2);
 			float pitchOver2 = x * 0.5f;
-			float sinPitchOver2 = (float)Math.Sin(pitchOver2);
-			float cosPitchOver2 = (float)Math.Cos(pitchOver2);
+			float sinPitchOver2 = Math.Sin(pitchOver2);
+			float cosPitchOver2 = Math.Cos(pitchOver2);
 			float yawOver2 = y * 0.5f;
-			float sinYawOver2 = (float)Math.Sin(yawOver2);
-			float cosYawOver2 = (float)Math.Cos(yawOver2);
+			float sinYawOver2 = Math.Sin(yawOver2);
+			float cosYawOver2 = Math.Cos(yawOver2);
 
 			Quaternion result = identity;
 			result.w = cosYawOver2 * cosPitchOver2 * cosRollOver2 + sinYawOver2 * sinPitchOver2 * sinRollOver2;
@@ -308,8 +308,8 @@ namespace BEngine
 
 			if (test > 0.4995f * unit)
 			{ // singularity at north pole
-				v.y = (float)(2f * Math.Atan2(q.y, q.x));
-				v.x = (float)(Math.PI / 2);
+				v.y = 2f * Math.Atan2(q.y, q.x);
+				v.x = Math.PI / 2;
 				v.z = 0;
 
 				v.x = float.RadiansToDegrees(v.x);
@@ -319,8 +319,8 @@ namespace BEngine
 			}
 			if (test < -0.4995f * unit)
 			{ // singularity at south pole
-				v.y = (float)(-2f * Math.Atan2(q.y, q.x));
-				v.x = (float)(-Math.PI / 2);
+				v.y = -2f * Math.Atan2(q.y, q.x);
+				v.x = -Math.PI / 2;
 				v.z = 0;
 
 				v.x = float.RadiansToDegrees(v.x);
@@ -330,9 +330,9 @@ namespace BEngine
 			}
 
 			Quaternion q1 = new Quaternion(q.w, q.z, q.x, q.y);
-			v.y = (float)Math.Atan2(2f * q1.x * q1.w + 2f * q1.y * q1.z, 1 - 2f * (q1.z * q1.z + q1.w * q1.w));     // Yaw
-			v.x = (float)Math.Asin(2f * (q1.x * q1.z - q1.w * q1.y));                             // Pitch
-			v.z = (float)Math.Atan2(2f * q1.x * q1.y + 2f * q1.z * q1.w, 1 - 2f * (q1.y * q1.y + q1.z * q1.z));      // Roll
+			v.y = Math.Atan2(2f * q1.x * q1.w + 2f * q1.y * q1.z, 1 - 2f * (q1.z * q1.z + q1.w * q1.w));     // Yaw
+			v.x = Math.Asin(2f * (q1.x * q1.z - q1.w * q1.y));                             // Pitch
+			v.z = Math.Atan2(2f * q1.x * q1.y + 2f * q1.z * q1.w, 1 - 2f * (q1.y * q1.y + q1.z * q1.z));      // Roll
 
 			v.x = float.RadiansToDegrees(v.x);
 			v.y = float.RadiansToDegrees(v.y);
@@ -512,6 +512,10 @@ namespace BEngine
         {
             return System.Math.Max(a, b);
         }
+        public static float MaxMagnitude(float a, float b)
+        {
+            return (float)System.Math.MaxMagnitude(a, b);
+        }
         public static float Min(float a, float b)
         {
             return System.Math.Min(a, b);
@@ -519,6 +523,10 @@ namespace BEngine
         public static int Min(int a, int b)
         {
             return System.Math.Min(a, b);
+        }
+        public static float MinMagnitude(float a, float b)
+        {
+            return (float)System.Math.MinMagnitude(a, b);
         }
         public static float Pow(float a, float b)
         {
