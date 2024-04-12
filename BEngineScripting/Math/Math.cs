@@ -412,186 +412,230 @@ namespace BEngine
         {
             return System.Math.Abs(a);
         }
+
         public static float Abs(float a)
         {
             return System.Math.Abs(a);
         }
+
         public static float Acos(float a)
 		{
 			return (float)System.Math.Acos(a);
 		}
+
 		public static float Acosh(float a)
 		{
 			return (float)System.Math.Acosh(a);
 		}
+
         public static float Asin(float a)
         {
             return (float)System.Math.Asin(a);
         }
+
         public static float Asinh(float a)
         {
             return (float)System.Math.Asinh(a);
         }
+
         public static float Atan(float a)
         {
             return (float)System.Math.Atan(a);
         }
+
         public static float Atan2(float a,float b)
         {
             return (float)System.Math.Atan2(a,b);
         }
+
         public static float Atanh(float a)
         {
             return (float)System.Math.Atanh(a);
         }
+
         public static float Cbrt(float a)
         {
             return (float)System.Math.Cbrt(a);
         }
+
         public static float Celing(float a)
         {
             return (float)System.Math.Ceiling(a);
         }
+
         public static float Clamp(float a, float b, float c)
         {
             return System.Math.Clamp(a, b, c);
         }
+
         public static int Clamp(int a, int b, int c)
         {
             return System.Math.Clamp(a,b,c);
         }
+
         public static float CopySing(float a, float b)
         {
             return (float)System.Math.CopySign(a,b);
         }
+
         public static float Cos(float a)
 		{
 			return (float)System.Math.Cos(a);
 		}
+
         public static float Cosh(float a)
         {
             return (float)System.Math.Cosh(a);
         }
+
         public static float Exp(float a)
         {
             return (float)System.Math.Exp(a);
         }
+
         public static float Floor(float a)
         {
             return (float)System.Math.Floor(a);
         }
+
         public static float FusedMultiplyAdd(float a, float b, float c)
         {
             return (float)System.Math.FusedMultiplyAdd(a,b,c);
         }
+
         public static float IEEERemainder(float a, float b)
         {
             return (float)System.Math.IEEERemainder(a, b);
         }
+
         public static int ILogB(float a)
         {
             return System.Math.ILogB(a);
         }
+
         public static float Log(float a)
         {
             return (float)System.Math.Log(a);
         }
+
         public static float Log10(float a)
         {
             return (float)System.Math.Log10(a);
         }
+
         public static float Log2(float a)
         {
             return (float)System.Math.Log2(a);
         }
+
         public static float Max(float a, float b)
         {
             return System.Math.Max(a,b);
         }
+
         public static int Max(int a, int b)
         {
             return System.Math.Max(a, b);
         }
+
         public static float MaxMagnitude(float a, float b)
         {
             return (float)System.Math.MaxMagnitude(a, b);
         }
+
         public static float Min(float a, float b)
         {
             return System.Math.Min(a, b);
         }
+
         public static int Min(int a, int b)
         {
             return System.Math.Min(a, b);
         }
+
         public static float MinMagnitude(float a, float b)
         {
             return (float)System.Math.MinMagnitude(a, b);
         }
+
         public static float Pow(float a, float b)
         {
             return (float)System.Math.Pow(a,b);
         }
+
         public static float ReciprocalEstimate(float a)
         {
             return (float)System.Math.ReciprocalEstimate(a);
         }
+
         public static float ReciprocalSqrtEstimate(float a)
         {
             return (float)System.Math.ReciprocalSqrtEstimate(a);
         }
+
         public static float Round(float a)
         {
             return (float)System.Math.Round(a);
         }
+
         public static float Round(float value, int digits)
         {
             return (float)System.Math.Round(value,digits);
         }
+
         public static float Round(float value, int digits, MidpointRounding mode)
         {
             return (float)System.Math.Round(value, digits, mode);
         }
+
         public static float ScaleB(float a, int b)
         {
             return (float)System.Math.ScaleB(a,b);
         }
+
         public static float Sign(float a)
         {
             return System.Math.Sign(a);
         }
+
         public static int Sign(int a)
         {
             return System.Math.Sign(a);
         }
+
         public static float Sin(float a) 
         {
             return (float)System.Math.Sin(a);
         }
+
         public static (float Sin, float Cos) SinCos(float a) 
         {
             return ((float Sin, float Cos))System.Math.SinCos(a);
         }
+
         public static float Sinh(float a)
         {
             return (float)System.Math.Sinh(a);
         }
+
         public static float Sqrt(float a)
         {
             return (float)System.Math.Sin(a);
         }
+
         public static float Tan(float a)
         {
             return (float)System.Math.Tan(a);
         }
+
         public static float Tanh(float a)
         {
             return (float)System.Math.Tanh(a);
         }
+
         public static float Truncate(float a)
         {
             return (float)System.Math.Truncate(a);
         }
-
     }
 }
