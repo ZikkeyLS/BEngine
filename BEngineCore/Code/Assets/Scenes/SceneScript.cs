@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using BEngine;
+using System.Text.Json;
 using static BEngineCore.Scripting;
 
 namespace BEngineCore
@@ -84,7 +85,7 @@ namespace BEngineCore
 			SceneScriptField? field = Fields.Find((field) => field.Name == name);
 			if (field == null)
 				Fields.Add(new SceneScriptField() { Name = name,
-					Value = new SceneScriptValue() { Value = JsonSerializer.Serialize(value), TypeFullName = value.GetType().FullName }, 
+					Value = new SceneScriptValue() { Value = JsonUtils.Serialize(value), TypeFullName = value.GetType().FullName }, 
 					IsEditable = true, IsVisible = true });
 			else
 				return false;
@@ -96,7 +97,7 @@ namespace BEngineCore
 		{
 			SceneScriptField? field = Fields.Find((field) => field.Name == name);
 			if (field != null)
-				field.Value = new SceneScriptValue() { Value = JsonSerializer.Serialize(value), TypeFullName = value.GetType().FullName };
+				field.Value = new SceneScriptValue() { Value = JsonUtils.Serialize(value), TypeFullName = value.GetType().FullName };
 			else
 				return false;
 

@@ -1,24 +1,24 @@
 ﻿
 namespace BEngine
 {
-	public class CubeCollider : Collider
+	public class SphereCollider : Collider
 	{
-		public Vector3 Size = Vector3.one;
-		private Vector3 _lastSize = Vector3.zero;
+		public float Radius = 1f;
+		private float _lastRadius = 0f;
 
 		public override object[] GetAdditionalData()
 		{
-			return [Size];
+			return [Radius];
 		}
 
 		public override void OnRescale()
 		{
-			_lastSize = Size;
+			_lastRadius = Radius;
 		}
 
 		public override bool RequiresRescale()
 		{
-			return Size != _lastSize;
+			return _lastRadius != Radius;
 		}
 
 		public override void Setup()
@@ -26,7 +26,7 @@ namespace BEngine
 			transform = GetScript<Transform>();
 			if (transform != null)
 			{
-				physicsID = InternalCalls.PhysicsCreateCube(transform.Position, transform.Rotation, Size);
+				physicsID = InternalCalls.PhysicsCreateSphere(transform.Position, transform.Rotation, Radius);
 				Prepared = true;
 			}
 		}

@@ -1,4 +1,5 @@
-﻿using BEngineCore;
+﻿using BEngine;
+using BEngineCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -28,31 +29,25 @@ namespace BEngineCore
 		public void SetForceID(string guid) => _guid = guid;
 		public void SetForceProject(ProjectAbstraction project) => _project = project;
 
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
 		public static void CreateTemplate<T>(string path, object[]? args = null) where T : AssetData
 		{
-			T template = (T)Activator.CreateInstance(typeof(T), args);
-			File.WriteAllText(path, JsonSerializer.Serialize(template));
+			T? template = (T?)Activator.CreateInstance(typeof(T), args);
+			if (template != null)
+			{
+				File.WriteAllText(path, JsonUtils.Serialize(template));
+			}
 		}
 
-		public static T ReadRaw<T>(string path) where T : AssetData
+		public static T? ReadRaw<T>(string path) where T : AssetData
 		{
-			T? assetData = JsonSerializer.Deserialize<T>(File.ReadAllText(path));
-			if (assetData != null)
-			{
-				return assetData;
-			}
-
-			return null;
+			T? assetData = JsonUtils.Deserialize<T>(File.ReadAllText(path));
+			return assetData;
 		}
 		
 		public static void WriteRaw<T>(string path, T data) where T : AssetData
 		{
-			File.WriteAllText(path, JsonSerializer.Serialize(data));
+			File.WriteAllText(path, JsonUtils.Serialize(data));
 		}
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
 		public void Save<T>() where T : AssetData
 		{
@@ -64,7 +59,7 @@ namespace BEngineCore
 			try
 			{
 				OnPreSave();
-				File.WriteAllText(path, JsonSerializer.Serialize((T)this));
+				File.WriteAllText(path, JsonUtils.Serialize((T)this));
 			}
 			catch
 			{
@@ -84,7 +79,7 @@ namespace BEngineCore
 			if (path == string.Empty)
 				return null;
 
-			T? assetData = JsonSerializer.Deserialize<T>(File.ReadAllText(path));
+			T? assetData = JsonUtils.Deserialize<T>(File.ReadAllText(path));
 			if (assetData != null)
 			{
 				assetData.SetForceID(guid);

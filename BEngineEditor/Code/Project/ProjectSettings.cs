@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using BEngine;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace BEngineEditor
@@ -28,7 +29,7 @@ namespace BEngineEditor
 
 		public void Save()
 		{
-			File.WriteAllText(_settingsFilePath, JsonSerializer.Serialize(this));
+			File.WriteAllText(_settingsFilePath, JsonUtils.Serialize(this));
 		}
 
 		public ProjectSettings? Load()
@@ -36,7 +37,7 @@ namespace BEngineEditor
 			if (File.Exists(_settingsFilePath) == false)
 				return null;
 
-			ProjectSettings? loadedSettings = JsonSerializer.Deserialize<ProjectSettings>(File.ReadAllText(_settingsFilePath));
+			ProjectSettings? loadedSettings = JsonUtils.Deserialize<ProjectSettings>(File.ReadAllText(_settingsFilePath));
 			if (loadedSettings != null)
 				return loadedSettings;
 

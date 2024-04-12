@@ -8,7 +8,7 @@ namespace BEngineEditor
 		{
 			string? input = string.Empty;
 
-			object? fieldResult = data.Properties.GetScriptValue(data.FieldType, data.Script);
+			object? fieldResult = data.Properties.GetScriptValue(data.Field, data.Script);
 			if (fieldResult != null)
 				input = fieldResult.ToString();
 
@@ -18,7 +18,7 @@ namespace BEngineEditor
 			if (IsInClassList(data.FieldType, typeof(string)) == false)
 				input = input.Replace(".", ",");
 
-			if (ImGui.InputText(data.FieldName, ref input, 128))
+			if (ImGui.InputText("##common", ref input, 128))
 			{
 				if (input == null)
 					return;

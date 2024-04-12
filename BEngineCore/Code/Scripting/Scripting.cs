@@ -98,6 +98,9 @@ namespace BEngineCore
 			_scripts.Add(new CachedScript(typeof(BEngine.Camera)));
 			_scripts.Add(new CachedScript(typeof(BEngine.Rigidbody)));
 			_scripts.Add(new CachedScript(typeof(BEngine.CubeCollider)));
+			_scripts.Add(new CachedScript(typeof(BEngine.SphereCollider)));
+			_scripts.Add(new CachedScript(typeof(BEngine.CapsuleCollider)));
+			_scripts.Add(new CachedScript(typeof(BEngine.PlaneCollider)));
 		}
 
 		public static void LoadInternalScriptingAPI()

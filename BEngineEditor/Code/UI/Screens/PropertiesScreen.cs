@@ -275,9 +275,6 @@ namespace BEngineEditor
 				SceneScriptValue? sceneScriptValue = sceneScriptField?.Value;
 				object? resultField = GetScriptValue(field, script);
 
-				if (resultField == selectedEntity.Entity)
-					continue;
-
 				Type fieldType;
 				if (field.MemberType == MemberTypes.Field)
 				{

@@ -1,10 +1,10 @@
 ﻿
 namespace BEngine
 {
-	public class CubeCollider : Collider
+	public class PlaneCollider : Collider
 	{
-		public Vector3 Size = Vector3.one;
-		private Vector3 _lastSize = Vector3.zero;
+		public Vector2 Size = Vector2.one;
+		private Vector2 _lastScale;
 
 		public override object[] GetAdditionalData()
 		{
@@ -13,12 +13,12 @@ namespace BEngine
 
 		public override void OnRescale()
 		{
-			_lastSize = Size;
+			_lastScale = Size;
 		}
 
 		public override bool RequiresRescale()
 		{
-			return Size != _lastSize;
+			return _lastScale != Size;
 		}
 
 		public override void Setup()
@@ -26,7 +26,7 @@ namespace BEngine
 			transform = GetScript<Transform>();
 			if (transform != null)
 			{
-				physicsID = InternalCalls.PhysicsCreateCube(transform.Position, transform.Rotation, Size);
+				physicsID = InternalCalls.PhysicsCreatePlane(transform.Position, transform.Rotation, Size);
 				Prepared = true;
 			}
 		}
