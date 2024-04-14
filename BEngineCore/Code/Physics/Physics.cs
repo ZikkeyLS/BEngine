@@ -130,7 +130,8 @@ namespace BEngineCore
 			{
 				while (running)
 				{
-					FixedUpdate();
+					if (ProjectAbstraction.LoadedProject != null && ProjectAbstraction.LoadedProject.Runtime)
+						FixedUpdate();
 				}
 			});
 
