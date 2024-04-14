@@ -200,9 +200,9 @@ namespace BEngineEditor
 						{
 							string fileCutPath = _rootAssetsDirectory + @"\" + _currentDirectoryOpened + @"\" + Path.GetFileName(_cutPath);
 
-							if (_copyPath != fileCutPath)
+							if (_cutPath != fileCutPath)
 							{
-								_assetWriter.RenameAsset(_copyPath, fileCutPath);
+								_assetWriter.RenameAsset(_cutPath, fileCutPath);
 								File.Move(_cutPath, fileCutPath, true);
 							}
 						}
@@ -296,8 +296,13 @@ namespace BEngineEditor
 					{
 						if (_lastSavePath.Contains('.'))
 						{
-							_assetWriter.RenameAsset(entryPath, _lastSavePath);
+							if (Path.GetFileNameWithoutExtension(entryPath) == _currentProject.LoadedScene.SceneName)
+							{
+								_currentProject.LoadedScene.SceneName = Path.GetFileNameWithoutExtension(_lastSavePath);
+							}
+
 							new FileInfo(entryPath).Rename(_lastSavePath);
+							_assetWriter.RenameAsset(entryPath, Path.GetDirectoryName(entryPath) + "\\" + _lastSavePath);
 						}
 					}
 					else if (_lastSavePath.EndsWith('.') == false)
@@ -375,7 +380,6 @@ namespace BEngineEditor
 					{
 						if (isFile == false && entry.EntryPath != entryPath + @"\" + entry.EntryName)
 						{
-
 							string fileCopyPath = entryPath + @"\" + entry.EntryName;
 
 							_assetWriter.RenameAsset(entry.EntryPath, fileCopyPath);

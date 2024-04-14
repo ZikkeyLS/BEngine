@@ -67,6 +67,24 @@ namespace BEngineCore
 			}
 		}
 
+		public void SaveGuaranteed<T>(string unknownPath) where T : AssetData
+		{
+			string path = _project.AssetsReader.GetAssetPath(_guid);
+
+			if (path == string.Empty)
+				path = unknownPath;
+
+			try
+			{
+				OnPreSave();
+				File.WriteAllText(path, JsonUtils.Serialize((T)this));
+			}
+			catch
+			{
+
+			}
+		}
+
 		protected virtual void OnPreSave()
 		{
 
