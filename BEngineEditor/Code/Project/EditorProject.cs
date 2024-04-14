@@ -141,9 +141,9 @@ namespace BEngineEditor
 						});
 						break;
 					case IDE.VisualStudioCode:
-						RunCMDCommand($"code -r \"./\"", () => 
+						RunCMDCommand($"code \"./\"", () => 
 						{
-							RunCMDCommand($"code -r \"{filePath}\""); 
+							RunCMDCommand($"code \"{filePath}\""); 
 						});
 						break;
 				}
