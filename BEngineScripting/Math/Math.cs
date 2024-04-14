@@ -197,6 +197,108 @@ namespace BEngine
             this.y = y;
             this.z = z;
         }
+        public static Vector3 Abs(Vector3 value)
+        {
+            return System.Numerics.Vector3.Abs((System.Numerics.Vector3)value);
+        }
+
+        public static Vector3 Add(Vector3 value, Vector3 value2)
+        {
+            return System.Numerics.Vector3.Add((System.Numerics.Vector3)value, (System.Numerics.Vector3)value2);
+        }
+
+        public static Vector3 Clamp(Vector3 value, Vector3 value2, Vector3 value3)
+        {
+            return System.Numerics.Vector3.Clamp((System.Numerics.Vector3)value, (System.Numerics.Vector3)value2, (System.Numerics.Vector3)value3);
+        }
+        public static Vector3 Cross(Vector3 value, Vector3 value2)
+        {
+            return System.Numerics.Vector3.Cross((System.Numerics.Vector3)value, (System.Numerics.Vector3)value2);
+        }
+
+        public static float Distance(Vector3 value, Vector3 value2)
+        {
+            return System.Numerics.Vector3.Distance((System.Numerics.Vector3)value, (System.Numerics.Vector3)value2);
+        }
+
+        public static float DistanceSquared(Vector3 value, Vector3 value2)
+        {
+            return System.Numerics.Vector3.DistanceSquared((System.Numerics.Vector3)value, (System.Numerics.Vector3)value2);
+        }
+
+        public static Vector3 Divide(Vector3 left, float divisor)
+        {
+            return System.Numerics.Vector3.Divide((System.Numerics.Vector3)left, divisor);
+        }
+
+        public static float Dot(Vector3 value, Vector3 value2)
+        {
+            return System.Numerics.Vector3.Dot((System.Numerics.Vector3)value, (System.Numerics.Vector3)value2);
+        }
+
+        public static float Length(Vector3 value)
+        {
+            return ((System.Numerics.Vector3)value).Length();
+        }
+
+        public static float LengthSquared(Vector3 value)
+        {
+            return ((System.Numerics.Vector3)value).LengthSquared();
+        }
+
+        public static Vector3 Lerp(Vector3 value, Vector3 value2, float amount)
+        {
+            return System.Numerics.Vector3.Lerp((System.Numerics.Vector3)value, (System.Numerics.Vector3)value2, amount);
+        }
+
+        public static Vector3 Max(Vector3 value, Vector3 value2)
+        {
+            return System.Numerics.Vector3.Max((System.Numerics.Vector3)value, (System.Numerics.Vector3)value2);
+        }
+
+        public static Vector3 Min(Vector3 value, Vector3 value2)
+        {
+            return System.Numerics.Vector3.Min((System.Numerics.Vector3)value, (System.Numerics.Vector3)value2);
+        }
+
+        public static Vector3 Multiply(Vector3 left, Vector3 right)
+        {
+            return System.Numerics.Vector3.Multiply((System.Numerics.Vector3)left, (System.Numerics.Vector3)right);
+        }
+
+        public static Vector3 Multiply(Vector3 left, float right)
+        {
+            return System.Numerics.Vector3.Multiply((System.Numerics.Vector3)left, right);
+        }
+
+        public static Vector3 Multiply(float left, Vector3 right)
+        {
+            return System.Numerics.Vector3.Multiply(left, (System.Numerics.Vector3)right);
+        }
+
+        public static Vector3 Negate(Vector3 value)
+        {
+            return System.Numerics.Vector3.Negate((System.Numerics.Vector3)value);
+        }
+        public static Vector3 Normalize(Vector3 value)
+        {
+            return System.Numerics.Vector3.Normalize((System.Numerics.Vector3)value);
+        }
+
+        public static Vector3 Reflect(Vector3 value, Vector3 normal)
+        {
+            return System.Numerics.Vector3.Reflect((System.Numerics.Vector3)value, (System.Numerics.Vector3)normal);
+        }
+
+        public static Vector3 SquareRoot(Vector3 value)
+        {
+            return System.Numerics.Vector3.SquareRoot((System.Numerics.Vector3)value);
+        }
+
+        public static Vector3 Substract(Vector3 left, Vector3 right)
+        {
+            return System.Numerics.Vector3.Subtract((System.Numerics.Vector3)left, (System.Numerics.Vector3)right);
+        }
 
         public override string ToString()
         {
