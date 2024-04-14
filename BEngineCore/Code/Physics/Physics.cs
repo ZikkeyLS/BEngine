@@ -103,7 +103,7 @@ namespace BEngineCore
 			phys_PxInitExtensions(physics, pvd);
 
 			var sceneDescription = PxSceneDesc_new(PxPhysics_getTolerancesScale(physics));
-			sceneDescription.gravity = new PxVec3() { x = Gravity, y = 0, z = 0.0f };
+			sceneDescription.gravity = new PxVec3() { x = 0.0f, y = Gravity, z = 0.0f };
 		
 			dispatcher = phys_PxDefaultCpuDispatcherCreate(1, null, PxDefaultCpuDispatcherWaitForWorkMode.WaitForWork, 0);
 			sceneDescription.cpuDispatcher = (PxCpuDispatcher*)dispatcher;
@@ -155,18 +155,16 @@ namespace BEngineCore
 			{
 				if (actor.Key == null || actor.Value == null)
 					continue;
+
 				PxTransform transform = PxRigidActor_getGlobalPose((PxRigidActor*)actor.Value.Actor);
-				PxTransform temp = new PxTransform();
-				temp.p = SwapXY(transform.p);
-				temp.q = transform.q;
-				actor.Value.Transform = temp;
+				actor.Value.Transform = transform;
 
 				if (actor.Value.Dynamic)
 				{
 					actor.Value.Velocity = PxRigidBody_getLinearVelocity((PxRigidBody*)actor.Value.Actor);
-					actor.Value.Velocity = SwapXY(actor.Value.Velocity);
+					actor.Value.Velocity = actor.Value.Velocity;
 					actor.Value.AngularVelocity = PxRigidBody_getAngularVelocity((PxRigidBody*)actor.Value.Actor);
-					actor.Value.AngularVelocity = SwapXY(actor.Value.AngularVelocity);
+					actor.Value.AngularVelocity = actor.Value.AngularVelocity;
 				}
 			}
 
@@ -362,7 +360,6 @@ namespace BEngineCore
 
 		public unsafe string CreateStaticCube(Vector3 position, Quaternion rotation, Vector3 scale)
 		{
-			scale = SwapXY(scale);
 			var geometry = PxBoxGeometry_new_1(scale);
 			return CreateStaticObject(position, rotation, (PxGeometry*)&geometry, ColliderType.Cube);
 		}
@@ -387,9 +384,21 @@ namespace BEngineCore
 
 		public unsafe string CreateStaticObject(Vector3 position, Quaternion rotation, PxGeometry* geometry, ColliderType type)
 		{
-			position = SwapXY(position);
 			var transform = CreateTransform(position, rotation);
 			var shape = CreateShape(geometry, material);
+
+
+			if (type == ColliderType.Capsule)
+			{
+				PxTransform local = new PxTransform();
+				local.p = Vector3.Zero;
+
+				BEngine.Vector3 euler = BEngine.Quaternion.ToEuler(BEngine.Quaternion.identity);
+				euler.y = 45f;
+				euler.z = 45f;
+				local.q = (PxQuat)(Quaternion)BEngine.Quaternion.FromEuler(euler);
+				PxShape_setLocalPose_mut(shape, &local);
+			}
 
 			PxRigidStatic* staticResult = physics->PhysPxCreateStatic1(&transform, shape);
 
@@ -426,7 +435,7 @@ namespace BEngineCore
 						holder->TriangleMesh()->scale.scale = planeSize;
 						break;
 					case ColliderType.Cube:
-						holder->Box()->halfExtents = (PxVec3)SwapXY((Vector3)(BEngine.Vector3)data[1]);
+						holder->Box()->halfExtents = (PxVec3)(Vector3)(BEngine.Vector3)data[1];
 						break;
 					case ColliderType.Sphere:
 						holder->Sphere()->radius = (float)data[1];
@@ -439,8 +448,8 @@ namespace BEngineCore
 			}
 
 			Vector3 current = holder->TriangleMesh()->scale.scale;
-			current.X *= ((Vector3)(BEngine.Vector3)data[0]).Y;
-			current.Y *= ((Vector3)(BEngine.Vector3)data[0]).X;
+			current.X *= ((Vector3)(BEngine.Vector3)data[0]).X;
+			current.Y *= ((Vector3)(BEngine.Vector3)data[0]).Y;
 			current.Z *= ((Vector3)(BEngine.Vector3)data[0]).Z;
 			holder->TriangleMesh()->scale.scale = current;
 
@@ -500,14 +509,6 @@ namespace BEngineCore
 
 			_removeActors.Add(Actors[physicsID]);
 			Actors.TryRemove(physicsID, out PhysicsEntity? old);
-		}
-
-		private Vector3 SwapXY(Vector3 input)
-		{
-			//input.X += input.Y;
-			//input.Y = input.X - input.Y;
-			//input.X -= input.Y;
-			return input;
 		}
 	}
 }

@@ -5,6 +5,7 @@ namespace BEngine
 	{
 		public Vector3 Size = Vector3.one;
 		private Vector3 _lastSize = Vector3.zero;
+		private Vector3 _lastTransformSize = Vector3.zero;
 
 		public override object[] GetAdditionalData()
 		{
@@ -14,11 +15,12 @@ namespace BEngine
 		public override void OnRescale()
 		{
 			_lastSize = Size;
+			_lastTransformSize = transform.Scale;
 		}
 
 		public override bool RequiresRescale()
 		{
-			return Size != _lastSize;
+			return Size != _lastSize || _lastTransformSize != transform.Scale;
 		}
 
 		public override void Setup()

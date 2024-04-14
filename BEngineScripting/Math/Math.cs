@@ -399,5 +399,10 @@ namespace BEngine
 		{
 			return new(q.x, q.y, q.z, q.w);
 		}
+
+		public static explicit operator System.Numerics.Vector3(Quaternion v)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
