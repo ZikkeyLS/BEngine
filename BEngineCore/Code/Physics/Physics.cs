@@ -387,16 +387,14 @@ namespace BEngineCore
 			var transform = CreateTransform(position, rotation);
 			var shape = CreateShape(geometry, material);
 
-
 			if (type == ColliderType.Capsule)
 			{
 				PxTransform local = new PxTransform();
 				local.p = Vector3.Zero;
 
-				BEngine.Vector3 euler = BEngine.Quaternion.ToEuler(BEngine.Quaternion.identity);
-				euler.y = 45f;
-				euler.z = 45f;
-				local.q = (PxQuat)(Quaternion)BEngine.Quaternion.FromEuler(euler);
+				PxVec3 xDir = new PxVec3() { x = 1.0f, y = 0.0f, z = 0.0f };
+				PxVec3 upDir = new PxVec3() { x = 0.0f, y = 1.0f, z = 0.0f };	
+				local.q = phys_PxShortestRotation(&xDir, &upDir);
 				PxShape_setLocalPose_mut(shape, &local);
 			}
 
