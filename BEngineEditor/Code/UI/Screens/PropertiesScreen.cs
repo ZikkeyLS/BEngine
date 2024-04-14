@@ -146,7 +146,11 @@ namespace BEngineEditor
 
 				if (ImGui.Button(fullName, new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X - PaddingX, 40)))
 				{
-					// open cs file in VS
+					if (sceneScript.Namespace != "BEngine")
+					{
+						_projectContext.CurrentProject?.OpenScriptFile(
+							_projectContext.CurrentProject.AssetWatcher.FindFileWithClass(sceneScript.Name, sceneScript.Namespace));
+					}
 				}
 				Drag(selectedEntity, sceneScript);
 

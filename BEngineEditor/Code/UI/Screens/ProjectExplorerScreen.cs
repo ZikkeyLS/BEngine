@@ -261,7 +261,7 @@ namespace BEngineEditor
 				{
 					if (Path.GetExtension(entryName) == ".cs")
 					{
-						Utils.OpenWithDefaultProgram(_currentProject.SolutionPath);
+						_projectContext.CurrentProject?.OpenScriptFile(entryPath);
 					}
 					else if (Path.GetExtension(entryName) == ".scene")
 					{

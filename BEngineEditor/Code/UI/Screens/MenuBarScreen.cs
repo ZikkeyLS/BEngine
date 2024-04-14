@@ -93,6 +93,20 @@ namespace BEngineEditor
 				ImGui.EndMenu();
 			}
 
+			if (ImGui.BeginMenu("IDE"))
+			{
+				if (ImGui.MenuItem("Visual Studio", "", _settings.IDE == IDE.VisualStudio))
+				{
+					_settings.IDE = IDE.VisualStudio;
+				}
+				if (ImGui.MenuItem("Visual Studio Code", "", _settings.IDE == IDE.VisualStudioCode))
+				{
+					_settings.IDE = IDE.VisualStudioCode;
+				}
+
+				ImGui.EndMenu();
+			}
+
 			ImGui.EndMainMenuBar();
 			ImGui.PopStyleVar();
 		}
