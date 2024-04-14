@@ -134,12 +134,15 @@ namespace BEngineEditor
 					case IDE.VisualStudio:
 						RunCMDCommand($"start devenv \"{ProjectAssemblyPath}\"", () =>
 						{
+							// TO BE Fixed:
+							// start devenv doesn't wait any time after run, so we can't know exactly, when VS will be opened
+							Thread.Sleep(8000);
 							RunCMDCommand($"start devenv /edit \"{filePath}\"");
 						});
 						break;
 					case IDE.VisualStudioCode:
 						RunCMDCommand($"code -r \"./\"", () => 
-						{ 
+						{
 							RunCMDCommand($"code -r \"{filePath}\""); 
 						});
 						break;

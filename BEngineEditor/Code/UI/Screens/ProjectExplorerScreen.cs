@@ -385,7 +385,6 @@ namespace BEngineEditor
 							_assetWriter.RenameAsset(entry.EntryPath, fileCopyPath);
 							File.Move(entry.EntryPath, fileCopyPath, true);
 						}
-	
 					}
 					else
 					{

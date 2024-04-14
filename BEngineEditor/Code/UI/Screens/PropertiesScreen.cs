@@ -144,6 +144,8 @@ namespace BEngineEditor
 				ImGui.SameLine();
 				ImGui.BeginGroup();
 
+				if (sceneScript.Namespace == "BEngine")
+					ImGui.PushStyleVar(ImGuiStyleVar.Alpha, ImGui.GetStyle().Alpha * 0.5f);
 				if (ImGui.Button(fullName, new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X - PaddingX, 40)))
 				{
 					if (sceneScript.Namespace != "BEngine")
@@ -153,6 +155,9 @@ namespace BEngineEditor
 					}
 				}
 				Drag(selectedEntity, sceneScript);
+				if (sceneScript.Namespace == "BEngine")
+					ImGui.PopStyleVar();
+
 
 				if (script != null)
 				{
