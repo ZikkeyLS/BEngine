@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace BEngine
 {
@@ -558,6 +559,80 @@ namespace BEngine
             this.y = y;
             this.z = z;
             this.w = w;
+        }
+
+        public static Quaternion Add(Quaternion value, Quaternion value2)
+        {
+            return System.Numerics.Quaternion.Add((System.Numerics.Quaternion)value, (System.Numerics.Quaternion)value2);
+        }
+
+        public static Quaternion Concatenate(Quaternion value, Quaternion value2)
+        {
+            return System.Numerics.Quaternion.Concatenate((System.Numerics.Quaternion)value, (System.Numerics.Quaternion)value2);
+        }
+
+        public static Quaternion Conjugate(Quaternion value)
+        {
+            return System.Numerics.Quaternion.Conjugate((System.Numerics.Quaternion)value);
+        }
+
+        public static Quaternion CreateFromAxisAngle(Vector3 vector, float angel)
+        {
+            return System.Numerics.Quaternion.CreateFromAxisAngle((System.Numerics.Vector3)vector, angel);
+        }
+
+        public static float Dot(Quaternion value, Quaternion value2)
+        {
+            return System.Numerics.Quaternion.Dot((System.Numerics.Quaternion)value, (System.Numerics.Quaternion)value2);
+        }
+
+        public static Quaternion Inverse(Quaternion value)
+        {
+            return System.Numerics.Quaternion.Inverse((System.Numerics.Quaternion)value);
+        }
+
+        public static float Length(Quaternion value)
+        {
+            return ((System.Numerics.Quaternion)value).Length(); ;
+        }
+
+        public static float LengthSquared(Quaternion value)
+        {
+            return ((System.Numerics.Quaternion)value).LengthSquared(); ;
+        }
+
+        public static Quaternion Lerp(Quaternion value, Quaternion value2, float amount)
+        {
+            return System.Numerics.Quaternion.Lerp((System.Numerics.Quaternion)value, (System.Numerics.Quaternion)value2, amount);
+        }
+
+        public static Quaternion Multiply(Quaternion left, Quaternion right)
+        {
+            return System.Numerics.Quaternion.Multiply((System.Numerics.Quaternion)left, (System.Numerics.Quaternion)right);
+        }
+
+        public static Quaternion Multiply(Quaternion left, float right)
+        {
+            return System.Numerics.Quaternion.Multiply((System.Numerics.Quaternion)left, right);
+        }
+
+        public static Quaternion Negate(Quaternion value)
+        {
+            return System.Numerics.Quaternion.Negate((System.Numerics.Quaternion)value);
+        }
+        public static Quaternion Normalize(Quaternion value)
+        {
+            return System.Numerics.Quaternion.Normalize((System.Numerics.Quaternion)value);
+        }
+
+        public static Quaternion Slerp(Quaternion value, Quaternion value2, float amount)
+        {
+            return System.Numerics.Quaternion.Slerp((System.Numerics.Quaternion)value, (System.Numerics.Quaternion)value2, amount);
+        }
+
+        public static Quaternion Substract(Quaternion value, Quaternion value2)
+        {
+            return System.Numerics.Quaternion.Subtract((System.Numerics.Quaternion)value, (System.Numerics.Quaternion)value2);
         }
 
         public static Quaternion FromEuler(float x, float y, float z)
