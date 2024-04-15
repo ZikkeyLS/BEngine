@@ -383,6 +383,99 @@ namespace BEngine
             this.w = w;
         }
 
+        public static Vector4 Abs(Vector4 value)
+        {
+            return System.Numerics.Vector4.Abs((System.Numerics.Vector4)value);
+        }
+
+        public static Vector4 Add(Vector4 value, Vector4 value2)
+        {
+            return System.Numerics.Vector4.Add((System.Numerics.Vector4)value, (System.Numerics.Vector4)value2);
+        }
+
+        public static Vector4 Clamp(Vector4 value, Vector4 value2, Vector4 value3)
+        {
+            return System.Numerics.Vector4.Clamp((System.Numerics.Vector4)value, (System.Numerics.Vector4)value2, (System.Numerics.Vector4)value3);
+        }
+
+        public static float Distance(Vector4 value, Vector4 value2)
+        {
+            return System.Numerics.Vector4.Distance((System.Numerics.Vector4)value, (System.Numerics.Vector4)value2);
+        }
+
+        public static float DistanceSquared(Vector4 value, Vector4 value2)
+        {
+            return System.Numerics.Vector4.DistanceSquared((System.Numerics.Vector4)value, (System.Numerics.Vector4)value2);
+        }
+
+        public static Vector4 Divide(Vector4 left, float divisor)
+        {
+            return System.Numerics.Vector4.Divide((System.Numerics.Vector4)left, divisor);
+        }
+
+        public static float Dot(Vector4 value, Vector4 value2)
+        {
+            return System.Numerics.Vector4.Dot((System.Numerics.Vector4)value, (System.Numerics.Vector4)value2);
+        }
+
+        public static float Length(Vector4 value)
+        {
+            return ((System.Numerics.Vector4)value).Length();
+        }
+
+        public static float LengthSquared(Vector4 value)
+        {
+            return ((System.Numerics.Vector4)value).LengthSquared();
+        }
+
+        public static Vector4 Lerp(Vector4 value, Vector4 value2, float amount)
+        {
+            return System.Numerics.Vector4.Lerp((System.Numerics.Vector4)value, (System.Numerics.Vector4)value2, amount);
+        }
+
+        public static Vector4 Max(Vector4 value, Vector4 value2)
+        {
+            return System.Numerics.Vector4.Max((System.Numerics.Vector4)value, (System.Numerics.Vector4)value2);
+        }
+
+        public static Vector4 Min(Vector4 value, Vector4 value2)
+        {
+            return System.Numerics.Vector4.Min((System.Numerics.Vector4)value, (System.Numerics.Vector4)value2);
+        }
+
+        public static Vector4 Multiply(Vector4 left, Vector4 right)
+        {
+            return System.Numerics.Vector4.Multiply((System.Numerics.Vector4)left, (System.Numerics.Vector4)right);
+        }
+
+        public static Vector4 Multiply(Vector4 left, float right)
+        {
+            return System.Numerics.Vector4.Multiply((System.Numerics.Vector4)left, right);
+        }
+
+        public static Vector4 Multiply(float left, Vector4 right)
+        {
+            return System.Numerics.Vector4.Multiply(left, (System.Numerics.Vector4)right);
+        }
+
+        public static Vector4 Negate(Vector4 value)
+        {
+            return System.Numerics.Vector4.Negate((System.Numerics.Vector4)value);
+        }
+        public static Vector4 Normalize(Vector4 value)
+        {
+            return System.Numerics.Vector4.Normalize((System.Numerics.Vector4)value);
+        }
+
+        public static Vector4 SquareRoot(Vector4 value)
+        {
+            return System.Numerics.Vector4.SquareRoot((System.Numerics.Vector4)value);
+        }
+
+        public static Vector4 Substract(Vector4 left, Vector4 right)
+        {
+            return System.Numerics.Vector4.Subtract((System.Numerics.Vector4)left, (System.Numerics.Vector4)right);
+        }
         public override string ToString()
         {
             return $"Vector4 ({x};{y};{z};{w})";
