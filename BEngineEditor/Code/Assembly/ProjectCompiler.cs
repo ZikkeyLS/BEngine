@@ -1,6 +1,7 @@
 ﻿using BEngine;
 using BEngineCore;
 using System.Diagnostics;
+using Math = System.Math;
 
 namespace BEngineEditor
 {
