@@ -104,7 +104,6 @@ namespace BEngineEditor
 				_projectContext.CurrentProject.SelectedElement = null;
 				return;
 			}
-
 			string newName = selectedEntity.Name;
 			if (ImGui.InputText("Name", ref newName, 150))
 			{
@@ -126,7 +125,6 @@ namespace BEngineEditor
 				SceneScript sceneScript = selectedEntity.Scripts[i];
 				Script? script = selectedEntity.GetScriptInstance(sceneScript);
 				string fullName = sceneScript.Namespace + "." + sceneScript.Name;
-
 				if (_dragging)
 				{
 					GUIPresets.CreateDropArea(i, PaddingY);
@@ -167,29 +165,10 @@ namespace BEngineEditor
 				{
 					ShowResolverData(selectedEntity, sceneScript);
 				}
-
+				
 				ImGui.EndGroup();
 				ImGui.PopID();
-
-				ImGui.GetWindowDrawList().ChannelsSetCurrent(0);
-
-				float windowX = ImGui.GetWindowPos().X + ImGui.GetWindowContentRegionMax().X;
-				System.Numerics.Vector2 minWindow = ImGui.GetItemRectMin() - new System.Numerics.Vector2(PaddingX, PaddingY);
-				System.Numerics.Vector2 maxWindow = ImGui.GetItemRectMax() + new System.Numerics.Vector2(0, PaddingY);
-				if (windowX > maxWindow.X)
-				{
-					maxWindow.X = windowX;
-				}
-				else
-				{
-					maxWindow.X += PaddingX;
-					ImGui.SameLine();
-					ImGui.Dummy(new System.Numerics.Vector2(PaddingX, 0));
-				}
-
-				ImGui.GetWindowDrawList().AddRect(minWindow, maxWindow, BitConverter.ToUInt32(resultColor, 0), 5.0f, ImDrawFlags.RoundCornersAll, 3.0f);
-				ImGui.GetWindowDrawList().ChannelsMerge();
-
+				
 				if (ImGui.BeginPopupContextItem(fullName, ImGuiPopupFlags.MouseButtonRight))
 				{
 					if (ImGui.Selectable("Copy"))
@@ -214,6 +193,25 @@ namespace BEngineEditor
 					ImGui.EndPopup();
 				}
 
+				ImGui.GetWindowDrawList().ChannelsSetCurrent(0);
+
+				float windowX = ImGui.GetWindowPos().X + ImGui.GetWindowContentRegionMax().X;
+				System.Numerics.Vector2 minWindow = ImGui.GetItemRectMin() - new System.Numerics.Vector2(PaddingX, PaddingY);
+				System.Numerics.Vector2 maxWindow = ImGui.GetItemRectMax() + new System.Numerics.Vector2(0, PaddingY);
+				if (windowX > maxWindow.X)
+				{
+					maxWindow.X = windowX;
+				}
+				else
+				{
+					maxWindow.X += PaddingX;
+					ImGui.SameLine();
+					ImGui.Dummy(new System.Numerics.Vector2(PaddingX, 0));
+				}
+			
+				ImGui.GetWindowDrawList().AddRect(minWindow, maxWindow, BitConverter.ToUInt32(resultColor, 0), 5.0f, ImDrawFlags.RoundCornersAll, 3.0f);
+				ImGui.GetWindowDrawList().ChannelsMerge();
+				
 				ImGui.Dummy(new System.Numerics.Vector2(0, PaddingY));
 			}
 
