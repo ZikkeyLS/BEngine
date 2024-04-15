@@ -105,6 +105,7 @@ namespace BEngine
         {
             return System.Numerics.Vector2.Negate((System.Numerics.Vector2)value);
         }
+
         public static Vector2 Normalize(Vector2 value)
         {
             return System.Numerics.Vector2.Normalize((System.Numerics.Vector2)value);
@@ -198,6 +199,7 @@ namespace BEngine
             this.y = y;
             this.z = z;
         }
+
         public static Vector3 Abs(Vector3 value)
         {
             return System.Numerics.Vector3.Abs((System.Numerics.Vector3)value);
@@ -212,6 +214,7 @@ namespace BEngine
         {
             return System.Numerics.Vector3.Clamp((System.Numerics.Vector3)value, (System.Numerics.Vector3)value2, (System.Numerics.Vector3)value3);
         }
+
         public static Vector3 Cross(Vector3 value, Vector3 value2)
         {
             return System.Numerics.Vector3.Cross((System.Numerics.Vector3)value, (System.Numerics.Vector3)value2);
@@ -281,6 +284,7 @@ namespace BEngine
         {
             return System.Numerics.Vector3.Negate((System.Numerics.Vector3)value);
         }
+
         public static Vector3 Normalize(Vector3 value)
         {
             return System.Numerics.Vector3.Normalize((System.Numerics.Vector3)value);
@@ -756,6 +760,7 @@ namespace BEngine
         {
             return new Quaternion(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w);
         }
+
         public static Quaternion operator /(Quaternion a, Quaternion b)
         {
             return new Quaternion(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w);
