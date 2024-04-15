@@ -7,7 +7,8 @@ namespace BEngine
 		{
 			Cube = 0,
 			Sphere,
-			Cylinder
+			Capsule,
+			Plane
 		}
 
 		public enum ColliderControlledBy : byte
@@ -15,8 +16,6 @@ namespace BEngine
 			Collider = 0,
 			Rigidbody
 		}
-
-		public Vector3 Scale = Vector3.one;
 
 		private Vector3? _lastPosition;
 		private Quaternion? _lastRotation;
@@ -52,11 +51,10 @@ namespace BEngine
 			transform.Position = data.Position;
 			transform.Rotation = data.Rotation;
 
-			Vector3 tempScale = transform.Scale * Scale;
-			if (_lastScale != tempScale)
+			if (RequiresRescale())
 			{
-				_lastScale = transform.Scale * Scale;
-				InternalCalls.PhysicsUpdateActorScale(physicsID, tempScale);
+				InternalCalls.PhysicsUpdateActorSize(physicsID, [transform.Scale, .. GetAdditionalData()]);
+				OnRescale();
 			}
 
 			_lastPosition = data.Position;
@@ -68,7 +66,11 @@ namespace BEngine
 			InternalCalls.PhysicsRemoveActor(physicsID);
 		}
 
-		public abstract ColliderType GetColliderType();
+		public abstract object[] GetAdditionalData();
+
+		public abstract bool RequiresRescale();
+
+		public abstract void OnRescale();
 
 		public abstract void Setup();
 	}

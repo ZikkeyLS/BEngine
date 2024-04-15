@@ -205,6 +205,43 @@ namespace BEngineCore
 				(System.Numerics.Vector3)scale);
 		}
 
+		public static string PhysicsCreateSphere(Vector3 position, Quaternion rotation, float radius)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return string.Empty;
+
+			return loadedProject.Physics.CreateStaticSphere(
+				(System.Numerics.Vector3)position,
+				(System.Numerics.Quaternion)rotation, radius);
+		}
+
+		public static string PhysicsCreatePlane(Vector3 position, Quaternion rotation, Vector2 size)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return string.Empty;
+
+			return loadedProject.Physics.CreateStaticPlane(
+				(System.Numerics.Vector3)position,
+				(System.Numerics.Quaternion)rotation,
+				(System.Numerics.Vector2)size);
+		}
+
+		public static string PhysicsCreateCapsule(Vector3 position, Quaternion rotation, float halfHeight, float radius)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return string.Empty;
+
+			return loadedProject.Physics.CreateStaticCapsule(
+				(System.Numerics.Vector3)position,
+				(System.Numerics.Quaternion)rotation, halfHeight, radius);
+		}
+
 		public static PhysicsEntryData PhysicsGetActorData(string physicsID)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
@@ -235,14 +272,14 @@ namespace BEngineCore
 			return loadedProject.Physics.GetAngularVelocity(physicsID);
 		}
 
-		public static void PhysicsUpdateActorScale(string physicsID, Vector3 scale)
+		public static void PhysicsUpdateActorSize(string physicsID, object[] data)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
 
 			if (loadedProject == null)
 				return;
 
-			loadedProject.Physics.UpdateActorScale(physicsID, (System.Numerics.Vector3)scale);
+			loadedProject.Physics.UpdateActorSize(physicsID, data);
 		}
 
 		public static void PhysicsRemoveActor(string physicsID)

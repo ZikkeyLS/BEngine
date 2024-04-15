@@ -1,4 +1,6 @@
 ﻿
+using System.Text.Json.Serialization;
+
 namespace BEngine
 {
 	public struct PhysicsEntryData
@@ -13,13 +15,13 @@ namespace BEngine
 		{
 			get
 			{
-				return _kinematic;
+				return internal_kinematic;
 			}
 			set
 			{
 				if (_collider != null)
 					InternalCalls.PhysicsChangeKinematic(_collider.PhysicsID, value);
-				_kinematic = value;
+				internal_kinematic = value;
 			}
 		}
 
@@ -35,7 +37,8 @@ namespace BEngine
 			}
 			set
 			{
-				InternalCalls.PhysicsSetVelocity(_collider.PhysicsID, value);
+				if (_collider != null)
+					InternalCalls.PhysicsSetVelocity(_collider.PhysicsID, value);
 			}
 		}
 
@@ -56,7 +59,8 @@ namespace BEngine
 		}
 
 		private Collider _collider;
-		private bool _kinematic;
+		// temp solution just to serialize properly
+		[EditorIgnore] public bool internal_kinematic;
 
 		public override void OnStart()
 		{
@@ -82,7 +86,7 @@ namespace BEngine
 			}
 
 			InternalCalls.PhysicsChangeDynamic(_collider.PhysicsID, true);
-			InternalCalls.PhysicsChangeKinematic(_collider.PhysicsID, _kinematic);
+			InternalCalls.PhysicsChangeKinematic(_collider.PhysicsID, internal_kinematic);
 		}
 
 		public override void OnDestroy()

@@ -56,7 +56,7 @@ namespace BEngineEditor
 
 				if (ImGui.MenuItem("Save Scene", "Ctrl+S") && _project.LoadedScene != null)
 				{
-					_project.LoadedScene.Save<Scene>();
+					_project.LoadedScene.SaveGuaranteed<Scene>(_project.AssetsDirectory + "/" + _project.LoadedScene.SceneName + ".scene");
 				}
 
 				if (_compiler.AssemblyLoaded && _compiler.AssemblyCompileErrors.Count == 0)
@@ -88,6 +88,20 @@ namespace BEngineEditor
 				if (ImGui.MenuItem("MacOS", "", _compiler.IsCurrentOS(ProjectCompiler.Osx64))) 
 				{ 
 					_settings.BuildOS = ProjectCompiler.Osx64;
+				}
+
+				ImGui.EndMenu();
+			}
+
+			if (ImGui.BeginMenu("IDE"))
+			{
+				if (ImGui.MenuItem("Visual Studio", "", _settings.IDE == IDE.VisualStudio))
+				{
+					_settings.IDE = IDE.VisualStudio;
+				}
+				if (ImGui.MenuItem("Visual Studio Code", "", _settings.IDE == IDE.VisualStudioCode))
+				{
+					_settings.IDE = IDE.VisualStudioCode;
 				}
 
 				ImGui.EndMenu();

@@ -196,9 +196,12 @@ namespace BEngine
 
 		#region Physics
 		private static MethodInfo? _physicsCreateCube;
+		private static MethodInfo? _physicsCreateSphere;
+		private static MethodInfo? _physicsCreatePlane;
+		private static MethodInfo? _physicsCreateCapsule;
 
 		private static MethodInfo? _physicsGetActorData;
-		private static MethodInfo? _physicsUpdateActorScale;
+		private static MethodInfo? _physicsUpdateActorSize;
 		private static MethodInfo? _physicsRemoveActor;
 
 		private static MethodInfo? _physicsChangeKinematic;
@@ -213,12 +216,12 @@ namespace BEngine
 		private static void LoadPhysicsAssembly()
 		{
 			_physicsCreateCube = GetMethod("PhysicsCreateCube");
+			_physicsCreateSphere = GetMethod("PhysicsCreateSphere");
+			_physicsCreatePlane = GetMethod("PhysicsCreatePlane");
+			_physicsCreateCapsule = GetMethod("PhysicsCreateCapsule");
 
 			_physicsGetActorData = GetMethod("PhysicsGetActorData");
-			_physicsUpdateActorScale = GetMethod("PhysicsUpdateActorScale");
-			_physicsRemoveActor = GetMethod("PhysicsRemoveActor");
-
-			_physicsUpdateActorScale = GetMethod("PhysicsUpdateActorScale");
+			_physicsUpdateActorSize = GetMethod("PhysicsUpdateActorSize");
 			_physicsRemoveActor = GetMethod("PhysicsRemoveActor");
 
 			_physicsChangeKinematic = GetMethod("PhysicsChangeKinematic");
@@ -237,14 +240,30 @@ namespace BEngine
 			return (string)(_physicsCreateCube?.Invoke(null, new object[] { position, rotation, scale }));
 		}
 
+		public static string PhysicsCreateSphere(Vector3 position, Quaternion rotation, float radius)
+		{
+			return (string)(_physicsCreateSphere?.Invoke(null, new object[] { position, rotation, radius }));
+		}
+
+		public static string PhysicsCreatePlane(Vector3 position, Quaternion rotation, Vector2 size)
+		{
+			return (string)(_physicsCreatePlane?.Invoke(null, new object[] { position, rotation, size }));
+		}
+
+		public static string PhysicsCreateCapsule(Vector3 position, Quaternion rotation, float halfHeight, float radius)
+		{
+			return (string)(_physicsCreateCapsule?.Invoke(null, new object[] { position, rotation, halfHeight, radius }));
+		}
+
+
 		public static PhysicsEntryData PhysicsGetActorData(string physicsID)
 		{
 			return (PhysicsEntryData)(_physicsGetActorData?.Invoke(null, new object[] { physicsID }));
 		}
 
-		public static void PhysicsUpdateActorScale(string physicsID, Vector3 scale)
+		public static void PhysicsUpdateActorSize(string physicsID, object[] data)
 		{
-			_physicsUpdateActorScale?.Invoke(null, new object[] { physicsID, scale });
+			_physicsUpdateActorSize?.Invoke(null, new object[] { physicsID, data });
 		}
 
 		public static void PhysicsRemoveActor(string physicsID)

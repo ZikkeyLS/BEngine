@@ -1,5 +1,6 @@
 ﻿using BEngine;
 using BEngineCore;
+using System.Diagnostics;
 
 namespace BEngineEditor
 {
@@ -41,6 +42,7 @@ namespace BEngineEditor
 
 		public AssemblyListener AssemblyListener => _assemblyListener;
 		public ProjectCompiler Compiler => _compiler;
+		public AssetWatcher AssetWatcher => _assets;
 		public AssetWriter AssetWriter => _assetWriter;
 
 		public string SolutionPath => $@"{Directory}\{Name}.sln";
@@ -121,6 +123,58 @@ namespace BEngineEditor
 
 				TryLoadScene(scene, true);
 			});
+		}
+
+		public async void OpenScriptFile(string filePath)
+		{
+			await Task.Run(() =>
+			{
+				switch (Settings.IDE)
+				{
+					case IDE.VisualStudio:
+						RunCMDCommand($"start devenv \"{ProjectAssemblyPath}\"", () =>
+						{
+							// TO BE Fixed:
+							// start devenv doesn't wait any time after run, so we can't know exactly, when VS will be opened
+							Thread.Sleep(8000);
+							RunCMDCommand($"start devenv /edit \"{filePath}\"");
+						});
+						break;
+					case IDE.VisualStudioCode:
+						RunCMDCommand($"code \"./\"", () => 
+						{
+							RunCMDCommand($"code \"{filePath}\""); 
+						});
+						break;
+				}
+			});		
+		}
+
+		public void RunCMDCommand(string command, Action? onEnd = null)
+		{
+			Process process = new Process();
+			process.StartInfo.FileName = "cmd.exe";
+			process.EnableRaisingEvents = true;
+			process.StartInfo.RedirectStandardInput = true;
+			process.StartInfo.RedirectStandardOutput = true;
+			process.StartInfo.CreateNoWindow = true;
+			process.StartInfo.UseShellExecute = false;
+			process.OutputDataReceived += (a, e) => 
+			{
+				if (e.Data == null)
+				{
+					onEnd?.Invoke();
+				}
+			};
+			process.Start();
+			process.BeginOutputReadLine();
+
+			process.StandardInput.WriteLine(ProjectAssemblyDirectory[0] + ":");
+			process.StandardInput.WriteLine($"cd {ProjectAssemblyDirectory}");
+			process.StandardInput.WriteLine(command);
+
+			process.StandardInput.Flush();
+			process.StandardInput.Close();
 		}
 	}
 }

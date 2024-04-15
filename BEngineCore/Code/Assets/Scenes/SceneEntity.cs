@@ -299,7 +299,7 @@ namespace BEngineCore
 
 								if (type != null)
 								{
-									object? result = JsonSerializer.Deserialize(value.Value, type);
+									object? result = JsonUtils.Deserialize(value.Value, type);
 									scriptType.GetField(field.Name)?.SetValue(script, result);
 								}
 							}

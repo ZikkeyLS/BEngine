@@ -78,8 +78,11 @@ namespace BEngineCore
 				if (newPath.EndsWith(".scene"))
 				{
 					Scene? scene = AssetData.ReadRaw<Scene>(newPath);
-					scene.SceneName = Path.GetFileNameWithoutExtension(newPath);
-					AssetData.WriteRaw(newPath, scene);
+					if (scene != null)
+					{
+						scene.SceneName = Path.GetFileNameWithoutExtension(newPath);
+						AssetData.WriteRaw(newPath, scene);
+					}
 				}
 				else if (newPath.EndsWith(".obj") || newPath.EndsWith(".fbx") || newPath.EndsWith(".gltf"))
 				{
@@ -90,8 +93,8 @@ namespace BEngineCore
 
 				if (File.Exists(oldPath + ".meta"))
 				{
-					string guid = _assetReader.GetMetaID(oldPath + ".meta");
-					AssetMetaData? assetMeta = _assetReader.LoadedAssets.Find((asset) => asset.GUID == guid);
+					string oldGUID = _assetReader.GetMetaID(oldPath + ".meta", false);
+					AssetMetaData? assetMeta = _assetReader.LoadedAssets.Find((asset) => asset.GUID == oldGUID);
 					if (assetMeta != null)
 					{
 						assetMeta.Path = newPath + ".meta";

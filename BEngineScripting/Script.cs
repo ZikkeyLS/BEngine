@@ -17,7 +17,7 @@ namespace BEngine
 
 	public class Script : ICloneable, IDisposable
 	{
-		public readonly Entity Entity;
+		[EditorIgnore] public readonly Entity Entity;
 
 		public virtual void OnStart()
 		{

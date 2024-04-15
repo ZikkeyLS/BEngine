@@ -63,7 +63,6 @@ namespace BEngineEditor
 					_assemblyCompilation.Close();
 				}
 
-				Console.WriteLine("Compile assembly start");
 				_assemblyCompilation = new Process();
 				_assemblyCompilation.StartInfo.FileName = "cmd.exe";
 				_assemblyCompilation.EnableRaisingEvents = true;

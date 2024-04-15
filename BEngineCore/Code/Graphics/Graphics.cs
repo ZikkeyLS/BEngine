@@ -128,7 +128,7 @@ namespace BEngineCore
 
 					Matrix4x4 model = Matrix4x4.CreateScale((Vector3)transform.Scale);
 					model *= Matrix4x4.CreateFromQuaternion((Quaternion)transform.Rotation);
-					Vector3 invertXPosition = new Vector3(-transform.Position.x, transform.Position.y, transform.Position.z);
+					Vector3 invertXPosition = new Vector3(transform.Position.x, transform.Position.y, transform.Position.z);
 					model *= Matrix4x4.CreateTranslation(invertXPosition);
 					_shader.SetMatrix4("model", model);
 

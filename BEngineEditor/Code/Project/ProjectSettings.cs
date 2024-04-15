@@ -1,15 +1,21 @@
-﻿using System.Text.Json;
+﻿using BEngine;
 using System.Text.Json.Serialization;
 
 namespace BEngineEditor
 {
+	public enum IDE : byte
+	{
+		VisualStudio = 0,
+		VisualStudioCode = 1
+	}
+
 	public class ProjectSettings
 	{
 		public string BuildOS { get; set; } = ProjectCompiler.Win64;
 		public string LastOpenedSceneID { get; set; } = string.Empty;
+		public IDE IDE { get; set; } = IDE.VisualStudio;
 
-		[JsonIgnore]
-		private string _settingsFilePath = "ProjectSettings.json";
+		[JsonIgnore] private string _settingsFilePath = "ProjectSettings.json";
 
 		public ProjectSettings()
 		{
@@ -28,7 +34,7 @@ namespace BEngineEditor
 
 		public void Save()
 		{
-			File.WriteAllText(_settingsFilePath, JsonSerializer.Serialize(this));
+			File.WriteAllText(_settingsFilePath, JsonUtils.Serialize(this));
 		}
 
 		public ProjectSettings? Load()
@@ -36,7 +42,7 @@ namespace BEngineEditor
 			if (File.Exists(_settingsFilePath) == false)
 				return null;
 
-			ProjectSettings? loadedSettings = JsonSerializer.Deserialize<ProjectSettings>(File.ReadAllText(_settingsFilePath));
+			ProjectSettings? loadedSettings = JsonUtils.Deserialize<ProjectSettings>(File.ReadAllText(_settingsFilePath));
 			if (loadedSettings != null)
 				return loadedSettings;
 

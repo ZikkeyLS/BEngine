@@ -1,5 +1,6 @@
 ﻿using BEngine;
 using BEngineCore;
+using BEngineScripting;
 using ImGuiNET;
 using System.Reflection;
 
@@ -32,6 +33,7 @@ namespace BEngineEditor
 		private ModelResolver _modelResolver = new();
 		private KeyResolver _keyResolver = new();
 		private MouseButtonResolver _mouseButtonResolver = new();
+		private ColorResolver _colorResolver = new();
 
 		private ProjectContext _projectContext => window.ProjectContext;
 		private Scripting _scripting => _projectContext.CurrentProject.Scripting;
@@ -142,11 +144,20 @@ namespace BEngineEditor
 				ImGui.SameLine();
 				ImGui.BeginGroup();
 
+				if (sceneScript.Namespace == "BEngine")
+					ImGui.PushStyleVar(ImGuiStyleVar.Alpha, ImGui.GetStyle().Alpha * 0.5f);
 				if (ImGui.Button(fullName, new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X - PaddingX, 40)))
 				{
-					// open cs file in VS
+					if (sceneScript.Namespace != "BEngine")
+					{
+						_projectContext.CurrentProject?.OpenScriptFile(
+							_projectContext.CurrentProject.AssetWatcher.FindFileWithClass(sceneScript.Name, sceneScript.Namespace));
+					}
 				}
 				Drag(selectedEntity, sceneScript);
+				if (sceneScript.Namespace == "BEngine")
+					ImGui.PopStyleVar();
+
 
 				if (script != null)
 				{
@@ -275,9 +286,6 @@ namespace BEngineEditor
 				SceneScriptValue? sceneScriptValue = sceneScriptField?.Value;
 				object? resultField = GetScriptValue(field, script);
 
-				if (resultField == selectedEntity.Entity)
-					continue;
-
 				Type fieldType;
 				if (field.MemberType == MemberTypes.Field)
 				{
@@ -346,6 +354,10 @@ namespace BEngineEditor
 				else if (TypeResolver.IsInClassList(fieldType, typeof(MouseButton)))
 				{
 					resultResolver = _mouseButtonResolver;
+				}
+				else if (TypeResolver.IsInClassList(fieldType, typeof(Color)))
+				{
+					resultResolver = _colorResolver;
 				}
 
 				resultResolver?.Resolve(new TypeResolver.ResolverData()

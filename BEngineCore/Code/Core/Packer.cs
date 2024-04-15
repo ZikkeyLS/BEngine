@@ -1,4 +1,5 @@
-﻿using ICSharpCode.SharpZipLib.Core;
+﻿using BEngine;
+using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using System.Text.Json;
 
@@ -28,7 +29,7 @@ namespace BEngineCore
 
 				using (var s = zf.GetInputStream(ze))
 				{
-					JsonSerializer.Deserialize<object>(s);
+					JsonUtils.Deserialize<object>(s);
 				}
 			}
 		}
