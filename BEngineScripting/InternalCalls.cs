@@ -209,6 +209,7 @@ namespace BEngine
 
 		private static MethodInfo? _physicsApplyTransform;
 		private static MethodInfo? _physicsAddForce;
+		private static MethodInfo? _physicsAddTorque;
 		private static MethodInfo? _physicsSetVelocity;
 		private static MethodInfo? _physicsSetAngularVelocity;
 		private static MethodInfo? _physicsGetVelocity;
@@ -230,6 +231,7 @@ namespace BEngine
 
 			_physicsApplyTransform = GetMethod("PhysicsApplyTransform");
 			_physicsAddForce = GetMethod("PhysicsAddForce");
+			_physicsAddTorque = GetMethod("PhysicsAddTorque");
 			_physicsSetVelocity = GetMethod("PhysicsSetVelocity");
 			_physicsSetAngularVelocity = GetMethod("PhysicsSetAngularVelocity");
 
@@ -290,6 +292,11 @@ namespace BEngine
 		public static void PhysicsAddForce(string physicsID, Vector3 force, ForceMode mode)
 		{
 			_physicsAddForce?.Invoke(null, new object[] { physicsID, force, mode });
+		}
+
+		public static void PhysicsAddTorque(string physicsID, Vector3 torque, ForceMode mode)
+		{
+			_physicsAddTorque?.Invoke(null, new object[] { physicsID, torque, mode });
 		}
 
 		public static void PhysicsSetVelocity(string physicsID, Vector3 velocity)

@@ -106,5 +106,11 @@ namespace BEngine
 			if (_collider != null && _collider.PhysicsID != string.Empty)
 				InternalCalls.PhysicsAddForce(_collider.PhysicsID, force, mode);
 		}
+
+		public void AddTorque(Vector3 torque, ForceMode mode)
+		{
+			if (_collider != null && _collider.PhysicsID != string.Empty)
+				InternalCalls.PhysicsAddForce(_collider.PhysicsID, torque, mode);
+		}
 	}
 }

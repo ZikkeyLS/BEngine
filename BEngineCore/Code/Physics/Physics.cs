@@ -61,7 +61,8 @@ namespace BEngineCore
 		private List<PhysicsEntity> _swipeActors = new();
 		private List<PhysicsEntity> _changeKinematic = new();
 		private List<PhysicsEntity> _applyTransform = new();
-		private List<ChangeActorForce> _applyForce = new(); 
+		private List<ChangeActorForce> _applyForce = new();
+		private List<ChangeActorForce> _applyTorque = new();
 		private List<ChangeActorVelocity> _applyVelocity = new();
 		private List<ChangeActorVelocity> _applyAngularVelocity = new();
 
@@ -294,6 +295,17 @@ namespace BEngineCore
 			_applyForce.Clear();
 		}
 
+		private unsafe void ApplyAddTorque()
+		{
+			for (int i = 0; i < _applyTorque.Count; i++)
+			{
+				PhysicsEntity entity = _applyTorque[i].Entity;
+				PxVec3 torque = _applyTorque[i].Force;
+				((PxRigidBody*)entity.Actor)->AddTorqueMut(&torque, _applyTorque[i].Mode, true);
+			}
+			_applyTorque.Clear();
+		}
+
 		private unsafe void ApplyVelocity()
 		{
 			for (int i = 0; i < _applyVelocity.Count; i++)
@@ -353,12 +365,20 @@ namespace BEngineCore
 			_applyTransform.Add(actor);
 		}
 
-		public void ApplyAddForce(string physicsID, Vector3 velocity, PxForceMode mode)
+		public void ApplyAddForce(string physicsID, Vector3 force, PxForceMode mode)
 		{
 			if (Actors.TryGetValue(physicsID, out PhysicsEntity? actor) == false)
 				return;
 
-			_applyForce.Add(new ChangeActorForce() { Entity = actor, Force = velocity, Mode = mode });
+			_applyForce.Add(new ChangeActorForce() { Entity = actor, Force = force, Mode = mode });
+		}
+
+		public void ApplyAddTorque(string physicsID, Vector3 torque, PxForceMode mode)
+		{
+			if (Actors.TryGetValue(physicsID, out PhysicsEntity? actor) == false)
+				return;
+
+			_applyTorque.Add(new ChangeActorForce() { Entity = actor, Force = torque, Mode = mode });
 		}
 
 		public void ApplyVelocity(string physicsID, Vector3 velocity)

@@ -332,6 +332,16 @@ namespace BEngineCore
 			loadedProject.Physics.ApplyAddForce(physicsID, (System.Numerics.Vector3)force, (MagicPhysX.PxForceMode)mode);
 		}
 
+		public static void PhysicsAddTorque(string physicsID, Vector3 force, ForceMode mode)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return;
+
+			loadedProject.Physics.ApplyAddTorque(physicsID, (System.Numerics.Vector3)force, (MagicPhysX.PxForceMode)mode);
+		}
+
 		public static void PhysicsSetVelocity(string physicsID, Vector3 velocity)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
