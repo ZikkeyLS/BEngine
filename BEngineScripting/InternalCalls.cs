@@ -208,6 +208,7 @@ namespace BEngine
 		private static MethodInfo? _physicsChangeDynamic;
 
 		private static MethodInfo? _physicsApplyTransform;
+		private static MethodInfo? _physicsAddForce;
 		private static MethodInfo? _physicsSetVelocity;
 		private static MethodInfo? _physicsSetAngularVelocity;
 		private static MethodInfo? _physicsGetVelocity;
@@ -228,6 +229,7 @@ namespace BEngine
 			_physicsChangeDynamic = GetMethod("PhysicsChangeDynamic");
 
 			_physicsApplyTransform = GetMethod("PhysicsApplyTransform");
+			_physicsAddForce = GetMethod("PhysicsAddForce");
 			_physicsSetVelocity = GetMethod("PhysicsSetVelocity");
 			_physicsSetAngularVelocity = GetMethod("PhysicsSetAngularVelocity");
 
@@ -254,7 +256,6 @@ namespace BEngine
 		{
 			return (string)(_physicsCreateCapsule?.Invoke(null, new object[] { position, rotation, halfHeight, radius }));
 		}
-
 
 		public static PhysicsEntryData PhysicsGetActorData(string physicsID)
 		{
@@ -284,6 +285,11 @@ namespace BEngine
 		public static void PhysicsApplyTransform(string physicsID, Vector3 position, Quaternion rotation)
 		{
 			_physicsApplyTransform?.Invoke(null, new object[] { physicsID, position, rotation });
+		}
+
+		public static void PhysicsAddForce(string physicsID, Vector3 force, ForceMode mode)
+		{
+			_physicsAddForce?.Invoke(null, new object[] { physicsID, force, mode });
 		}
 
 		public static void PhysicsSetVelocity(string physicsID, Vector3 velocity)

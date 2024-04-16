@@ -35,6 +35,13 @@ namespace BEngineCore
 		public Vector3 Velocity;
 	}
 
+	public struct ChangeActorForce
+	{
+		public PhysicsEntity Entity;
+		public Vector3 Force;
+		public PxForceMode Mode;
+	}
+
 	public class Physics
 	{
 		private unsafe PxFoundation* foundation;
@@ -54,6 +61,7 @@ namespace BEngineCore
 		private List<PhysicsEntity> _swipeActors = new();
 		private List<PhysicsEntity> _changeKinematic = new();
 		private List<PhysicsEntity> _applyTransform = new();
+		private List<ChangeActorForce> _applyForce = new(); 
 		private List<ChangeActorVelocity> _applyVelocity = new();
 		private List<ChangeActorVelocity> _applyAngularVelocity = new();
 
@@ -148,6 +156,7 @@ namespace BEngineCore
 			SwipeActors();
 			ChangeKinematic();
 			ApplyTransform();
+			ApplyAddForce();
 			ApplyVelocity();
 			ApplyAngularVelocity();
 
@@ -161,10 +170,9 @@ namespace BEngineCore
 
 				if (actor.Value.Dynamic)
 				{
+					Console.WriteLine("Read: " + actor.Value.Velocity);
 					actor.Value.Velocity = PxRigidBody_getLinearVelocity((PxRigidBody*)actor.Value.Actor);
-					actor.Value.Velocity = actor.Value.Velocity;
 					actor.Value.AngularVelocity = PxRigidBody_getAngularVelocity((PxRigidBody*)actor.Value.Actor);
-					actor.Value.AngularVelocity = actor.Value.AngularVelocity;
 				}
 			}
 
@@ -275,19 +283,26 @@ namespace BEngineCore
 			_applyTransform.Clear();
 		}
 
+		private unsafe void ApplyAddForce()
+		{
+			for (int i = 0; i < _applyForce.Count; i++)
+			{
+				PhysicsEntity entity = _applyForce[i].Entity;
+				PxVec3 force = _applyForce[i].Force;
+				((PxRigidBody*)entity.Actor)->AddForceMut(&force, _applyForce[i].Mode, true);
+			}
+			_applyForce.Clear();
+		}
+
 		private unsafe void ApplyVelocity()
 		{
-			lock (_applyVelocity)
+			for (int i = 0; i < _applyVelocity.Count; i++)
 			{
-				for (int i = 0; i < _applyVelocity.Count; i++)
-				{
-					PhysicsEntity entity = _applyVelocity[i].Entity;
-					PxVec3 velocity = _applyVelocity[i].Velocity;
-					((PxRigidDynamic*)entity.Actor)->SetLinearVelocityMut(&velocity, false);
-					entity.Velocity = velocity;
-				}
-				_applyVelocity.Clear();
+				PhysicsEntity entity = _applyVelocity[i].Entity;
+				PxVec3 velocity = _applyVelocity[i].Velocity;
+				((PxRigidDynamic*)entity.Actor)->SetLinearVelocityMut(&velocity, true);
 			}
+			_applyVelocity.Clear();
 		}
 
 		private unsafe void ApplyAngularVelocity()
@@ -297,7 +312,6 @@ namespace BEngineCore
 				PhysicsEntity entity = _applyAngularVelocity[i].Entity;
 				PxVec3 velocity = _applyVelocity[i].Velocity;
 				((PxRigidDynamic*)entity.Actor)->SetAngularVelocityMut(&velocity, false);
-				entity.AngularVelocity = velocity;
 			}
 			_applyAngularVelocity.Clear();
 		}
@@ -339,15 +353,20 @@ namespace BEngineCore
 			_applyTransform.Add(actor);
 		}
 
+		public void ApplyAddForce(string physicsID, Vector3 velocity, PxForceMode mode)
+		{
+			if (Actors.TryGetValue(physicsID, out PhysicsEntity? actor) == false)
+				return;
+
+			_applyForce.Add(new ChangeActorForce() { Entity = actor, Force = velocity, Mode = mode });
+		}
+
 		public void ApplyVelocity(string physicsID, Vector3 velocity)
 		{
 			if (Actors.TryGetValue(physicsID, out PhysicsEntity? actor) == false)
 				return;
 
-			lock (_applyVelocity)
-			{
-				_applyVelocity.Add(new ChangeActorVelocity() { Entity = actor, Velocity = velocity });
-			}
+			_applyVelocity.Add(new ChangeActorVelocity() { Entity = actor, Velocity = velocity });
 		}
 
 		public void ApplyAngularVelocity(string physicsID, Vector3 velocity)
@@ -489,6 +508,7 @@ namespace BEngineCore
 			if (Actors.ContainsKey(physicsID) == false)
 				return Vector3.Zero;
 
+			Console.WriteLine("Get: " + Actors[physicsID].Velocity);
 			return Actors[physicsID].Velocity;
 		}
 

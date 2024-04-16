@@ -1,6 +1,5 @@
 ﻿using BEngine;
 using BEngineCore;
-using BEngineScripting;
 using ImGuiNET;
 using System.Reflection;
 
@@ -165,10 +164,10 @@ namespace BEngineEditor
 				{
 					ShowResolverData(selectedEntity, sceneScript);
 				}
-				
+
 				ImGui.EndGroup();
 				ImGui.PopID();
-				
+
 				if (ImGui.BeginPopupContextItem(fullName, ImGuiPopupFlags.MouseButtonRight))
 				{
 					if (ImGui.Selectable("Copy"))
@@ -208,10 +207,10 @@ namespace BEngineEditor
 					ImGui.SameLine();
 					ImGui.Dummy(new System.Numerics.Vector2(PaddingX, 0));
 				}
-			
+
 				ImGui.GetWindowDrawList().AddRect(minWindow, maxWindow, BitConverter.ToUInt32(resultColor, 0), 5.0f, ImDrawFlags.RoundCornersAll, 3.0f);
 				ImGui.GetWindowDrawList().ChannelsMerge();
-				
+
 				ImGui.Dummy(new System.Numerics.Vector2(0, PaddingY));
 			}
 

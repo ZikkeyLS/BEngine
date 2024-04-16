@@ -1,12 +1,18 @@
 ﻿
-using System.Text.Json.Serialization;
-
 namespace BEngine
 {
 	public struct PhysicsEntryData
 	{
 		public Vector3 Position;
 		public Quaternion Rotation;
+	}
+
+	public enum ForceMode : int
+	{
+		Force = 0,
+		Impulse = 1,
+		VelocityChange = 2,
+		Acceleration = 3,
 	}
 
 	public class Rigidbody : Script
@@ -93,6 +99,12 @@ namespace BEngine
 		{
 			if (_collider != null)
 				InternalCalls.PhysicsChangeDynamic(_collider.PhysicsID, false);
+		}
+
+		public void AddForce(Vector3 force, ForceMode mode)
+		{
+			if (_collider != null && _collider.PhysicsID != string.Empty)
+				InternalCalls.PhysicsAddForce(_collider.PhysicsID, force, mode);
 		}
 	}
 }
