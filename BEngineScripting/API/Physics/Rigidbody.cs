@@ -60,13 +60,45 @@ namespace BEngine
 			}
 			set
 			{
-				InternalCalls.PhysicsSetAngularVelocity(_collider.PhysicsID, value);
+				if (_collider != null)
+					InternalCalls.PhysicsSetAngularVelocity(_collider.PhysicsID, value);
+			}
+		}
+
+		public Vector3Bool LockLinear
+		{
+			get
+			{
+				return internal_lock_linear;
+			}
+			set
+			{
+				internal_lock_linear = value;
+				if (_collider != null)
+					InternalCalls.PhysicsApplyLock(_collider.PhysicsID, internal_lock_linear, internal_lock_angular);
+			}
+		}
+
+		public Vector3Bool LockAngular
+		{
+			get
+			{
+				return internal_lock_angular;
+			}
+			set
+			{
+				internal_lock_angular = value;
+				if (_collider != null)
+					InternalCalls.PhysicsApplyLock(_collider.PhysicsID, internal_lock_linear, internal_lock_angular);
 			}
 		}
 
 		private Collider _collider;
+
 		// temp solution just to serialize properly
 		[EditorIgnore] public bool internal_kinematic;
+		[EditorIgnore] public Vector3Bool internal_lock_linear;
+		[EditorIgnore] public Vector3Bool internal_lock_angular;
 
 		public override void OnStart()
 		{
@@ -110,7 +142,7 @@ namespace BEngine
 		public void AddTorque(Vector3 torque, ForceMode mode)
 		{
 			if (_collider != null && _collider.PhysicsID != string.Empty)
-				InternalCalls.PhysicsAddForce(_collider.PhysicsID, torque, mode);
+				InternalCalls.PhysicsAddTorque(_collider.PhysicsID, torque, mode);
 		}
 	}
 }

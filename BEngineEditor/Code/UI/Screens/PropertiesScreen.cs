@@ -27,6 +27,7 @@ namespace BEngineEditor
 		private BoolResolver _boolResolver = new();
 		private Vector2Resolver _vector2Resolver = new();
 		private Vector3Resolver _vector3Resolver = new();
+		private Vector3BoolResolver _vector3BoolResolver = new();
 		private Vector4Resolver _vector4Resolver = new();
 		private QuaternionResolver _quaternionResolver = new();
 		private ModelResolver _modelResolver = new();
@@ -331,6 +332,10 @@ namespace BEngineEditor
 				else if (TypeResolver.IsInClassList(fieldType, typeof(Vector3)))
 				{
 					resultResolver = _vector3Resolver;
+				}
+				else if (TypeResolver.IsInClassList(fieldType, typeof(Vector3Bool)))
+				{
+					resultResolver = _vector3BoolResolver;
 				}
 				else if (TypeResolver.IsInClassList(fieldType, typeof(Vector4)))
 				{

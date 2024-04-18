@@ -7,6 +7,7 @@ using static MagicPhysX.NativeMethods;
 using Quaternion = System.Numerics.Quaternion;
 using Vector3 = System.Numerics.Vector3;
 using Vector2 = System.Numerics.Vector2;
+using Silk.NET.Assimp;
 
 namespace BEngineCore
 {
@@ -42,6 +43,13 @@ namespace BEngineCore
 		public PxForceMode Mode;
 	}
 
+	public struct ChangeActorLock
+	{
+		public PhysicsEntity Entity;
+		public Vector3Bool LockLinear;
+		public Vector3Bool LockAngular;
+	}
+
 	public class Physics
 	{
 		private unsafe PxFoundation* foundation;
@@ -65,6 +73,7 @@ namespace BEngineCore
 		private List<ChangeActorForce> _applyTorque = new();
 		private List<ChangeActorVelocity> _applyVelocity = new();
 		private List<ChangeActorVelocity> _applyAngularVelocity = new();
+		private List<ChangeActorLock> _applyLock = new();
 
 		public ConcurrentDictionary<string, PhysicsEntity> Actors = new();
 
@@ -157,7 +166,9 @@ namespace BEngineCore
 			SwipeActors();
 			ChangeKinematic();
 			ApplyTransform();
+			ApplyLock();
 			ApplyAddForce();
+			ApplyAddTorque();
 			ApplyVelocity();
 			ApplyAngularVelocity();
 
@@ -284,6 +295,24 @@ namespace BEngineCore
 			_applyTransform.Clear();
 		}
 
+		private unsafe void ApplyLock()
+		{
+			for (int i = 0; i < _applyLock.Count; i++)
+			{
+				PhysicsEntity entity = _applyLock[i].Entity;
+				PxRigidDynamic* actor = (PxRigidDynamic*)entity.Actor;
+
+				actor->SetRigidDynamicLockFlagMut(PxRigidDynamicLockFlag.LockLinearX, _applyLock[i].LockLinear.x);
+				actor->SetRigidDynamicLockFlagMut(PxRigidDynamicLockFlag.LockLinearY, _applyLock[i].LockLinear.y);
+				actor->SetRigidDynamicLockFlagMut(PxRigidDynamicLockFlag.LockLinearZ, _applyLock[i].LockLinear.z);
+
+				actor->SetRigidDynamicLockFlagMut(PxRigidDynamicLockFlag.LockAngularX, _applyLock[i].LockAngular.x);
+				actor->SetRigidDynamicLockFlagMut(PxRigidDynamicLockFlag.LockAngularY, _applyLock[i].LockAngular.y);
+				actor->SetRigidDynamicLockFlagMut(PxRigidDynamicLockFlag.LockAngularZ, _applyLock[i].LockAngular.z);
+			}
+			_applyLock.Clear();
+		}
+
 		private unsafe void ApplyAddForce()
 		{
 			for (int i = 0; i < _applyForce.Count; i++)
@@ -363,6 +392,14 @@ namespace BEngineCore
 			actor.Transform.p = position;
 			actor.Transform.q = rotation;
 			_applyTransform.Add(actor);
+		}
+
+		public void ApplyLock(string physicsID, Vector3Bool linearLock, Vector3Bool angularLock)
+		{
+			if (Actors.TryGetValue(physicsID, out PhysicsEntity? actor) == false)
+				return;
+
+			_applyLock.Add(new ChangeActorLock() { Entity = actor, LockLinear = linearLock, LockAngular = angularLock });
 		}
 
 		public void ApplyAddForce(string physicsID, Vector3 force, PxForceMode mode)

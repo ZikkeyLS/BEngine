@@ -208,6 +208,7 @@ namespace BEngine
 		private static MethodInfo? _physicsChangeDynamic;
 
 		private static MethodInfo? _physicsApplyTransform;
+		private static MethodInfo? _physicsApplyLock;
 		private static MethodInfo? _physicsAddForce;
 		private static MethodInfo? _physicsAddTorque;
 		private static MethodInfo? _physicsSetVelocity;
@@ -230,6 +231,7 @@ namespace BEngine
 			_physicsChangeDynamic = GetMethod("PhysicsChangeDynamic");
 
 			_physicsApplyTransform = GetMethod("PhysicsApplyTransform");
+			_physicsApplyLock = GetMethod("PhysicsApplyLock");
 			_physicsAddForce = GetMethod("PhysicsAddForce");
 			_physicsAddTorque = GetMethod("PhysicsAddTorque");
 			_physicsSetVelocity = GetMethod("PhysicsSetVelocity");
@@ -287,6 +289,11 @@ namespace BEngine
 		public static void PhysicsApplyTransform(string physicsID, Vector3 position, Quaternion rotation)
 		{
 			_physicsApplyTransform?.Invoke(null, new object[] { physicsID, position, rotation });
+		}
+
+		public static void PhysicsApplyLock(string physicsID, Vector3Bool linearLock, Vector3Bool angularLock)
+		{
+			_physicsApplyLock?.Invoke(null, new object[] { physicsID, linearLock, angularLock });
 		}
 
 		public static void PhysicsAddForce(string physicsID, Vector3 force, ForceMode mode)

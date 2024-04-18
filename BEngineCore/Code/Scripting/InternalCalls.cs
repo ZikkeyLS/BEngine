@@ -322,6 +322,16 @@ namespace BEngineCore
 			loadedProject.Physics.ApplyTransform(physicsID, (System.Numerics.Vector3)position, (System.Numerics.Quaternion)rotation);
 		}
 
+		public static void PhysicsApplyLock(string physicsID, Vector3Bool lockLinear, Vector3Bool lockAngular)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject == null)
+				return;
+
+			loadedProject.Physics.ApplyLock(physicsID, lockLinear, lockAngular);
+		}
+
 		public static void PhysicsAddForce(string physicsID, Vector3 force, ForceMode mode)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
