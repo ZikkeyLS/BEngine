@@ -69,17 +69,10 @@ namespace BEngineEditor
 
 		private void AdditionalActions()
 		{
-			if (_input.IsKeyDown(Key.F2))
-			{
-				if (_project.Runtime)
-				{
-					_project.StopRuntime();
-				}
-				else
-				{
-					_project.StartRuntime();
-				}
-			}
+			//if (_input.IsKeyDown(Key.F2))
+			//{
+			//	_project.SwipeRuntime();
+			//}
 		}
 
 		private bool ControlActive()

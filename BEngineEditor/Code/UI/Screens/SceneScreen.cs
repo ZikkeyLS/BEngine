@@ -21,14 +21,23 @@ namespace BEngineEditor
 		public override void Display()
 		{
 			ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
-			ImGui.Begin("Scene");
+			ImGui.Begin("Scene", ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.AlwaysAutoResize);
 
+			ImGui.BeginMenuBar();
+
+			float runtimeStateButtonWidth = 100f;
+			ImGui.SetCursorPosX(ImGui.GetWindowWidth() / 2 - runtimeStateButtonWidth / 2);
+			if (ImGui.Button(_projectContext.CurrentProject.Runtime ? "Stop" : "Start", new Vector2(runtimeStateButtonWidth, 25)))
+			{
+				_projectContext.CurrentProject.SwipeRuntime();
+			}
+
+			ImGui.EndMenuBar();
+	
 			Vector2 size = ImGui.GetContentRegionAvail();
-
 			_frameBuffer.RescaleFrameBuffer((uint)size.X, (uint)size.Y);
 
 			ImGui.Image((nint)_frameBuffer.GetFrameTexture(), ImGui.GetContentRegionAvail(), Vector2.UnitY, Vector2.UnitX);
-
 			bool focused =
 				ImGui.IsWindowFocused() ||
 				(ImGui.IsWindowHovered() && _projectContext.Window.Input.IsButtonPressed(BEngine.MouseButton.Middle));

@@ -38,6 +38,18 @@ namespace BEngineCore
 			LoadProjectData();
 		}
 
+		public void SwipeRuntime()
+		{
+			if (Runtime)
+			{
+				StopRuntime();
+			}
+			else
+			{
+				StartRuntime();
+			}
+		}
+
 		public void StartRuntime()
 		{
 			Runtime = true;
