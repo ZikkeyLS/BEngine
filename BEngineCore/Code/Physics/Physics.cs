@@ -182,7 +182,6 @@ namespace BEngineCore
 
 				if (actor.Value.Dynamic)
 				{
-					Console.WriteLine("Read: " + actor.Value.Velocity);
 					actor.Value.Velocity = PxRigidBody_getLinearVelocity((PxRigidBody*)actor.Value.Actor);
 					actor.Value.AngularVelocity = PxRigidBody_getAngularVelocity((PxRigidBody*)actor.Value.Actor);
 				}

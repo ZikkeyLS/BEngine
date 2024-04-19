@@ -56,7 +56,7 @@ namespace BEngineEditor
 
 				if (ImGui.MenuItem("Save Scene", "Ctrl+S") && _project.LoadedScene != null)
 				{
-					_project.LoadedScene.SaveGuaranteed<Scene>(_project.AssetsDirectory + "/" + _project.LoadedScene.SceneName + ".scene");
+					_project.SaveCurrentScene();
 				}
 
 				if (_compiler.AssemblyLoaded && _compiler.AssemblyCompileErrors.Count == 0)

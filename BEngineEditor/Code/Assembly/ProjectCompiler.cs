@@ -114,6 +114,12 @@ namespace BEngineEditor
 
 		public void CompileScripts()
 		{
+			//if (_project.Runtime)
+			//{
+			//	_project.Logger.LogWarning("TEMP UNTIL PROPER IMPL: You can't compile scripts in runtime mode.");
+			//	return;
+			//}
+
 			AssemblyLoaded = false;
 			AssemblyBuildStartTime = DateTime.Now;
 			CompileScriptAssembly(true, OnAssemblyOutput);

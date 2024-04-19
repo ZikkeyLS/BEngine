@@ -101,6 +101,17 @@ namespace BEngineEditor
 			LoadedScene?.CallEvent(EventID.EditorStart);
 		}
 
+		public void SaveCurrentScene()
+		{
+			if (Runtime)
+			{
+				Logger.LogWarning("You can't save scene in runtime mode.");
+				return;
+			}
+
+			LoadedScene.SaveGuaranteed<Scene>(AssetsDirectory + "/" + LoadedScene.SceneName + ".scene");
+		}
+
 		public void TryLoadLastOpenedScene()
 		{		
 			Scene? scene = TryLoadScene(Settings.LastOpenedSceneID);
