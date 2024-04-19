@@ -46,6 +46,9 @@ namespace BEngineCore
 		public void StopRuntime()
 		{
 			Runtime = false;
+			// just temp try to reload scene
+			TryLoadScene(loadedScene.GUID, true, false);
+			physics.ClearInstance();
 		}
 
 		public virtual void LoadProjectData()
@@ -76,11 +79,12 @@ namespace BEngineCore
 			return scene;
 		}
 
-		public void TryLoadScene(Scene scene, bool fastLoad = false)
+		public void TryLoadScene(Scene scene, bool fastLoad = false, bool savePrevious = true)
 		{
 			if (fastLoad)
 			{
-				loadedScene?.Save<Scene>();
+				if (savePrevious)
+					loadedScene?.Save<Scene>();
 				loadedScene = scene;
 				loadedScene.LoadScene();
 				OnSceneLoaded();

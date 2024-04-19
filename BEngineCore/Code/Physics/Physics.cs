@@ -59,6 +59,7 @@ namespace BEngineCore
 		private unsafe PxMaterial* material;
 
 		private bool running = true;
+		private bool clear = false;
 
 		private const float FixedFrames = 50;
 		private const float ScaleIncrease = 2;
@@ -161,6 +162,13 @@ namespace BEngineCore
 
 		private unsafe void FixedUpdate()
 		{
+			if (clear)
+			{
+				ClearInstanceInternal();
+				clear = false;
+				return;
+			}
+
 			RemoveActors();
 			AddActors();
 			SwipeActors();
@@ -365,6 +373,31 @@ namespace BEngineCore
 			PxPhysics_release_mut(physics);
 		}
 
+		private unsafe void ClearInstanceInternal()
+		{
+			foreach (var pair in Actors)
+			{
+				scene->RemoveActorMut(pair.Value.Actor, true);
+			}
+			Actors.Clear();
+
+			_addActors.Clear();
+			_applyAngularVelocity.Clear();
+			_applyForce.Clear();
+			_applyLock.Clear();
+			_applyTorque.Clear();
+			_applyTransform.Clear();
+			_applyVelocity.Clear();
+			_changeKinematic.Clear();
+			_removeActors.Clear();
+			_swipeActors.Clear();
+		}
+
+		public void ClearInstance()
+		{
+			clear = true;
+		}
+
 		public void ChangeDynamic(string physicsID, bool dynamic)
 		{
 			if (Actors.TryGetValue(physicsID, out PhysicsEntity? actor) == false)
@@ -564,7 +597,6 @@ namespace BEngineCore
 			if (Actors.ContainsKey(physicsID) == false)
 				return Vector3.Zero;
 
-			Console.WriteLine("Get: " + Actors[physicsID].Velocity);
 			return Actors[physicsID].Velocity;
 		}
 
