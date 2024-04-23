@@ -7,8 +7,6 @@ using static MagicPhysX.NativeMethods;
 using Quaternion = System.Numerics.Quaternion;
 using Vector3 = System.Numerics.Vector3;
 using Vector2 = System.Numerics.Vector2;
-using Silk.NET.Assimp;
-using System.ComponentModel;
 
 namespace BEngineCore
 {
