@@ -42,7 +42,7 @@ namespace BEngineEditor
 				ImGui.IsWindowFocused() ||
 				(ImGui.IsWindowHovered() && _projectContext.Window.Input.IsButtonPressed(BEngine.MouseButton.Middle));
 
-			_projectContext.CurrentProject.Graphics.EnableNativeCameraMovement = focused;
+			_projectContext.CurrentProject.Graphics.CameraOverride = !focused;
 			if (focused)
 				ImGui.SetWindowFocus();
 

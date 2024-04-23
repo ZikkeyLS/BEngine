@@ -26,7 +26,6 @@ namespace BEngineCore
 		{
 			base.OnSceneLoaded();
 			StartRuntime();
-			LoadedScene?.CallEvent(EventID.Start);
 		}
 	}
 }

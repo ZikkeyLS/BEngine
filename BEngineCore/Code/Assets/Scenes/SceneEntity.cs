@@ -1,5 +1,6 @@
 ﻿using BEngine;
 using BEngineScripting;
+using Silk.NET.Vulkan;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -40,18 +41,19 @@ namespace BEngineCore
 		public SceneEntity(string name)
 		{
 			GUID = Guid.NewGuid().ToString();
-			SetName(name);
+			SetBaseData(name);
 		}
 
-		public void SetName(string name)
+		public void SetBaseData(string name)
 		{
 			Name = name;
 			Entity.Name = Name;
+			typeof(Entity).GetField("GUID", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)?.SetValue(Entity, GUID);
 		}
 
 		public void LoadInheritance()
 		{
-			SetName(Name);
+			SetBaseData(Name);
 
 			if (ParentBase != null && ParentBase != string.Empty)
 			{
@@ -142,8 +144,11 @@ namespace BEngineCore
 
 		public void AddScript(Scripting.CachedScript script)
 		{
-			Scripts.Add(new SceneScript() { Name = script.Name, Namespace = script.Namespace });
-			CreateInstanseOf(script);
+			SceneScript newScript = new SceneScript() { Name = script.Name, Namespace = script.Namespace };
+			newScript.GUID = Guid.NewGuid().ToString();
+			Scripts.Add(newScript);
+			
+			CreateInstanseOf(script, newScript);
 		}
 
 		public bool RenameScript(SceneScript sceneScript, Scripting.CachedScript script)
@@ -163,7 +168,7 @@ namespace BEngineCore
 			{
 				sceneScript.Name = script.Name;
 				sceneScript.Namespace = script.Namespace;
-				CreateInstanseOf(script);
+				CreateInstanseOf(script, sceneScript);
 			}
 
 			return success;
@@ -235,7 +240,12 @@ namespace BEngineCore
 				current.GetType().Namespace == script.Namespace);
 
 			if (resetRuntimeIndex != -1)
+			{
 				Entity.Scripts[resetRuntimeIndex] = (Script?)Activator.CreateInstance(Entity.Scripts[resetRuntimeIndex].GetType());
+				Script runtimeScript = Entity.Scripts[resetRuntimeIndex];
+				runtimeScript.GetType().GetField("Entity")?.SetValue(runtimeScript, Entity);
+				runtimeScript.GetType().GetField("GUID")?.SetValue(runtimeScript, script.GUID);
+			}
 		}
 
 		public void RemoveScript(SceneScript script)
@@ -286,33 +296,41 @@ namespace BEngineCore
 					Scripting.CachedScript currentScript = scripting.Scripts[j];
 					if (currentScript.Name == Scripts[i].Name && currentScript.Namespace == Scripts[i].Namespace)
 					{
-						Script script = CreateInstanseOf(currentScript);
+						Script script = CreateInstanseOf(currentScript, Scripts[i]);
 
-						for (int k = 0; k < Scripts[i].Fields.Count; k++)
+						try
 						{
-							Type scriptType = script.GetType();
-							SceneScriptField field = Scripts[i].Fields[k];
-							SceneScriptValue? value = field.Value;
-							if (value != null)
+							for (int k = 0; k < Scripts[i].Fields.Count; k++)
 							{
-								Type? type = ScriptingUtils.GetTypeByName(value.TypeFullName);
-
-								if (type != null)
+								Type scriptType = script.GetType();
+								SceneScriptField field = Scripts[i].Fields[k];
+								SceneScriptValue? value = field.Value;
+								if (value != null)
 								{
-									object? result = JsonUtils.Deserialize(value.Value, type);
-									scriptType.GetField(field.Name)?.SetValue(script, result);
+									Type? type = ScriptingUtils.GetTypeByName(value.TypeFullName);
+
+									if (type != null)
+									{
+										object? result = JsonUtils.Deserialize(value.Value, type);
+										scriptType.GetField(field.Name)?.SetValue(script, result);
+									}
 								}
 							}
+						}
+						catch
+						{
+
 						}
 					}
 				}
 			}
 		}
 
-		private Script CreateInstanseOf(Scripting.CachedScript script)
+		private Script CreateInstanseOf(Scripting.CachedScript script, SceneScript sceneScript)
 		{
 			Script instance = script.CreateInstance<Script>();
 			instance.GetType().GetField("Entity")?.SetValue(instance, Entity);
+			instance.GetType().GetField("GUID")?.SetValue(instance, sceneScript.GUID);
 			Entity.Scripts.Add(instance);
 			return instance;
 		}

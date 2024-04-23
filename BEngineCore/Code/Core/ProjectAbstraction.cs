@@ -1,4 +1,7 @@
 ﻿
+using BEngine;
+using Silk.NET.Assimp;
+
 namespace BEngineCore
 {
 	public class ProjectAbstraction
@@ -53,6 +56,7 @@ namespace BEngineCore
 		public void StartRuntime()
 		{
 			Runtime = true;
+			LoadedScene?.CallEvent(EventID.Start);
 		}
 
 		public void StopRuntime()
@@ -76,11 +80,7 @@ namespace BEngineCore
 			{
 				if (fastLoad)
 				{
-					if (savePrevious)
-						loadedScene?.Save<Scene>();
-					loadedScene = scene;
-					loadedScene.LoadScene();
-					OnSceneLoaded();
+					BaseLoadScene(scene, savePrevious);
 				}
 				else
 				{
@@ -95,16 +95,24 @@ namespace BEngineCore
 		{
 			if (fastLoad)
 			{
-				if (savePrevious)
-					loadedScene?.Save<Scene>();
-				loadedScene = scene;
-				loadedScene.LoadScene();
-				OnSceneLoaded();
+				BaseLoadScene(scene, savePrevious);
 			}
 			else
 			{
 				OnSceneLongLoad(scene);
 			}
+		}
+
+		private void BaseLoadScene(Scene scene, bool savePrevious)
+		{
+			if (savePrevious)
+				loadedScene?.Save<Scene>();
+
+			graphics.ResetCameraHandler();
+
+			loadedScene = scene;
+			loadedScene.LoadScene();
+			OnSceneLoaded();
 		}
 
 		public virtual void OnSceneLoaded()

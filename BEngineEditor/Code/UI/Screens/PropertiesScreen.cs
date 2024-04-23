@@ -112,7 +112,7 @@ namespace BEngineEditor
 					newName = "~";
 				}
 
-				selectedEntity.SetName(newName);
+				selectedEntity.SetBaseData(newName);
 			}
 
 			Vector4 colorMultiplied = System.Numerics.Vector4.Multiply(ColorConstants.HeaderColor, 256f);

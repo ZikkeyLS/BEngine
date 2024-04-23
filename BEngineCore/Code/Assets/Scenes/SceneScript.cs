@@ -1,5 +1,4 @@
 ﻿using BEngine;
-using System.Text.Json;
 using static BEngineCore.Scripting;
 
 namespace BEngineCore
@@ -22,17 +21,12 @@ namespace BEngineCore
 
 	public class SceneScript : IDisposable
 	{
+		public string GUID { get; set; }
 		public string? Namespace { get; set; }
 		public string Name { get; set; }
 		public List<SceneScriptField> Fields { get; set; } = new();
 
-		public SceneScript() { }
-
-		public SceneScript(string namespace_, string name)
-		{
-			Namespace = namespace_;
-			Name = name;
-		}
+		public SceneScript() {  }
 
 		public void VerifyFields(CachedScript script)
 		{

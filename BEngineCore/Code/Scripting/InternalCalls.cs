@@ -372,5 +372,19 @@ namespace BEngineCore
 			loadedProject.Physics.ApplyAngularVelocity(physicsID, (System.Numerics.Vector3)velocity);
 		}
 		#endregion
+
+		#region Camera
+		public static void CameraCreateRequest(string GUID, uint priority, Vector3 position, Quaternion rotation)
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+
+			if (loadedProject != null)
+			{
+				loadedProject.Graphics.AddCameraRequest(new CameraHandlerRequest() { GUID = GUID, Priority = priority, 
+					Position = (System.Numerics.Vector3)position, 
+					Rotation = (System.Numerics.Quaternion)rotation });
+			}
+		}
+		#endregion
 	}
 }

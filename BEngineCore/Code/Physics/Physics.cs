@@ -188,10 +188,17 @@ namespace BEngineCore
 				PxTransform transform = PxRigidActor_getGlobalPose((PxRigidActor*)actor.Value.Actor);
 				actor.Value.Transform = transform;
 
-				if (actor.Value.Dynamic)
+				try
 				{
-					actor.Value.Velocity = PxRigidBody_getLinearVelocity((PxRigidBody*)actor.Value.Actor);
-					actor.Value.AngularVelocity = PxRigidBody_getAngularVelocity((PxRigidBody*)actor.Value.Actor);
+					if (actor.Value.Dynamic)
+					{
+						actor.Value.Velocity = PxRigidBody_getLinearVelocity((PxRigidBody*)actor.Value.Actor);
+						actor.Value.AngularVelocity = PxRigidBody_getAngularVelocity((PxRigidBody*)actor.Value.Actor);
+					}
+				}
+				catch (AccessViolationException)
+				{
+					continue;
 				}
 			}
 

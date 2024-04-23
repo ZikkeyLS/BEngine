@@ -26,9 +26,10 @@ namespace BEngineCore
 
 		public List<ModelRenderContext> ModelsToRender = new();
 		public HashSet<uint> TexturesToDelete = new();
-		public bool EnableNativeCameraMovement = true;
 
 		public Dictionary<string, FrameBuffer> FrameBuffers = new();
+
+		public bool CameraOverride = false;
 
 		private const int DefaultX = 1920;
 		private const int DefaultY = 1080;
@@ -100,7 +101,7 @@ namespace BEngineCore
 				fill = !fill;
 			}
 
-			if (EnableNativeCameraMovement)
+			if (_camera.NativeCamera || !CameraOverride)
 			{
 				ProcessCameraMovement(_window, time);
 			}
@@ -156,6 +157,16 @@ namespace BEngineCore
 			}
 		}
 
+		public void AddCameraRequest(CameraHandlerRequest request)
+		{
+			_camera.AddRequest(request);
+		}
+
+		public void ResetCameraHandler()
+		{
+			_camera.ResetCameraHandler();
+		}
+
 		private void ProcessCameraMovement(EngineWindow window, float time)
 		{
 			float speed = time * 6;
@@ -194,7 +205,7 @@ namespace BEngineCore
 
 					float senstivity = 0.1f;
 					difference *= senstivity;
-					_camera.rotation += new Vector3(-difference.X, difference.Y, 0);
+					_camera.rotation = (Quaternion)BEngine.Quaternion.FromEuler(BEngine.Quaternion.ToEuler(_camera.rotation) + new Vector3(difference.Y, -difference.X, 0));
 
 					_lastMousePosition = mouseMove;
 				}

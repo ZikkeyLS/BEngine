@@ -4,6 +4,8 @@ namespace BEngine
 	[Serializable]
 	public class Entity : IDisposable
 	{
+		public readonly string GUID;
+
 		public string Name;
 		internal List<Script> Scripts = new();
 		private List<Script> _scriptCopy = new List<Script>();

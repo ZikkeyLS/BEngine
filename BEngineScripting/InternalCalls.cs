@@ -22,6 +22,7 @@ namespace BEngine
 				LoadInputsAssembly();
 				LoadTimeAssembly();
 				LoadPhysicsAssembly();
+				LoadCameraAssembly();
 			}
 		}
 
@@ -326,6 +327,20 @@ namespace BEngine
 			return (Vector3)(_physicsGetAngularVelocity?.Invoke(null, new object[] { physicsID }));
 		}
 
+		#endregion
+
+		#region Camera
+		private static MethodInfo? _cameraCreateRequest;
+
+		private static void LoadCameraAssembly()
+		{
+			_cameraCreateRequest = GetMethod("CameraCreateRequest");
+		}
+
+		public static void CameraCreateRequest(string GUID, uint priority, Vector3 position, Quaternion rotation)
+		{
+			_cameraCreateRequest?.Invoke(null, new object[] { GUID, priority, position, rotation });
+		}
 		#endregion
 	}
 }
