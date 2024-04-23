@@ -5,8 +5,8 @@ using System.Text;
 using static BEngine.Collider;
 using static MagicPhysX.NativeMethods;
 using Quaternion = System.Numerics.Quaternion;
-using Vector3 = System.Numerics.Vector3;
 using Vector2 = System.Numerics.Vector2;
+using Vector3 = System.Numerics.Vector3;
 
 namespace BEngineCore
 {
@@ -122,7 +122,7 @@ namespace BEngineCore
 
 			var sceneDescription = PxSceneDesc_new(PxPhysics_getTolerancesScale(physics));
 			sceneDescription.gravity = new PxVec3() { x = 0.0f, y = Gravity, z = 0.0f };
-		
+
 			dispatcher = phys_PxDefaultCpuDispatcherCreate(1, null, PxDefaultCpuDispatcherWaitForWorkMode.WaitForWork, 0);
 			sceneDescription.cpuDispatcher = (PxCpuDispatcher*)dispatcher;
 			sceneDescription.filterShader = get_default_simulation_filter_shader();
@@ -187,27 +187,19 @@ namespace BEngineCore
 				PxTransform transform = PxRigidActor_getGlobalPose((PxRigidActor*)actor.Value.Actor);
 				actor.Value.Transform = transform;
 
-				try
+				if (actor.Value.Dynamic)
 				{
-					if (actor.Value.Dynamic)
+					if (actor.Value.Actor == null)
+						return;
+
+					PxRigidBody* rb = (PxRigidBody*)actor.Value.Actor;
+					if (*rb->structgen_pad0 != 240)
 					{
-						if (actor.Value.Actor == null)
-							return;
-
-						var rb = (PxRigidBody*)actor.Value.Actor;
-
-						if (*rb->structgen_pad0 != 240)
-						{
-							continue;
-						}
-
-						actor.Value.Velocity = PxRigidBody_getLinearVelocity(rb);
-						actor.Value.AngularVelocity = PxRigidBody_getAngularVelocity(rb);
+						continue;
 					}
-				}
-				catch (AccessViolationException)
-				{
-					continue;
+
+					actor.Value.Velocity = PxRigidBody_getLinearVelocity(rb);
+					actor.Value.AngularVelocity = PxRigidBody_getAngularVelocity(rb);
 				}
 			}
 
@@ -235,7 +227,7 @@ namespace BEngineCore
 
 				currentTime += 1f / FixedFrames;
 				fps += 1;
-				
+
 				if (currentTime > 1)
 				{
 					Console.WriteLine(fps);
@@ -517,7 +509,7 @@ namespace BEngineCore
 				local.p = Vector3.Zero;
 
 				PxVec3 xDir = new PxVec3() { x = 1.0f, y = 0.0f, z = 0.0f };
-				PxVec3 upDir = new PxVec3() { x = 0.0f, y = 1.0f, z = 0.0f };	
+				PxVec3 upDir = new PxVec3() { x = 0.0f, y = 1.0f, z = 0.0f };
 				local.q = phys_PxShortestRotation(&xDir, &upDir);
 				PxShape_setLocalPose_mut(shape, &local);
 			}
