@@ -8,6 +8,7 @@ using Quaternion = System.Numerics.Quaternion;
 using Vector3 = System.Numerics.Vector3;
 using Vector2 = System.Numerics.Vector2;
 using Silk.NET.Assimp;
+using System.ComponentModel;
 
 namespace BEngineCore
 {
@@ -192,8 +193,18 @@ namespace BEngineCore
 				{
 					if (actor.Value.Dynamic)
 					{
-						actor.Value.Velocity = PxRigidBody_getLinearVelocity((PxRigidBody*)actor.Value.Actor);
-						actor.Value.AngularVelocity = PxRigidBody_getAngularVelocity((PxRigidBody*)actor.Value.Actor);
+						if (actor.Value.Actor == null)
+							return;
+
+						var rb = (PxRigidBody*)actor.Value.Actor;
+
+						if (*rb->structgen_pad0 != 240)
+						{
+							continue;
+						}
+
+						actor.Value.Velocity = PxRigidBody_getLinearVelocity(rb);
+						actor.Value.AngularVelocity = PxRigidBody_getAngularVelocity(rb);
 					}
 				}
 				catch (AccessViolationException)
