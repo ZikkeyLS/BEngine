@@ -1,7 +1,4 @@
-﻿using BEngineCore;
-using System.Xml.Linq;
-
-namespace BEngineEditor
+﻿namespace BEngineEditor
 {
 	public class ProjectContext
 	{
@@ -28,14 +25,14 @@ namespace BEngineEditor
 			Window = window;
 		}
 
-		public void CreateProject() 
+		public void CreateProject()
 		{
 			Utils.CopyDirectory(TemplateProjectDirectory, AssembledTempProjectPath);
 			ProjectBuilder.RemoveTempMarker(AssembledTempProjectPath);
 
 			ProjectBuilder.PrepareProjectStructure(
 				AssembledTempProjectPath, TempProjectName,
-				Directory.GetCurrentDirectory() + @"\BEngineCore.dll", 
+				Directory.GetCurrentDirectory() + @"\BEngineCore.dll",
 				Directory.GetCurrentDirectory() + @"\BEngineScripting.dll");
 
 			LoadProject(AssembledTempProjectPath + @$"\{TempProjectName}.sln");
@@ -44,7 +41,10 @@ namespace BEngineEditor
 		public void LoadProject(string slnPath)
 		{
 			_currentProject?.Settings.Save();
-			_currentProject?.LoadedScene?.Save<Scene>();
+			if (_currentProject?.LoadedScene != null && _currentProject.Runtime == false)
+			{
+				_currentProject.SaveCurrentScene();
+			}
 
 			string name = Path.GetFileNameWithoutExtension(slnPath);
 			string directory = Path.GetDirectoryName(slnPath);

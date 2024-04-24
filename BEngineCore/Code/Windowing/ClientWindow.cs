@@ -21,7 +21,10 @@ namespace BEngineCore
 		{
 			base.OnUpdate(time);
 
-			_project.LoadedScene?.CallEvent(EventID.Update);
+			if (_project.Pause == false)
+			{
+				_project.LoadedScene?.CallEvent(EventID.Update);
+			}
 		}
 
 		protected override void OnRender(double time)

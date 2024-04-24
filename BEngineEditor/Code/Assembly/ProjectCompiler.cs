@@ -127,6 +127,12 @@ namespace BEngineEditor
 
 		public void BuildGame(bool run = false)
 		{
+			if (_project.Runtime)
+			{
+                BEngineCore.Logger.Main?.LogError("You can't build game in Runtime Mode!");
+				return;
+			}
+
 			_runOnBuild = run;
 			BuildStartTime = DateTime.Now;
 			BuildingGame = true;

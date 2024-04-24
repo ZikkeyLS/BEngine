@@ -109,6 +109,12 @@ namespace BEngineEditor
 				return;
 			}
 
+			if (LoadedScene == null)
+			{
+				Logger.LogWarning("You can't save null referenced scene.");
+				return;
+			}
+
 			LoadedScene.SaveGuaranteed<Scene>(AssetsDirectory + "/" + LoadedScene.SceneName + ".scene");
 		}
 

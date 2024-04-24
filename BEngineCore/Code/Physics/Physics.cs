@@ -148,7 +148,16 @@ namespace BEngineCore
 			{
 				while (running)
 				{
-					if (ProjectAbstraction.LoadedProject != null && ProjectAbstraction.LoadedProject.Runtime)
+					ProjectAbstraction? project = ProjectAbstraction.LoadedProject;
+
+					if (clear)
+					{
+						ClearInstanceInternal();
+						clear = false;
+						continue;
+					}
+
+					if (project != null && project.Runtime && project.Pause == false)
 						FixedUpdate();
 				}
 			});
@@ -156,18 +165,8 @@ namespace BEngineCore
 			Clear();
 		}
 
-		private float currentTime = 0;
-		private int fps = 0;
-
 		private unsafe void FixedUpdate()
 		{
-			if (clear)
-			{
-				ClearInstanceInternal();
-				clear = false;
-				return;
-			}
-
 			RemoveActors();
 			AddActors();
 			SwipeActors();
@@ -223,16 +222,6 @@ namespace BEngineCore
 					}
 
 					project.LoadedScene.CallEvent(EventID.EditorFixedUpdate);
-				}
-
-				currentTime += 1f / FixedFrames;
-				fps += 1;
-
-				if (currentTime > 1)
-				{
-					Console.WriteLine(fps);
-					fps = 0;
-					currentTime = 0;
 				}
 
 				Thread.Sleep((int)(1f / FixedFrames * 1000));

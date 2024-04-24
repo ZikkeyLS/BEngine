@@ -78,27 +78,13 @@ namespace BEngineEditor
 			ProjectContext.CurrentProject?.Logger.InsertSafeLogs();
 		}
 
-		int fps = 0;
-		float time = 0;
-
-
 		protected override void OnUpdate(double time)
 		{
-			this.time += (float)time;
-			fps += 1;
-			if (this.time >= 1)
-			{
-				Console.WriteLine(fps);
-				fps = 0;
-				this.time = 0;
-			}
-
-
 			if (ProjectContext.CurrentProject != null)
 			{
 				ProjectContext.CurrentProject.Time.RawDeltaTime = (float)time;
 				ProjectContext.CurrentProject.LoadedScene?.CallEvent(EventID.EditorUpdate);
-				if (ProjectContext.CurrentProject.Runtime)
+				if (ProjectContext.CurrentProject.Runtime && ProjectContext.CurrentProject.Pause == false)
 				{
 					ProjectContext.CurrentProject.LoadedScene?.CallEvent(EventID.Update);
 				}
@@ -137,7 +123,8 @@ namespace BEngineEditor
 		{
 			Settings.Save();
 			ProjectContext.CurrentProject?.Settings.Save();
-			ProjectContext.CurrentProject?.LoadedScene?.Save<Scene>();
+			if (ProjectContext.CurrentProject?.LoadedScene != null)
+				ProjectContext.CurrentProject?.SaveCurrentScene();
 
 			ImGui.SaveIniSettingsToDisk(UIConfigName);
 		}

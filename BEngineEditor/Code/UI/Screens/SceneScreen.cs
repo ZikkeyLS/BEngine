@@ -26,10 +26,17 @@ namespace BEngineEditor
 			ImGui.BeginMenuBar();
 
 			float runtimeStateButtonWidth = 100f;
-			ImGui.SetCursorPosX(ImGui.GetWindowWidth() / 2 - runtimeStateButtonWidth / 2);
+			float spacing = 75f;
+			ImGui.SetCursorPosX(ImGui.GetWindowWidth() / 2 - runtimeStateButtonWidth / 2 - spacing);
 			if (ImGui.Button(_projectContext.CurrentProject.Runtime ? "Stop" : "Start", new Vector2(runtimeStateButtonWidth, 25)))
 			{
 				_projectContext.CurrentProject.SwipeRuntime();
+			}
+
+			ImGui.SetCursorPosX(ImGui.GetWindowWidth() / 2 - runtimeStateButtonWidth / 2 + spacing);
+			if (ImGui.Button(_projectContext.CurrentProject.Pause ? "Unpause" : "Pause", new Vector2(runtimeStateButtonWidth, 25)))
+			{
+				_projectContext.CurrentProject.SwipePause();
 			}
 
 			ImGui.EndMenuBar();

@@ -265,7 +265,7 @@ namespace BEngineEditor
 					}
 					else if (Path.GetExtension(entryName) == ".scene")
 					{
-						_currentProject.TryLoadScene(_currentProject.AssetsReader.GetMetaID(entryPath));
+						_currentProject.TryLoadScene(_currentProject.AssetsReader.GetMetaID(entryPath), true, true);
 					} 
 					else
 					{

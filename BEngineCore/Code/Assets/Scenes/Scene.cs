@@ -77,8 +77,6 @@ namespace BEngineCore
 
 		public void ReloadScripts()
 		{
-			Save<Scene>();
-
 			lock (Entities)
 			{
 				for (int i = 0; i < Entities.Count; i++)

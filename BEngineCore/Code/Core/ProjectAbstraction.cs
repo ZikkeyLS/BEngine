@@ -27,6 +27,7 @@ namespace BEngineCore
 		public Time Time => time;
 
 		public bool Runtime { get; private set; } = false;
+		public bool Pause { get; private set; } = false;
 
 		public ProjectAbstraction(EngineWindow window)
 		{
@@ -53,6 +54,11 @@ namespace BEngineCore
 			}
 		}
 
+		public void SwipePause()
+		{
+			Pause = !Pause;
+		}
+
 		public void StartRuntime()
 		{
 			Runtime = true;
@@ -63,8 +69,9 @@ namespace BEngineCore
 		{
 			Runtime = false;
 			// just temp try to reload scene
-			TryLoadScene(loadedScene.GUID, true, false);
 			physics.ClearInstance();
+			TryLoadScene(loadedScene.GUID, true, false);
+
 		}
 
 		public virtual void LoadProjectData()
@@ -80,6 +87,11 @@ namespace BEngineCore
 			{
 				if (fastLoad)
 				{
+					if (Runtime)
+					{
+						StopRuntime();
+					}
+
 					BaseLoadScene(scene, savePrevious);
 				}
 				else
