@@ -30,6 +30,10 @@ namespace BEngineEditor
 			ImGui.SetCursorPosX(ImGui.GetWindowWidth() / 2 - runtimeStateButtonWidth / 2 - spacing);
 			if (ImGui.Button(_projectContext.CurrentProject.Runtime ? "Stop" : "Start", new Vector2(runtimeStateButtonWidth, 25)))
 			{
+				if(!_projectContext.CurrentProject.Runtime)
+				{
+					_projectContext.CurrentProject.SaveCurrentScene();
+				}
 				_projectContext.CurrentProject.SwipeRuntime();
 			}
 
