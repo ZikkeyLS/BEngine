@@ -23,6 +23,7 @@ namespace BEngine
 				LoadTimeAssembly();
 				LoadPhysicsAssembly();
 				LoadCameraAssembly();
+				LoadProjectAssembly();
 			}
 		}
 
@@ -340,6 +341,27 @@ namespace BEngine
 		public static void CameraCreateRequest(string GUID, uint priority, Vector3 position, Quaternion rotation)
 		{
 			_cameraCreateRequest?.Invoke(null, new object[] { GUID, priority, position, rotation });
+		}
+		#endregion
+
+		#region Project
+		private static MethodInfo? _projectIsEditor;
+		private static MethodInfo? _projectIsRuntime;
+
+		private static void LoadProjectAssembly()
+		{
+			_projectIsEditor = GetMethod("ProjectIsEditor");
+			_projectIsRuntime = GetMethod("ProjectIsRuntime");
+		}
+
+		public static bool ProjectIsEditor()
+		{
+			return (bool)(_projectIsEditor?.Invoke(null, new object[] { }));
+		}
+
+		public static bool ProjectIsRuntime()
+		{
+			return (bool)(_projectIsRuntime?.Invoke(null, new object[] { }));
 		}
 		#endregion
 	}

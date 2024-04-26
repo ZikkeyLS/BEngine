@@ -1,6 +1,4 @@
-﻿
-using BEngine;
-using Silk.NET.Assimp;
+﻿using BEngine;
 
 namespace BEngineCore
 {
@@ -28,12 +26,14 @@ namespace BEngineCore
 
 		public bool Runtime { get; private set; } = false;
 		public bool Pause { get; private set; } = false;
+		public bool Editor { get; private set; } = false;
 
-		public ProjectAbstraction(EngineWindow window)
+		public ProjectAbstraction(EngineWindow window, bool editor = false)
 		{
 			physics = window.Physics;
 			graphics = window.Graphics;
 			input = window.Input;
+			Editor = editor;
 		}
 
 		public void LoadProject()
@@ -57,6 +57,11 @@ namespace BEngineCore
 		public void SwipePause()
 		{
 			Pause = !Pause;
+		}
+
+		public void SetEditor(bool editor)
+		{
+			Editor = editor;
 		}
 
 		public void StartRuntime()

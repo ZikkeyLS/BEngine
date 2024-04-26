@@ -386,5 +386,19 @@ namespace BEngineCore
 			}
 		}
 		#endregion
+
+		#region Project
+		public static bool ProjectIsEditor()
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+			return loadedProject != null && loadedProject.Editor;
+		}
+
+		public static bool ProjectIsRuntime()
+		{
+			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
+			return loadedProject != null && loadedProject.Runtime;
+		}
+		#endregion
 	}
 }
