@@ -18,10 +18,12 @@ namespace BEngineEditor
 		private ConsoleScreen _assemblyStatus = new();
 		private ProjectExplorerScreen _projectExplorer = new();
 		private SceneScreen _scene = new();
+		private GameScreen _game = new();
 		private HierarchyScreen _hierarchy = new();
 		private PropertiesScreen _properties = new();
 
 		private FrameBuffer _sceneBuffer;
+		private FrameBuffer _gameBuffer;
 
 		private const string UIConfigName = "BEngineEditorUI.ini";
 
@@ -54,13 +56,15 @@ namespace BEngineEditor
 
 			_shortcuts = new Shortcuts(ProjectContext);
 
-			_sceneBuffer = graphics.CreateBuffer("Scene", (uint)window.Size.X, (uint)window.Size.Y);
+			_sceneBuffer = graphics.CreateBuffer("Scene", (uint)window.Size.X, (uint)window.Size.Y, true);
+			_gameBuffer = graphics.CreateBuffer("Game", (uint)window.Size.X, (uint)window.Size.Y, false);
 
 			_projectLoader.Initialize(this);
 			_menuBar.Initialize(this);
 			_assemblyStatus.Initialize(this);
 			_projectExplorer.Initialize(this);
 			_scene.Initialize(this, _sceneBuffer);
+			_game.Initialize(this, _gameBuffer);
 			_hierarchy.Initialize(this);
 			_properties.Initialize(this);
 		}
@@ -110,6 +114,7 @@ namespace BEngineEditor
 			if (ProjectContext.ProjectLoaded && ProjectContext.CurrentProject.LoadedScene != null)
 			{
 				_scene.Display();
+				_game.Display();
 				_hierarchy.Display();
 				if (ProjectContext.CurrentProject.SelectedElement != null 
 					&& ProjectContext.CurrentProject.SelectedElement.Type != ItemTypeSelected.None)

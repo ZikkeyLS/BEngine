@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace BEngineEditor
 {
-	public class SceneScreen : Screen
+	public class GameScreen : Screen
 	{
 		private ProjectContext _projectContext => window.ProjectContext;
 
@@ -21,7 +21,7 @@ namespace BEngineEditor
 		public override void Display()
 		{
 			ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
-			ImGui.Begin("Scene", ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.AlwaysAutoResize);
+			ImGui.Begin("Game", ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.AlwaysAutoResize);
 
 			ImGui.BeginMenuBar();
 
@@ -49,9 +49,6 @@ namespace BEngineEditor
 			_frameBuffer.RescaleFrameBuffer((uint)size.X, (uint)size.Y);
 
 			ImGui.Image((nint)_frameBuffer.GetFrameTexture(), ImGui.GetContentRegionAvail(), Vector2.UnitY, Vector2.UnitX);
-
-			bool focused = ImGui.IsWindowFocused();
-			_projectContext.CurrentProject.Graphics.EditorCameraEnabled = focused;
 
 			ImGui.End();
 			ImGui.PopStyleVar();

@@ -29,7 +29,7 @@ namespace BEngineCore
 
 		public Dictionary<string, FrameBuffer> FrameBuffers = new();
 
-		public bool CameraOverride = false;
+		public bool EditorCameraEnabled = false;
 
 		private const int DefaultX = 1920;
 		private const int DefaultY = 1080;
@@ -39,9 +39,9 @@ namespace BEngineCore
 			Graphics.gl = gl;
 		}
 
-		public FrameBuffer CreateBuffer(string name, uint x, uint y)
+		public FrameBuffer CreateBuffer(string name, uint x, uint y, bool editor = false)
 		{
-			FrameBuffer buffer = new FrameBuffer(x, y);
+			FrameBuffer buffer = new FrameBuffer(x, y, editor);
 			FrameBuffers.Add(name, buffer);
 			return buffer;
 		}
@@ -101,7 +101,7 @@ namespace BEngineCore
 				fill = !fill;
 			}
 
-			if (_camera.NativeCamera || !CameraOverride)
+			if (_camera.EditorCamera && EditorCameraEnabled)
 			{
 				ProcessCameraMovement(_window, time);
 			}
@@ -117,7 +117,7 @@ namespace BEngineCore
 
 				_shader.Use();
 
-				Matrix4x4 view = _camera.CalculateViewMatrix();
+				Matrix4x4 view = _camera.CalculateViewMatrix(frame.Editor);
 				Matrix4x4 projection = _camera.CalculateProjectionMatrix(DefaultX, DefaultY);
 
 				_shader.SetMatrix4("view", view);
@@ -135,7 +135,6 @@ namespace BEngineCore
 
 					ModelsToRender[i].Model.Draw(_shader);
 				}
-				ModelsToRender.Clear();
 
 				frame.Unbind();
 			}
@@ -155,6 +154,8 @@ namespace BEngineCore
 								  ClearBufferMask.ColorBufferBit, GLEnum.Linear);
 				gl.BindFramebuffer(GLEnum.ReadFramebuffer, 0);
 			}
+
+			ModelsToRender.Clear();
 		}
 
 		public void AddCameraRequest(CameraHandlerRequest request)
@@ -173,19 +174,19 @@ namespace BEngineCore
 
 			if (_input.IsKeyPressed(Key.W))
 			{
-				_camera.position += _camera.forward * speed;
+				_camera.editorPosition += _camera.editorForward * speed;
 			}
 			if (_input.IsKeyPressed(Key.S))
 			{
-				_camera.position -= _camera.forward * speed;
+				_camera.editorPosition -= _camera.editorForward * speed;
 			}
 			if (_input.IsKeyPressed(Key.A))
 			{
-				_camera.position -= Vector3.Normalize(Vector3.Cross(_camera.forward, _camera.up)) * speed;
+				_camera.editorPosition -= Vector3.Normalize(Vector3.Cross(_camera.editorForward, _camera.editorUp)) * speed;
 			}
 			if (_input.IsKeyPressed(Key.D))
 			{
-				_camera.position += Vector3.Normalize(Vector3.Cross(_camera.forward, _camera.up)) * speed;
+				_camera.editorPosition += Vector3.Normalize(Vector3.Cross(_camera.editorForward, _camera.editorUp)) * speed;
 			}
 
 			Vector2 difference = Vector2.Zero;
@@ -205,7 +206,7 @@ namespace BEngineCore
 
 					float senstivity = 0.1f;
 					difference *= senstivity;
-					_camera.rotation = (Quaternion)BEngine.Quaternion.FromEuler(BEngine.Quaternion.ToEuler(_camera.rotation) + new Vector3(difference.Y, -difference.X, 0));
+					_camera.editorRotation = (Quaternion)BEngine.Quaternion.FromEuler(BEngine.Quaternion.ToEuler(_camera.editorRotation) + new Vector3(difference.Y, -difference.X, 0));
 
 					_lastMousePosition = mouseMove;
 				}

@@ -8,6 +8,8 @@ namespace BEngineCore
 		private uint _texture;
 		private uint _rbo;
 
+		public readonly bool Editor;
+
 		public uint FBO => _fbo;
 		public uint Texture => _texture;
 
@@ -16,8 +18,10 @@ namespace BEngineCore
 		public uint Width { get; private set; }
 		public uint Height { get; private set; }
 
-		public FrameBuffer(uint width, uint height)
+		public FrameBuffer(uint width, uint height, bool editor = false)
 		{
+			Editor = editor;
+
 			Width = width;
 			Height = height;
 
