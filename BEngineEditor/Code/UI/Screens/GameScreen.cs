@@ -50,6 +50,25 @@ namespace BEngineEditor
 
 			ImGui.Image((nint)_frameBuffer.GetFrameTexture(), ImGui.GetContentRegionAvail(), Vector2.UnitY, Vector2.UnitX);
 
+			bool focused = ImGui.IsWindowFocused();
+			bool setFocused = ImGui.IsWindowHovered()
+				&& _projectContext.CurrentProject.Input.IsButtonPressed(BEngine.MouseButton.Middle);
+			if (setFocused)
+			{
+				if (window.FocusedBy == EditorWindow.FocusControlledBy.None)
+				{
+					if (!focused)
+					{
+						ImGui.SetWindowFocus();
+					}
+					window.FocusedBy = EditorWindow.FocusControlledBy.Game;
+				}
+			}
+			else if (window.FocusedBy == EditorWindow.FocusControlledBy.Game && !_projectContext.CurrentProject.Input.IsButtonPressed(BEngine.MouseButton.Middle))
+			{
+				window.FocusedBy = EditorWindow.FocusControlledBy.None;
+			}
+
 			ImGui.End();
 			ImGui.PopStyleVar();
 		}

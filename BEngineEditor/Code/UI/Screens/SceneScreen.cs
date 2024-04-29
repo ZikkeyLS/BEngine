@@ -51,7 +51,26 @@ namespace BEngineEditor
 			ImGui.Image((nint)_frameBuffer.GetFrameTexture(), ImGui.GetContentRegionAvail(), Vector2.UnitY, Vector2.UnitX);
 
 			bool focused = ImGui.IsWindowFocused();
-			_projectContext.CurrentProject.Graphics.EditorCameraEnabled = focused;
+
+			bool setFocused = ImGui.IsWindowHovered()
+				&& _projectContext.CurrentProject.Input.IsButtonPressed(BEngine.MouseButton.Middle);
+			if (setFocused)
+			{
+				if (window.FocusedBy == EditorWindow.FocusControlledBy.None)
+				{
+					if (!focused)
+					{
+						ImGui.SetWindowFocus();
+					}
+					window.FocusedBy = EditorWindow.FocusControlledBy.Scene;
+					_projectContext.CurrentProject.Graphics.EditorCameraEnabled = true;
+				}
+			}
+			else if (window.FocusedBy == EditorWindow.FocusControlledBy.Scene && !_projectContext.CurrentProject.Input.IsButtonPressed(BEngine.MouseButton.Middle))
+			{
+				window.FocusedBy = EditorWindow.FocusControlledBy.None;
+				_projectContext.CurrentProject.Graphics.EditorCameraEnabled = false;
+			}
 
 			ImGui.End();
 			ImGui.PopStyleVar();

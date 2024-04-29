@@ -7,11 +7,19 @@ namespace BEngineEditor
 {
 	public class EditorWindow : EngineWindow
 	{
+		public enum FocusControlledBy : byte
+		{
+			None = 0,
+			Scene = 1,
+			Game = 2
+		}
+
 		private ImGuiController _controller;
 		private Shortcuts _shortcuts;
 
 		public ProjectContext ProjectContext { get; private set; }
 		public EditorSettings Settings { get; private set; }
+		public FocusControlledBy FocusedBy { get; set; } = FocusControlledBy.None;
 
 		private ProjectLoaderScreen _projectLoader = new();
 		private MenuBarScreen _menuBar = new();
