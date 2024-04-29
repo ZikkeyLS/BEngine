@@ -19,6 +19,11 @@ namespace BEngineCore
 		public SceneScriptField() { }
 	}
 
+	public class ScriptFieldData
+	{
+		public Dictionary<string, FieldData> Data = new();
+	}
+
 	public class SceneScript : IDisposable
 	{
 		public string GUID { get; set; }

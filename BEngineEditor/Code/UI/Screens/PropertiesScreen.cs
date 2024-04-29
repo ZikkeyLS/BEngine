@@ -5,11 +5,6 @@ using System.Reflection;
 
 namespace BEngineEditor
 {
-	public class ScriptFieldData
-	{
-		public Dictionary<string, FieldData> Data = new();
-	}
-
 	public struct ScriptDragData
 	{
 		public SceneEntity entity;
@@ -112,7 +107,7 @@ namespace BEngineEditor
 					newName = "~";
 				}
 
-				selectedEntity.SetBaseData(newName);
+				selectedEntity.SetBaseData(newName, true);
 			}
 
 			Vector4 colorMultiplied = System.Numerics.Vector4.Multiply(ColorConstants.HeaderColor, 256f);

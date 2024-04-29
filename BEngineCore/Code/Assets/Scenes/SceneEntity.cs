@@ -40,14 +40,22 @@ namespace BEngineCore
 
 		public SceneEntity(string name)
 		{
-			GUID = Guid.NewGuid().ToString();
-			SetBaseData(name);
+			SetBaseData(name, true);
 		}
 
-		public void SetBaseData(string name)
+		public void SetBaseData(string name, bool regenerateGUID = false)
 		{
 			Name = name;
 			Entity.Name = Name;
+			if (regenerateGUID)
+			{
+				RegenerateGUID();
+			}
+		}
+
+		public void RegenerateGUID()
+		{
+			GUID = Guid.NewGuid().ToString();
 			typeof(Entity).GetField("GUID", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)?.SetValue(Entity, GUID);
 		}
 
@@ -75,17 +83,17 @@ namespace BEngineCore
 				SetParent(entity);
 		}
 
-		public void SetParent(SceneEntity entity)
+		public bool SetParent(SceneEntity entity)
 		{
 			if (IsChildOf(entity, this))
 			{
-				return;
+				return false;
 			}
 
 			if (entity == null)
 			{
 				ClearParent();
-				return;
+				return false;
 			}
 
 			if (Parent != null)
@@ -95,7 +103,8 @@ namespace BEngineCore
 
 			Parent = entity;
 			ParentBase = entity.GUID;
-			entity.AddChild(this);
+			entity.AddChildInternal(this);
+			return true;
 		}
 
 		public void ClearParent()
@@ -109,6 +118,11 @@ namespace BEngineCore
 		}
 
 		public bool AddChild(SceneEntity entity)
+		{
+			return entity.SetParent(this);
+		}
+
+		private bool AddChildInternal(SceneEntity entity)
 		{
 			if (Children.Contains(entity))
 				return false;
@@ -142,13 +156,14 @@ namespace BEngineCore
 			return false;
 		}
 
-		public void AddScript(Scripting.CachedScript script)
+		public SceneScript AddScript(Scripting.CachedScript script)
 		{
 			SceneScript newScript = new SceneScript() { Name = script.Name, Namespace = script.Namespace };
 			newScript.GUID = Guid.NewGuid().ToString();
 			Scripts.Add(newScript);
 			
 			CreateInstanseOf(script, newScript);
+			return newScript;
 		}
 
 		public bool RenameScript(SceneScript sceneScript, Scripting.CachedScript script)

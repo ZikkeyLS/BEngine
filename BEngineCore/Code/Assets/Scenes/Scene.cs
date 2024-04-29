@@ -8,6 +8,8 @@ namespace BEngineCore
 		public string SceneName { get; set; } = "New Scene";
 		public List<SceneEntity> Entities { get; set; } = new();
 
+		public SceneEntity CopyBuffer { get; private set; }
+
 		public Scene()
 		{
 
@@ -60,7 +62,7 @@ namespace BEngineCore
 						}
 					}
 				}
-			}			
+			}
 		}
 
 		public void LoadScene()
@@ -140,6 +142,49 @@ namespace BEngineCore
 			{
 				return Entities.Find((sceneEntity) => sceneEntity.GUID == guid);
 			}
+		}
+
+		public void CopyEntity(SceneEntity sceneEntity)
+		{
+			CopyBuffer = sceneEntity;
+		}
+
+		public SceneEntity PasteEntity(SceneEntity? root = null)
+		{
+			return PasteEntity(root, CopyBuffer);
+		}
+
+		public SceneEntity PasteEntity(SceneEntity? root, SceneEntity sceneEntity)
+		{
+			SceneEntity pasted = CreateEntity(sceneEntity.Name);
+
+			for (int i = 0; i < sceneEntity.Children.Count; i++)
+			{
+				PasteEntity(pasted, sceneEntity.Children[i]);
+			}
+
+			if (root != null)
+			{
+				pasted.SetParent(root);
+			}
+
+			for (int i = 0; i < sceneEntity.Scripts.Count; i++)
+			{
+				Scripting.CachedScript? cachedScript = Project.Scripting.Scripts.Find((cached) => 
+					cached.Name == sceneEntity.Scripts[i].Name 
+					&& cached.Namespace == sceneEntity.Scripts[i].Namespace);
+				if (cachedScript != null)
+				{
+					SceneScript sceneScript = pasted.AddScript(cachedScript);
+					ScriptFieldData copyScriptData = new ScriptFieldData()
+					{
+						Data = sceneEntity.CopyScriptData(sceneEntity.Scripts[i])
+					};
+					pasted.PasteScriptData(sceneScript, copyScriptData.Data);
+				}
+			}
+
+			return pasted;
 		}
 	}
 }

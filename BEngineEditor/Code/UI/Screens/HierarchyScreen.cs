@@ -74,7 +74,17 @@ namespace BEngineEditor
 			{
 				if (ImGui.Selectable("Create Entity"))
 				{
-					current.AddChild(_scene.CreateEntity("New Entity", current));
+					_scene.CreateEntity("New Entity", current).SetParent(current);
+				}
+
+				if (ImGui.Selectable("Copy"))
+				{
+					_scene.CopyEntity(current);
+				}
+
+				if (_scene.CopyBuffer != null && ImGui.Selectable("Paste"))
+				{
+					_scene.PasteEntity(current);
 				}
 
 				if (ImGui.Selectable("Delete"))
@@ -136,6 +146,11 @@ namespace BEngineEditor
 				if (ImGui.Selectable("Create Entity"))
 				{
 					_scene.CreateEntity("New Entity");
+				}
+
+				if (_scene.CopyBuffer != null && ImGui.Selectable("Paste"))
+				{
+					_scene.PasteEntity();
 				}
 
 				ImGui.EndPopup();
