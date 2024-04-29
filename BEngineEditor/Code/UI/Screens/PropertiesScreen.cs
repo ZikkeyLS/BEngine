@@ -93,6 +93,7 @@ namespace BEngineEditor
 		private void DisplayEntity(object element)
 		{
 			SceneEntity selectedEntity = (SceneEntity)element;
+			ImGui.PushID(selectedEntity.GUID);
 
 			if (_projectContext.CurrentProject.LoadedScene.Entities.Contains(selectedEntity) == false)
 			{
@@ -107,7 +108,7 @@ namespace BEngineEditor
 					newName = "~";
 				}
 
-				selectedEntity.SetBaseData(newName, true);
+				selectedEntity.SetBaseData(newName);
 			}
 
 			Vector4 colorMultiplied = System.Numerics.Vector4.Multiply(ColorConstants.HeaderColor, 256f);
@@ -243,6 +244,8 @@ namespace BEngineEditor
 				ImGui.EndListBox();
 				ImGui.EndPopup();
 			}
+
+			ImGui.PopID();
 		}
 
 		private void ShowScriptData(SceneEntity selectedEntity, SceneScript sceneScript, Script script)
