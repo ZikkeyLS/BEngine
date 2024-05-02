@@ -62,10 +62,12 @@ namespace BEngineEditor
 						ImGui.SetWindowFocus();
 					}
 					window.FocusedBy = EditorWindow.FocusControlledBy.Game;
+					_projectContext.CurrentProject.Graphics.EditorCameraEnabled = false;
 				}
 			}
 			else if (window.FocusedBy == EditorWindow.FocusControlledBy.Game && !_projectContext.CurrentProject.Input.IsButtonPressed(BEngine.MouseButton.Middle))
 			{
+				_projectContext.CurrentProject.Graphics.EditorCameraEnabled = true;
 				window.FocusedBy = EditorWindow.FocusControlledBy.None;
 			}
 

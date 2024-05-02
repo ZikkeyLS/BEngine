@@ -15,9 +15,9 @@ namespace BEngineCore
 			logger.ClearFileLogs();
 
 			scripting.ReadScriptAssembly(AppDomain.CurrentDomain.FriendlyName + "Assembly.dll");
-			reader = new AssetReader(["./"], AssetReaderType.Directory);
+			reader = new AssetReader(["./"], ["Game.data"]);
 
-			Scene? test = TryLoadScene("a5dc155e-2e0c-4b0d-952d-33bcee4c57a7", true, false);
+			Scene? test = TryLoadScene("73542132-8fd4-4995-b34d-99c5dd40e30c", true, false);
 
 			// init AssetReader with.zip reader feature
 		}

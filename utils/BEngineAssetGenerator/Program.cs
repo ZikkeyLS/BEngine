@@ -14,7 +14,7 @@ namespace BEngineAssetGenerator
 			}
 
 			AssetWatcher assetWatcher = new AssetWatcher(GeneratorDirectory, 
-				new AssetWriter(GeneratorDirectory, new AssetReader([GeneratorDirectory], AssetReaderType.Directory)));
+				new AssetWriter(GeneratorDirectory, new AssetReader([GeneratorDirectory], Array.Empty<string>())));
 
 			Console.WriteLine("Write 'Exit' to stop generation.");
 

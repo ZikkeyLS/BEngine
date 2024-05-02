@@ -1,6 +1,4 @@
 ﻿using BEngine;
-using BEngineCore;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace BEngineCore
@@ -92,12 +90,30 @@ namespace BEngineCore
 
 		public static T? Load<T>(string guid, ProjectAbstraction project) where T : AssetData
 		{
-			string path = project.AssetsReader.GetAssetPath(guid);
+			AssetMetaData? meta = project.AssetsReader.GetAsset(guid);
 
-			if (path == string.Empty)
+			if (meta == null)
 				return null;
 
-			T? assetData = JsonUtils.Deserialize<T>(File.ReadAllText(path));
+			T? assetData = null;
+
+			if (meta.AssetType == AssetType.File)
+			{
+				string path = meta.GetAssetPath();
+				assetData = JsonUtils.Deserialize<T>(File.ReadAllText(path));
+			}
+			else
+			{
+				if (project.AssetsReader.Packer == null || meta.AdditionalPath == null)
+					return null;
+
+				Stream? data = project.AssetsReader.Packer.ReadFile(meta.Path, meta.GetAssetPath());
+				if (data != null)
+				{
+					assetData = JsonUtils.Deserialize<T>(data);
+				}
+			}
+
 			if (assetData != null)
 			{
 				assetData.SetForceID(guid);

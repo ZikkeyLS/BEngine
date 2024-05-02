@@ -1,7 +1,4 @@
-﻿using BEngine;
-using ICSharpCode.SharpZipLib.Core;
-using ICSharpCode.SharpZipLib.Zip;
-using System.Text.Json;
+﻿using ICSharpCode.SharpZipLib.Zip;
 
 namespace BEngineCore
 {
@@ -15,23 +12,36 @@ namespace BEngineCore
 			}
 		}
 
-		public void ReadFile(string archivePath, string fileRelativePath)
+		public void ReadAllFiles(string archivePath, Action<string> onFileFound)
 		{
 			using (var fs = new FileStream(archivePath, FileMode.Open, FileAccess.Read))
-			using (var zf = new ZipFile(fs))
 			{
-			
-				var ze = zf.GetEntry(fileRelativePath);
-				if (ze == null)
+				using (var zf = new ZipFile(fs))
 				{
-					throw new ArgumentException(fileRelativePath, "not found in Zip");
-				}
+					foreach (ZipEntry ze in zf)
+					{
+						if (ze.IsDirectory)
+							continue;
 
-				using (var s = zf.GetInputStream(ze))
-				{
-					JsonUtils.Deserialize<object>(s);
+						onFileFound.Invoke(ze.Name);
+					}
 				}
 			}
+		}
+
+		public Stream? ReadFile(string archivePath, string fileRelativePath)
+		{
+			var fs = new FileStream(archivePath, FileMode.Open, FileAccess.Read);
+			var zf = new ZipFile(fs);
+
+			var ze = zf.GetEntry(fileRelativePath);
+			if (ze == null)
+			{
+				throw new ArgumentException(fileRelativePath, "not found in Zip");
+			}
+
+			var s = zf.GetInputStream(ze);
+			return s;
 		}
 
 		private void ZipFolder(string RootFolder, string CurrentFolder, ZipOutputStream zStream)

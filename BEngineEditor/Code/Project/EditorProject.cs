@@ -81,7 +81,7 @@ namespace BEngineEditor
 			_assemblyListener.InitializeScriptWatch(this);
 			_assemblyListener.OnScriptsChanged += (e) => _compiler.CompileScripts();
 
-			reader = new AssetReader([AssetsDirectory, "./EngineData/Assets"], AssetReaderType.Directory);
+			reader = new AssetReader([AssetsDirectory, "./EngineData/Assets"], Array.Empty<string>());
 
 			_assetWriter = new AssetWriter(AssetsDirectory, reader);
 			_assets = new AssetWatcher(AssetsDirectory, _assetWriter);

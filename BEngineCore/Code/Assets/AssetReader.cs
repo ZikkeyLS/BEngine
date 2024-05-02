@@ -1,36 +1,43 @@
-﻿using System.Xml;
+﻿using System.IO;
+using System.Xml;
 
 namespace BEngineCore
 {
-	public enum AssetReaderType
-	{
-		Directory = 0,
-		Archive
-	}
-
 	public class AssetReader
 	{
-		public readonly AssetReaderType Type;
 		public readonly List<string> AssetsDirectories = new();
+		public readonly List<string> PackerDirectories = new();
+
 		public readonly List<AssetMetaData> LoadedAssets = new();
 
 		public readonly ModelContext ModelContext;
 
 		private Packer? _packer;
 
-		public AssetReader(string[] assetsDirectories, AssetReaderType type)
+		public Packer? Packer => _packer;
+
+		public AssetReader(string[] assetsDirectories, string[] packerDirectories)
 		{
 			ModelContext = new(this);
 			AssetsDirectories.AddRange(assetsDirectories);
-			Type = type;
+			PackerDirectories.AddRange(packerDirectories);
 
 			foreach (string assetsDirectory in assetsDirectories)
 				if (Directory.Exists(assetsDirectory) == false)
 					Directory.CreateDirectory(assetsDirectory);
 
-			if (Type == AssetReaderType.Archive)
+			if (packerDirectories.Length > 0)
 			{
 				_packer = new();
+
+				foreach (string packerDirectory in packerDirectories)
+				{
+					_packer.ReadAllFiles(packerDirectory, (relativePath) => 
+					{
+						if (relativePath.EndsWith(".meta") == false)
+							AddAsset(packerDirectory, relativePath);
+					});
+				}
 			}
 
 			foreach (string assetsDirectory in assetsDirectories)
@@ -40,7 +47,14 @@ namespace BEngineCore
 		public bool HasAsset(string path)
 		{
 			string guid = GetMetaID(path);
-			return guid != string.Empty;
+			string guidArchieve = string.Empty;
+
+			for (int i = 0; i < PackerDirectories.Count; i++)
+			{
+				guidArchieve = GetMetaArchieveID(PackerDirectories[i], path);
+			}
+
+			return guid != string.Empty || guidArchieve != string.Empty;
 		}
 
 		public void AddAsset(string path)
@@ -52,6 +66,25 @@ namespace BEngineCore
 			if (asset != null)
 			{
 				asset.Path = path + ".meta";
+				AddAssetRaw(asset);
+			}
+		}
+
+		public void AddAsset(string archivePath, string relativePath)
+		{
+			if (_packer == null)
+				return;
+
+			Stream? data = _packer.ReadFile(archivePath, relativePath + ".meta");
+			if (data == null)
+				return;
+
+			AssetMetaData? asset = AssetMetaData.Load(data);
+			if (asset != null)
+			{
+				asset.Path = archivePath;
+				asset.AdditionalPath = relativePath + ".meta";
+				asset.AssetType = AssetType.ArchieveFile;
 				AddAssetRaw(asset);
 			}
 		}
@@ -98,10 +131,15 @@ namespace BEngineCore
 			return string.Empty;
 		}
 
+		public AssetMetaData? GetAsset(string guid)
+		{
+			return LoadedAssets.Find((asset) => asset.GUID == guid);
+		}
+
 		public string GetMetaPath(string guid)
 		{
 			AssetMetaData? data = LoadedAssets.Find((asset) => asset.GUID == guid);
-			return data != null ? data.Path : string.Empty;
+			return data != null ? data.GetMetaPath() : string.Empty;
 		}
 
 		public string GetMetaID(string path, bool includeXMLEnd = true)
@@ -122,6 +160,39 @@ namespace BEngineCore
 					{
 						return value;
 					}
+				}
+			}
+			catch
+			{
+
+			}
+
+			return string.Empty;
+		}
+
+		public string GetMetaArchieveID(string archievePath, string relativePath, bool includeXMLEnd = true)
+		{
+			if (_packer == null)
+				return string.Empty;
+
+			string xmlEnd = includeXMLEnd ? ".meta" : string.Empty;
+
+			try
+			{
+				Stream? fileData = _packer.ReadFile(archievePath, relativePath + xmlEnd);
+
+				if (fileData == null)
+					return string.Empty;
+
+				XmlDocument metaFile = new XmlDocument();
+				metaFile.Load(fileData);
+
+				XmlElement? xRoot = metaFile.DocumentElement;
+				string? value = xRoot?.ChildNodes[0]?.InnerText;
+
+				if (value != null)
+				{
+					return value;
 				}
 			}
 			catch

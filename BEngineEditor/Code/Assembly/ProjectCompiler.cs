@@ -206,12 +206,11 @@ namespace BEngineEditor
 			}
 			else
 			{
-				BuildEndTime = DateTime.Now;
-				OnBuildCompleted();
+				OnPreBuildCompleted();
 			}
 		}
 
-		private void OnBuildCompleted()
+		private void OnPreBuildCompleted()
 		{
 			BuildCompileErrors = _buildCompileErrors;
 			BuildCompileWarnings = _buildCompileWarnings;
@@ -245,6 +244,8 @@ namespace BEngineEditor
 			Utils.CopyDirectory($@"runtimes\{_project.Settings.BuildOS}\native", $@"{_project.Directory}\Build\{_project.Settings.BuildOS}\Data");
 
 			_packer.Pack(_project.AssetsDirectory, $@"{_project.Directory}\Build\{_project.Settings.BuildOS}\Data\Game.data");
+
+			BuildEndTime = DateTime.Now;
 
 			if (BuildCompileErrors.Count == 0)
 			{

@@ -69,7 +69,6 @@ namespace BEngineEditor
 			else if (window.FocusedBy == EditorWindow.FocusControlledBy.Scene && !_projectContext.CurrentProject.Input.IsButtonPressed(BEngine.MouseButton.Middle))
 			{
 				window.FocusedBy = EditorWindow.FocusControlledBy.None;
-				_projectContext.CurrentProject.Graphics.EditorCameraEnabled = false;
 			}
 
 			ImGui.End();
