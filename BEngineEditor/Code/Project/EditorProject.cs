@@ -149,7 +149,7 @@ namespace BEngineEditor
 				switch (Settings.IDE)
 				{
 					case IDE.VisualStudio:
-						RunCMDCommand($"start devenv \"{ProjectAssemblyPath}\"", () =>
+						RunCMDCommand($"start devenv \"{SolutionPath}\"", () =>
 						{
 							// TO BE Fixed:
 							// start devenv doesn't wait any time after run, so we can't know exactly, when VS will be opened

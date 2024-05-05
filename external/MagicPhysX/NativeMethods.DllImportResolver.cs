@@ -63,7 +63,16 @@ namespace MagicPhysX
 
                 path += "/native/" + __DllName + extension;
 
-                return NativeLibrary.Load(Path.Combine(AppContext.BaseDirectory, path), assembly, searchPath);
+                bool hardLoad = File.Exists(Path.Combine(AppContext.BaseDirectory, path));
+
+                if (hardLoad)
+                {
+					return NativeLibrary.Load(Path.Combine(AppContext.BaseDirectory, path), assembly, searchPath);
+				}
+                else
+                {
+					return NativeLibrary.Load(__DllName + extension, assembly, searchPath);
+				}
             }
 
             return IntPtr.Zero;
