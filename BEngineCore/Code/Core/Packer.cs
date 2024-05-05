@@ -51,7 +51,7 @@ namespace BEngineCore
 			var ze = zf.GetEntry(fileRelativePath);
 			if (ze == null)
 			{
-				throw new ArgumentException(fileRelativePath, "not found in Zip");
+				return null;
 			}
 
 			var s = zf.GetInputStream(ze);

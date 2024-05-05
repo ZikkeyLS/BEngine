@@ -41,6 +41,7 @@
     <None Remove="EngineData\Assets\Models\Sphere.obj" />
     <None Remove="EngineData\Assets\Models\Sphere.obj.meta" />
     <None Remove="EngineData\Assets\Textures\Default.jpg" />
+    <None Remove="EngineData\Assets\Textures\Default.jpg.meta" />
     <None Remove="EngineData\Shaders\PointLight.frag" />
     <None Remove="EngineData\Shaders\PointLight.vert" />
     <None Remove="EngineData\Shaders\Shader.frag" />
@@ -85,6 +86,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="EngineData\Assets\Textures\Default.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Assets\Textures\Default.jpg.meta">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="EngineData\Shaders\PointLight.frag">

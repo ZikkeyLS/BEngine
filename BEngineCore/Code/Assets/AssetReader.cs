@@ -100,7 +100,19 @@ namespace BEngineCore
 			}
 			else if (assetPath.EndsWith(".scene"))
 			{
-				Scene? scene =  AssetData.ReadRaw<Scene>(assetPath);
+				Scene? scene = null;
+
+				if (asset.AssetType == AssetType.ArchieveFile && Packer != null)
+				{
+					Stream? sceneData = Packer.ReadFile(asset.Path, assetPath);
+					if (sceneData != null)
+						scene = AssetData.ReadRaw<Scene>(sceneData);
+				}
+				else if (asset.AssetType == AssetType.File)
+				{
+					scene = AssetData.ReadRaw<Scene>(assetPath);
+				}
+
 				if (scene != null)
 				{
 					SceneContext.Add(asset.GUID, scene);

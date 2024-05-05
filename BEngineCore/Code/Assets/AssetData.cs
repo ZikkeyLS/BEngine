@@ -41,7 +41,13 @@ namespace BEngineCore
 			T? assetData = JsonUtils.Deserialize<T>(File.ReadAllText(path));
 			return assetData;
 		}
-		
+
+		public static T? ReadRaw<T>(Stream file) where T : AssetData
+		{
+			T? assetData = JsonUtils.Deserialize<T>(file);
+			return assetData;
+		}
+
 		public static void WriteRaw<T>(string path, T data) where T : AssetData
 		{
 			File.WriteAllText(path, JsonUtils.Serialize(data));
