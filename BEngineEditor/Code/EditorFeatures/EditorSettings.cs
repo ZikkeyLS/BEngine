@@ -22,6 +22,7 @@ namespace BEngineEditor
 	public class EditorSettings
 	{
 		public List<LastProject> ProjectHistory { get; set; } = new();
+		public bool BuildSettingsOpened { get; set; } = false;
 
 		private const string SettingsFileName = "EdtiorSettings.json";
 

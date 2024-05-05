@@ -107,6 +107,15 @@ namespace BEngineEditor
 				ImGui.EndMenu();
 			}
 
+			if (ImGui.BeginMenu("Windows"))
+			{
+				if (ImGui.MenuItem("BuildSettings", "", window.Settings.BuildSettingsOpened))
+				{
+					window.Settings.BuildSettingsOpened = !window.Settings.BuildSettingsOpened;
+				}
+				ImGui.EndMenu();
+			}
+
 			ImGui.EndMainMenuBar();
 			ImGui.PopStyleVar();
 		}

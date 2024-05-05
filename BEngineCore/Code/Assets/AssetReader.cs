@@ -11,6 +11,7 @@ namespace BEngineCore
 		public readonly List<AssetMetaData> LoadedAssets = new();
 
 		public readonly ModelContext ModelContext;
+		public readonly Dictionary<string, Scene> SceneContext = new();
 
 		private Packer? _packer;
 
@@ -96,6 +97,14 @@ namespace BEngineCore
 			if (assetPath.EndsWith(".obj") || assetPath.EndsWith(".fbx") || assetPath.EndsWith(".gltf"))
 			{
 				ModelContext.AddGUID(asset);
+			}
+			else if (assetPath.EndsWith(".scene"))
+			{
+				Scene? scene =  AssetData.ReadRaw<Scene>(assetPath);
+				if (scene != null)
+				{
+					SceneContext.Add(asset.GUID, scene);
+				}
 			}
 		}
 

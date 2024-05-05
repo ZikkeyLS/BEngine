@@ -60,6 +60,10 @@ namespace BEngineCore
 				{
 					_assetReader.ModelContext.RemoveGUID(foundAsset);
 				}
+				else if (path.EndsWith(".scene"))
+				{
+					_assetReader.SceneContext.Remove(foundAsset.GUID);
+				}
 
 				_assetReader.LoadedAssets.Remove(foundAsset);
 				File.Delete(path + @".meta");

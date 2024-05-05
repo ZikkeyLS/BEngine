@@ -1,4 +1,5 @@
 ﻿using BEngine;
+using Silk.NET.SDL;
 
 namespace BEngineCore
 {
@@ -16,10 +17,11 @@ namespace BEngineCore
 
 			scripting.ReadScriptAssembly(AppDomain.CurrentDomain.FriendlyName + "Assembly.dll");
 			reader = new AssetReader(["./"], ["Game.data"]);
-
-			Scene? test = TryLoadScene("73542132-8fd4-4995-b34d-99c5dd40e30c", true, false);
-
-			// init AssetReader with.zip reader feature
+			ProjectRuntimeInfo? projectRuntimeInfo = JsonUtils.Deserialize<ProjectRuntimeInfo>(reader.Packer.ReadFile("Game.data", "ProjectRuntimeInfo.json"));
+			if(projectRuntimeInfo != null)
+			{
+				TryLoadScene(projectRuntimeInfo.RuntimeScenes.First().Value.GUID, true, false);
+			}
 		}
 
 		public override void OnSceneLoaded()
