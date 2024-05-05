@@ -4,11 +4,25 @@ namespace BEngineCore
 {
 	public class Packer
 	{
-		public void Pack(string directory, string outputFile)
+		public void Pack(string[] directories, string[] files, string outputFile)
 		{
 			using (ZipOutputStream compression = new ZipOutputStream(File.Create(outputFile)))
 			{
-				ZipFolder(directory, directory, compression);
+				for (int i = 0; i < directories.Length; i++)
+				{
+					DirectoryInfo? parentDirectory = Directory.GetParent(directories[i]);
+					DirectoryInfo fullDirectory = new DirectoryInfo(directories[i]);
+					if(parentDirectory == null)
+					{
+						continue;
+					}
+					ZipFolder(parentDirectory.FullName, fullDirectory.FullName, compression);
+				}
+
+				for (int i = 0; i < files.Length; i++)
+				{
+					AddFileToZip(compression, "", files[i]);
+				}
 			}
 		}
 
