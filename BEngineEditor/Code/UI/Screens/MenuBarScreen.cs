@@ -16,7 +16,7 @@ namespace BEngineEditor
 		protected override void Setup()
 		{
 			_projectContext = window.ProjectContext;
-			engineIcon = new Texture(EditorGlobals.IconPath, Graphics.gl);	
+			engineIcon = new Texture(File.ReadAllBytes(EditorGlobals.IconPath), Graphics.gl);
 		}
 
 		public override void Display()
@@ -104,6 +104,15 @@ namespace BEngineEditor
 					_settings.IDE = IDE.VisualStudioCode;
 				}
 
+				ImGui.EndMenu();
+			}
+
+			if (ImGui.BeginMenu("Windows"))
+			{
+				if (ImGui.MenuItem("BuildSettings", "", window.Settings.BuildSettingsOpened))
+				{
+					window.Settings.BuildSettingsOpened = !window.Settings.BuildSettingsOpened;
+				}
 				ImGui.EndMenu();
 			}
 

@@ -12,13 +12,12 @@ namespace BEngineCore
 
 		public uint ID => _handle;
 
-		public unsafe Texture(string path, GL gl)
+		public unsafe Texture(byte[] data, GL gl)
 		{
-			ImageResult image;
-			using (var stream = File.OpenRead(path))
-			{
-				image = ImageResult.FromStream(stream, ColorComponents.RedGreenBlueAlpha);
-			}
+			ImageResult image = ImageResult.FromMemory(data, ColorComponents.RedGreenBlueAlpha);
+
+			if (image == null)
+				throw new InvalidOperationException("Failed to load image from memory.");
 
 			int properWidth = image.Width;
 			int properHeight = image.Height;

@@ -4,11 +4,21 @@ namespace BEngineCore
 {
 	public class Packer
 	{
-		public void Pack(string directory, string outputFile)
+		public void Pack(string[] directories, string[] files, string outputFile)
 		{
 			using (ZipOutputStream compression = new ZipOutputStream(File.Create(outputFile)))
 			{
-				ZipFolder(directory, directory, compression);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+				directories.Select(dir => new DirectoryInfo(dir))
+				            .Where(dirInfo => Directory.GetParent(dirInfo.FullName) != null)
+				            .ToList()
+				            .ForEach(dirInfo => ZipFolder(Directory.GetParent(dirInfo.FullName).FullName, dirInfo.FullName, compression));
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
+				for (int i = 0; i < files.Length; i++)
+				{
+					AddFileToZip(compression, "", files[i]);
+				}
 			}
 		}
 
@@ -31,13 +41,16 @@ namespace BEngineCore
 
 		public Stream? ReadFile(string archivePath, string fileRelativePath)
 		{
+			archivePath = archivePath.Replace("\\", "/");
+			fileRelativePath = fileRelativePath.Replace("\\", "/");
+
 			var fs = new FileStream(archivePath, FileMode.Open, FileAccess.Read);
 			var zf = new ZipFile(fs);
 
 			var ze = zf.GetEntry(fileRelativePath);
 			if (ze == null)
 			{
-				throw new ArgumentException(fileRelativePath, "not found in Zip");
+				return null;
 			}
 
 			var s = zf.GetInputStream(ze);

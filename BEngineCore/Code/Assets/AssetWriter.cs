@@ -60,6 +60,14 @@ namespace BEngineCore
 				{
 					_assetReader.ModelContext.RemoveGUID(foundAsset);
 				}
+				else if (path.EndsWith(".scene"))
+				{
+					_assetReader.SceneContext.Remove(foundAsset.GUID);
+				}
+				else if (path.EndsWith(".shader"))
+				{
+					_assetReader.ShaderContext.Remove(foundAsset.GUID);
+				}
 
 				_assetReader.LoadedAssets.Remove(foundAsset);
 				File.Delete(path + @".meta");
@@ -90,6 +98,12 @@ namespace BEngineCore
 					if (guid != string.Empty)
 						_assetReader.ModelContext.GUIDMoved(guid, newPath);
 				}
+				else if (newPath.EndsWith(".shader"))
+				{
+					string guid = _assetReader.GetMetaID(oldPath + ".meta");
+					if (guid != string.Empty)
+						_assetReader.ShaderContext.Remove(guid);
+				}
 
 				if (File.Exists(oldPath + ".meta"))
 				{
@@ -97,7 +111,7 @@ namespace BEngineCore
 					AssetMetaData? assetMeta = _assetReader.LoadedAssets.Find((asset) => asset.GUID == oldGUID);
 					if (assetMeta != null)
 					{
-						assetMeta.Path = newPath + ".meta";
+						assetMeta.SetPath(newPath + ".meta");
 						assetMeta.Save();
 					}
 

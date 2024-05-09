@@ -83,6 +83,14 @@ namespace BEngineEditor
 
 			reader = new AssetReader([AssetsDirectory, "./EngineData/Assets"], Array.Empty<string>());
 
+			string? vertData = reader.ShaderContext.GetShaderData("EngineData/Assets/Shaders/Shader.vert.shader");
+			string? fragData = reader.ShaderContext.GetShaderData("EngineData/Assets/Shaders/Shader.frag.shader");
+
+			if (vertData != null && fragData != null)
+			{
+				graphics.SetMainShader(vertData, fragData);
+			}
+
 			_assetWriter = new AssetWriter(AssetsDirectory, reader);
 			_assets = new AssetWatcher(AssetsDirectory, _assetWriter);
 
@@ -149,7 +157,7 @@ namespace BEngineEditor
 				switch (Settings.IDE)
 				{
 					case IDE.VisualStudio:
-						RunCMDCommand($"start devenv \"{ProjectAssemblyPath}\"", () =>
+						RunCMDCommand($"start devenv \"{SolutionPath}\"", () =>
 						{
 							// TO BE Fixed:
 							// start devenv doesn't wait any time after run, so we can't know exactly, when VS will be opened

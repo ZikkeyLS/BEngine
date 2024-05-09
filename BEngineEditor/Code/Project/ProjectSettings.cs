@@ -1,4 +1,5 @@
 ﻿using BEngine;
+using BEngineCore;
 using System.Text.Json.Serialization;
 
 namespace BEngineEditor
@@ -14,6 +15,7 @@ namespace BEngineEditor
 		public string BuildOS { get; set; } = ProjectCompiler.Win64;
 		public string LastOpenedSceneID { get; set; } = string.Empty;
 		public IDE IDE { get; set; } = IDE.VisualStudio;
+		public ProjectRuntimeInfo ProjectRuntimeInfo { get; set; } = new();
 
 		[JsonIgnore] private string _settingsFilePath = "ProjectSettings.json";
 

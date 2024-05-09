@@ -17,9 +17,26 @@ namespace BEngineCore
 			scripting.ReadScriptAssembly(AppDomain.CurrentDomain.FriendlyName + "Assembly.dll");
 			reader = new AssetReader(["./"], ["Game.data"]);
 
-			Scene? test = TryLoadScene("73542132-8fd4-4995-b34d-99c5dd40e30c", true, false);
+			if (reader.Packer == null)
+				return;
 
-			// init AssetReader with.zip reader feature
+			string? vertData = reader.ShaderContext.GetShaderData("EngineData/Assets/Shaders/Shader.vert.shader");
+			string? fragData = reader.ShaderContext.GetShaderData("EngineData/Assets/Shaders/Shader.frag.shader");
+
+			if (vertData != null && fragData != null)
+			{
+				graphics.SetMainShader(vertData, fragData);
+			}
+
+			Stream? runtimeInfo = reader.Packer.ReadFile("Game.data", "ProjectRuntimeInfo.json");
+			if (runtimeInfo == null)
+				return;
+
+			ProjectRuntimeInfo? projectRuntimeInfo = JsonUtils.Deserialize<ProjectRuntimeInfo>(runtimeInfo);
+			if (projectRuntimeInfo != null)
+			{
+				TryLoadScene(projectRuntimeInfo.RuntimeScenes.First().GUID, true, false);
+			}
 		}
 
 		public override void OnSceneLoaded()

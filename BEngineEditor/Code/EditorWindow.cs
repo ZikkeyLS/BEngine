@@ -29,6 +29,7 @@ namespace BEngineEditor
 		private GameScreen _game = new();
 		private HierarchyScreen _hierarchy = new();
 		private PropertiesScreen _properties = new();
+		private BuildSettingsScreen _buildSettings = new();
 
 		private FrameBuffer _sceneBuffer;
 		private FrameBuffer _gameBuffer;
@@ -75,6 +76,7 @@ namespace BEngineEditor
 			_game.Initialize(this, _gameBuffer);
 			_hierarchy.Initialize(this);
 			_properties.Initialize(this);
+			_buildSettings.Initialize(this);
 		}
 
 		protected override void OnRender(double time)
@@ -110,14 +112,17 @@ namespace BEngineEditor
 		{
 			_menuBar.Display();
 
+			if (ProjectContext.ProjectLoaded && Settings.BuildSettingsOpened)
+				_buildSettings.Display();
+
+			if (ProjectContext.SearchingProject)
+				_projectLoader.Display();
+
 			if (ProjectContext.ProjectLoaded)
 				_projectExplorer.Display();
 
 			if (ProjectContext.ProjectLoaded)
 				_assemblyStatus.Display();
-
-			if (ProjectContext.SearchingProject)
-				_projectLoader.Display();
 
 			if (ProjectContext.ProjectLoaded && ProjectContext.CurrentProject.LoadedScene != null)
 			{

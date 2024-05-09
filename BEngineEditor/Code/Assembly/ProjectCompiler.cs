@@ -242,8 +242,11 @@ namespace BEngineEditor
 			}
 
 			Utils.CopyDirectory($@"runtimes\{_project.Settings.BuildOS}\native", $@"{_project.Directory}\Build\{_project.Settings.BuildOS}\Data");
-
-			_packer.Pack(_project.AssetsDirectory, $@"{_project.Directory}\Build\{_project.Settings.BuildOS}\Data\Game.data");
+			
+			string filePath = Path.Combine(_project.Directory, "ProjectRuntimeInfo.json");
+			File.WriteAllText(filePath, JsonUtils.Serialize(_project.Settings.ProjectRuntimeInfo));
+			_packer.Pack([_project.AssetsDirectory, "EngineData"], [filePath], $@"{_project.Directory}\Build\{_project.Settings.BuildOS}\Data\Game.data");
+			File.Delete(filePath);
 
 			BuildEndTime = DateTime.Now;
 

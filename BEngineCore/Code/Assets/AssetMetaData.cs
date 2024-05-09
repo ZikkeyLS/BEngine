@@ -1,5 +1,4 @@
 ﻿using System.Xml.Serialization;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BEngineCore 
 {
@@ -13,8 +12,8 @@ namespace BEngineCore
 	public class AssetMetaData
 	{
 		public string GUID = string.Empty;
-		[XmlIgnore] public string Path = string.Empty;
-		[XmlIgnore] public string? AdditionalPath = null;
+		[XmlIgnore] public string Path { get; private set; } = string.Empty;
+		[XmlIgnore] public string? AdditionalPath { get; private set; } = null;
 		[XmlIgnore] public AssetType AssetType;
 
 		private AssetMetaData()
@@ -25,17 +24,33 @@ namespace BEngineCore
 		public AssetMetaData(string guid, string path, string? additionalPath = null)
 		{
 			GUID = guid;
-			Path = path;
+			SetPath(path);
 
 			if (additionalPath != null)
 			{
-				AdditionalPath = additionalPath;
+				SetAdditionalPath(additionalPath);
 				AssetType = AssetType.ArchieveFile;
 			}
 			else
 			{
 				AssetType = AssetType.File;
 			}
+		}
+
+		public void SetPath(string path)
+		{
+			if (string.IsNullOrWhiteSpace(path))
+				throw new ArgumentException("Path cannot be null or empty.", nameof(path));
+			path = path.Replace("/", "\\");
+			Path = path;
+		}
+
+		public void SetAdditionalPath(string additionalPath)
+		{
+			if (string.IsNullOrWhiteSpace(additionalPath))
+				throw new ArgumentException("Path cannot be null or empty.", nameof(additionalPath));
+			additionalPath = additionalPath.Replace("/", "\\");
+			AdditionalPath = additionalPath;
 		}
 
 		public string GetMetaPath()

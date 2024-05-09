@@ -1,5 +1,6 @@
 ﻿using Silk.NET.Assimp;
 using Silk.NET.OpenGL;
+using System.IO;
 using System.Numerics;
 
 namespace BEngineCore
@@ -9,15 +10,15 @@ namespace BEngineCore
 		private List<Mesh> _meshes = new();
 		private List<TextureMesh> _texturesLoaded = new();
 
-		private string _directory;
+		private string _directory = string.Empty;
 
 		private Assimp assimp;
 		private GL gl;
 
-		public Model(string path)
+		public Model(AssetMetaData asset)
 		{
 			gl = Graphics.gl;
-			LoadModel(path);
+			LoadModel(asset);
 		}
 
 		public void Draw(Shader shader)
@@ -28,25 +29,34 @@ namespace BEngineCore
 			}
 		}
 
-		private unsafe void LoadModel(string path)
+		private unsafe void LoadModel(AssetMetaData asset)
 		{
 			assimp = Assimp.GetApi();
-			Silk.NET.Assimp.Scene* scene = assimp.ImportFile(path, (uint)(PostProcessSteps.Triangulate
-				| PostProcessSteps.FlipUVs | PostProcessSteps.JoinIdenticalVertices 
-				| PostProcessSteps.CalculateTangentSpace | PostProcessSteps.GenerateSmoothNormals));
+			var data = ProjectAbstraction.LoadedProject.AssetsReader.GetAssetBytes(asset);
 
-			if (scene == null || scene->MFlags == (uint)SceneFlags.Incomplete || scene->MRootNode == null)
-			{
-				Logger.Main?.LogWarning("Cant load model with error: " + assimp.GetErrorStringS());
+			if (data == null)
 				return;
+
+			fixed (byte* fileData = data)
+			{
+				Silk.NET.Assimp.Scene* scene = assimp.ImportFileFromMemory(fileData, (uint)data.Length, (uint)(PostProcessSteps.Triangulate
+					| PostProcessSteps.FlipUVs | PostProcessSteps.JoinIdenticalVertices
+					| PostProcessSteps.CalculateTangentSpace | PostProcessSteps.GenerateSmoothNormals), (byte*)null);
+
+				if (scene == null || scene->MFlags == (uint)SceneFlags.Incomplete || scene->MRootNode == null)
+				{
+					Logger.Main?.LogWarning("Cant load model with error: " + assimp.GetErrorStringS());
+					return;
+				}
+
+				_directory = asset.GetAssetPath().Substring(0, asset.GetAssetPath().LastIndexOf("/") + 1);
+				if (_directory == string.Empty)
+					_directory = asset.GetAssetPath().Substring(0, asset.GetAssetPath().LastIndexOf("\\") + 1);
+
+				ProcessNode(scene->MRootNode, scene);
+				assimp.ReleaseImport(scene);
 			}
 
-			_directory = path.Substring(0, path.LastIndexOf("/") + 1);
-			if (_directory == string.Empty)
-				_directory = path.Substring(0, path.LastIndexOf("\\") + 1);
-
-			ProcessNode(scene->MRootNode, scene);
-			assimp.ReleaseImport(scene);
 			assimp.Dispose();
 		}
 
@@ -131,7 +141,7 @@ namespace BEngineCore
 		private unsafe TextureMesh GetDefaultTexture(string typeName)
 		{
 			TextureMesh texture = new TextureMesh();
-			Texture load;
+			Texture? load = null;
 
 			if (_defaultLoaded != null)
 			{
@@ -139,14 +149,28 @@ namespace BEngineCore
 			}
 			else
 			{
-				load = new Texture("EngineData/Assets/Textures/Default.jpg", gl);
-				_defaultLoaded = load;
+				AssetMetaData? defaultImage = ProjectAbstraction.LoadedProject.AssetsReader.GetAssetByPath("EngineData/Assets/Textures/Default.jpg");
+
+				if (defaultImage != null)
+				{
+					byte[]? data = ProjectAbstraction.LoadedProject.AssetsReader.GetAssetBytes(defaultImage);
+					if (data != null)
+					{
+						load = new Texture(data, gl);
+						_defaultLoaded = load;
+					}
+				}
+			}
+
+			if (load == null)
+			{
+				return texture;
 			}
 
 			texture.Texture = load;
 			texture.ID = texture.Texture.ID;
 			texture.Type = typeName;
-			texture.Path = "EngineData/Textures/Default.jpg";
+			texture.Path = "EngineData/Assets/Textures/Default.jpg";
 			return texture;
 		}
 
@@ -190,7 +214,7 @@ namespace BEngineCore
 				if (skip == false && Path.Exists(resultPath))
 				{
 					TextureMesh texture = new TextureMesh();
-					texture.Texture = new Texture(resultPath, gl);
+					texture.Texture = new Texture(System.IO.File.ReadAllBytes(resultPath), gl);
 					texture.ID = texture.Texture.ID;
 					texture.Type = typeName;
 					texture.Path = path.AsString;

@@ -1,4 +1,7 @@
 ﻿
+using Silk.NET.Vulkan;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 namespace BEngineCore
 {
 	public struct LogData
@@ -67,6 +70,13 @@ namespace BEngineCore
 			LogData format = new LogData() { Data = error, Time = GetTime() };
 			_safeErrorsLogs.Add(format);
 
+			if (EnableFileLogs)
+				File.AppendAllText(FileLogPath, format.ToString() + "\n");
+		}
+
+		public void LogFile(string message)
+		{
+			LogData format = new LogData() { Data = message, Time = GetTime() };
 			if (EnableFileLogs)
 				File.AppendAllText(FileLogPath, format.ToString() + "\n");
 		}

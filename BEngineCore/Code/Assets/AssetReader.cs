@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using BEngine;
+using System.Text;
 using System.Xml;
 
 namespace BEngineCore
@@ -11,6 +12,8 @@ namespace BEngineCore
 		public readonly List<AssetMetaData> LoadedAssets = new();
 
 		public readonly ModelContext ModelContext;
+		public readonly ShaderContext ShaderContext;
+		public readonly Dictionary<string, Scene> SceneContext = new();
 
 		private Packer? _packer;
 
@@ -19,6 +22,8 @@ namespace BEngineCore
 		public AssetReader(string[] assetsDirectories, string[] packerDirectories)
 		{
 			ModelContext = new(this);
+			ShaderContext = new(this);
+
 			AssetsDirectories.AddRange(assetsDirectories);
 			PackerDirectories.AddRange(packerDirectories);
 
@@ -65,7 +70,7 @@ namespace BEngineCore
 			AssetMetaData? asset = AssetMetaData.Load(path);
 			if (asset != null)
 			{
-				asset.Path = path + ".meta";
+				asset.SetPath(path + ".meta");
 				AddAssetRaw(asset);
 			}
 		}
@@ -82,8 +87,8 @@ namespace BEngineCore
 			AssetMetaData? asset = AssetMetaData.Load(data);
 			if (asset != null)
 			{
-				asset.Path = archivePath;
-				asset.AdditionalPath = relativePath + ".meta";
+				asset.SetPath(archivePath);
+				asset.SetAdditionalPath(relativePath + ".meta");
 				asset.AssetType = AssetType.ArchieveFile;
 				AddAssetRaw(asset);
 			}
@@ -96,6 +101,31 @@ namespace BEngineCore
 			if (assetPath.EndsWith(".obj") || assetPath.EndsWith(".fbx") || assetPath.EndsWith(".gltf"))
 			{
 				ModelContext.AddGUID(asset);
+			}
+			else if (assetPath.EndsWith(".scene"))
+			{
+				Stream? stream = GetAssetStream(asset);
+
+				if (stream == null)
+					return;
+
+				Scene? scene = AssetData.ReadRaw<Scene>(stream);
+				stream.Close();
+
+				if (scene != null)
+				{
+					scene.SetForceProject(ProjectAbstraction.LoadedProject);
+					scene.SetForceID(asset.GUID);
+					SceneContext.Add(asset.GUID, scene);
+				}
+			}
+			else if (assetPath.EndsWith(".shader"))
+			{
+				string? shaderData = GetAssetText(asset);
+				if (shaderData != null)
+				{
+					ShaderContext.Add(asset.GUID, shaderData);
+				}
 			}
 		}
 
@@ -201,6 +231,134 @@ namespace BEngineCore
 			}
 
 			return string.Empty;
+		}
+
+		public AssetMetaData? GetAssetByPath(string path)
+		{
+			foreach (var asset in LoadedAssets)
+			{
+				path = path.Replace("/", "\\");
+				if (asset.GetAssetPath().Contains(path))
+				{
+					return asset;
+				}
+			}
+
+			return null;
+		}
+
+		public string? GetAssetText(AssetMetaData asset)
+		{
+			if (asset.AssetType == AssetType.File)
+			{
+				string path = asset.GetAssetPath();
+				return File.ReadAllText(path);
+			}
+			else
+			{
+				if (Packer == null)
+					return null;
+
+				Stream? data = Packer.ReadFile(asset.Path, asset.GetAssetPath());
+				if (data != null)
+				{
+					return StreamToString(data);
+				}
+			}
+
+			return null;
+		}
+
+		public byte[]? GetAssetBytes(AssetMetaData asset)
+		{
+			if (asset.AssetType == AssetType.File)
+			{
+				string path = asset.GetAssetPath();
+				return File.ReadAllBytes(path);
+			}
+			else
+			{
+				if (Packer == null)
+					return null;
+
+				Stream? data = Packer.ReadFile(asset.Path, asset.GetAssetPath());
+				if (data != null)
+				{
+					return StreamToBytes(data);
+				}
+			}
+
+			return null;
+		}
+
+		public string[]? GetAssetLines(AssetMetaData asset)
+		{
+			if (asset.AssetType == AssetType.File)
+			{
+				string path = asset.GetAssetPath();
+				return File.ReadAllLines(path);
+			}
+			else
+			{
+				if (Packer == null)
+					return null;
+
+				Stream? data = Packer.ReadFile(asset.Path, asset.GetAssetPath());
+				if (data != null)
+				{
+					List<string> result = new List<string>();
+					using (var streamReader = new StreamReader(data, Encoding.UTF8, true, 4096))
+					{
+						string? line;
+						while ((line = streamReader.ReadLine()) != null)
+						{
+							result.Add(line);
+						}
+					}
+					return result.ToArray();
+				}
+			}
+
+			return null;
+		}
+
+		public Stream? GetAssetStream(AssetMetaData asset)
+		{
+			if (asset.AssetType == AssetType.File)
+			{
+				string path = asset.GetAssetPath();
+				return File.Open(path, FileMode.Open);
+			}
+			else
+			{
+				if (Packer == null)
+					return null;
+
+				Stream? data = Packer.ReadFile(asset.Path, asset.GetAssetPath());
+				if (data != null)
+				{
+					return data;
+				}
+			}
+
+			return null;
+		}
+
+		private static string StreamToString(Stream stream)
+		{
+			using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+			{
+				return reader.ReadToEnd();
+			}
+		}
+
+		private static byte[] StreamToBytes(Stream stream)
+		{
+			using (MemoryStream ms = new MemoryStream())
+			{
+				stream.CopyTo(ms);
+				return ms.ToArray();
+			}
 		}
 	}
 }

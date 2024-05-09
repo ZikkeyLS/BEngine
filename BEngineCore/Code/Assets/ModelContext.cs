@@ -20,11 +20,11 @@
 			}
 			else
 			{
-				string path = _assetReader.GetAssetPath(guid);
-				if (path == string.Empty)
+				AssetMetaData? asset = _assetReader.GetAsset(guid);
+				if (asset == null)
 					return null;
 
-				Model result = new Model(path);
+				Model result = new Model(asset);
 				Loaded.Add(guid, result);
 				return result;
 			}
@@ -40,7 +40,10 @@
 			if (Loaded.TryGetValue(guid, out Model? value))
 			{
 				value.Dispose();
-				Loaded[guid] = new Model(newPath);
+				AssetMetaData? asset = _assetReader.GetAsset(guid);
+				if (asset == null)
+					return;
+				Loaded[guid] = new Model(asset);
 			}
 		}
 
