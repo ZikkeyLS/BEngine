@@ -35,7 +35,7 @@ namespace BEngineCore
 			ProjectRuntimeInfo? projectRuntimeInfo = JsonUtils.Deserialize<ProjectRuntimeInfo>(runtimeInfo);
 			if (projectRuntimeInfo != null)
 			{
-				TryLoadScene(projectRuntimeInfo.RuntimeScenes.First().Value.GUID, true, false);
+				TryLoadScene(projectRuntimeInfo.RuntimeScenes.First().GUID, true, false);
 			}
 		}
 

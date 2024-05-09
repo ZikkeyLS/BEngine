@@ -8,7 +8,7 @@ namespace BEngineCore
 
         }
 
-        public Dictionary<uint, RuntimeScene> RuntimeScenes { get; set; } = new();
+        public List<RuntimeScene> RuntimeScenes { get; set; } = new();
     }
 
     public class RuntimeScene

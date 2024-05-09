@@ -107,6 +107,7 @@ namespace BEngineCore
 			{
 				T? assetData = JsonUtils.Deserialize<T>(text);
 				assetData?.SetForceProject(project);
+				assetData?.SetForceID(guid);
 				return assetData;
 			}
 

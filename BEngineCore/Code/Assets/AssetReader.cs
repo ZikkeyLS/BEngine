@@ -115,6 +115,7 @@ namespace BEngineCore
 				if (scene != null)
 				{
 					scene.SetForceProject(ProjectAbstraction.LoadedProject);
+					scene.SetForceID(asset.GUID);
 					SceneContext.Add(asset.GUID, scene);
 				}
 			}

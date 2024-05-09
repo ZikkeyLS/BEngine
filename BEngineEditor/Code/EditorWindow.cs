@@ -112,6 +112,9 @@ namespace BEngineEditor
 		{
 			_menuBar.Display();
 
+			if (ProjectContext.ProjectLoaded && Settings.BuildSettingsOpened)
+				_buildSettings.Display();
+
 			if (ProjectContext.SearchingProject)
 				_projectLoader.Display();
 
@@ -120,9 +123,6 @@ namespace BEngineEditor
 
 			if (ProjectContext.ProjectLoaded)
 				_assemblyStatus.Display();
-				
-			if (ProjectContext.ProjectLoaded && Settings.BuildSettingsOpened)
-				_buildSettings.Display();
 
 			if (ProjectContext.ProjectLoaded && ProjectContext.CurrentProject.LoadedScene != null)
 			{
