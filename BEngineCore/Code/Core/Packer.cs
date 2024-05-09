@@ -8,16 +8,12 @@ namespace BEngineCore
 		{
 			using (ZipOutputStream compression = new ZipOutputStream(File.Create(outputFile)))
 			{
-				for (int i = 0; i < directories.Length; i++)
-				{
-					DirectoryInfo? parentDirectory = Directory.GetParent(directories[i]);
-					DirectoryInfo fullDirectory = new DirectoryInfo(directories[i]);
-					if(parentDirectory == null)
-					{
-						continue;
-					}
-					ZipFolder(parentDirectory.FullName, fullDirectory.FullName, compression);
-				}
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+				directories.Select(dir => new DirectoryInfo(dir))
+				            .Where(dirInfo => Directory.GetParent(dirInfo.FullName) != null)
+				            .ToList()
+				            .ForEach(dirInfo => ZipFolder(Directory.GetParent(dirInfo.FullName).FullName, dirInfo.FullName, compression));
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
 				for (int i = 0; i < files.Length; i++)
 				{

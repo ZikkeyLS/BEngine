@@ -1,6 +1,5 @@
 using Silk.NET.OpenGL;
 using StbImageSharp;
-using System.IO;
 
 namespace BEngineCore
 {
@@ -16,6 +15,9 @@ namespace BEngineCore
 		public unsafe Texture(byte[] data, GL gl)
 		{
 			ImageResult image = ImageResult.FromMemory(data, ColorComponents.RedGreenBlueAlpha);
+
+			if (image == null)
+				throw new InvalidOperationException("Failed to load image from memory.");
 
 			int properWidth = image.Width;
 			int properHeight = image.Height;

@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace BEngineCore 
 {
@@ -40,12 +39,16 @@ namespace BEngineCore
 
 		public void SetPath(string path)
 		{
+			if (string.IsNullOrWhiteSpace(path))
+				throw new ArgumentException("Path cannot be null or empty.", nameof(path));
 			path = path.Replace("/", "\\");
 			Path = path;
 		}
 
 		public void SetAdditionalPath(string additionalPath)
 		{
+			if (string.IsNullOrWhiteSpace(additionalPath))
+				throw new ArgumentException("Path cannot be null or empty.", nameof(additionalPath));
 			additionalPath = additionalPath.Replace("/", "\\");
 			AdditionalPath = additionalPath;
 		}

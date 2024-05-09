@@ -1,7 +1,5 @@
-using BEngine;
 using BEngineCore;
 using ImGuiNET;
-using System.Numerics;
 
 namespace BEngineEditor
 {
@@ -84,7 +82,7 @@ namespace BEngineEditor
 		{
 			var runtimeScenes = _projectContext.CurrentProject.Settings.ProjectRuntimeInfo.RuntimeScenes;
 
-			foreach (var runtimeScene in runtimeScenes) 
+			foreach (var runtimeScene in runtimeScenes)
 			{
 				if (runtimeScene.GUID == guid)
 				{
@@ -94,7 +92,6 @@ namespace BEngineEditor
 
 			return null;
 		}
-
 
 		private unsafe void Drag(KeyValuePair<int, RuntimeScene> scene)
 		{
