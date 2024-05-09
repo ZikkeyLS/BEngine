@@ -1,5 +1,4 @@
 ﻿using BEngine;
-using Silk.NET.SDL;
 
 namespace BEngineCore
 {
@@ -17,8 +16,24 @@ namespace BEngineCore
 
 			scripting.ReadScriptAssembly(AppDomain.CurrentDomain.FriendlyName + "Assembly.dll");
 			reader = new AssetReader(["./"], ["Game.data"]);
-			ProjectRuntimeInfo? projectRuntimeInfo = JsonUtils.Deserialize<ProjectRuntimeInfo>(reader.Packer.ReadFile("Game.data", "ProjectRuntimeInfo.json"));
-			if(projectRuntimeInfo != null)
+
+			if (reader.Packer == null)
+				return;
+
+			string? vertData = reader.ShaderContext.GetShaderData("EngineData/Assets/Shaders/Shader.vert.shader");
+			string? fragData = reader.ShaderContext.GetShaderData("EngineData/Assets/Shaders/Shader.frag.shader");
+
+			if (vertData != null && fragData != null)
+			{
+				graphics.SetMainShader(vertData, fragData);
+			}
+
+			Stream? runtimeInfo = reader.Packer.ReadFile("Game.data", "ProjectRuntimeInfo.json");
+			if (runtimeInfo == null)
+				return;
+
+			ProjectRuntimeInfo? projectRuntimeInfo = JsonUtils.Deserialize<ProjectRuntimeInfo>(runtimeInfo);
+			if (projectRuntimeInfo != null)
 			{
 				TryLoadScene(projectRuntimeInfo.RuntimeScenes.First().Value.GUID, true, false);
 			}

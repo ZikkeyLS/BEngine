@@ -45,6 +45,9 @@ namespace BEngineCore
 
 		public Stream? ReadFile(string archivePath, string fileRelativePath)
 		{
+			archivePath = archivePath.Replace("\\", "/");
+			fileRelativePath = fileRelativePath.Replace("\\", "/");
+
 			var fs = new FileStream(archivePath, FileMode.Open, FileAccess.Read);
 			var zf = new ZipFile(fs);
 

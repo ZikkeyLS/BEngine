@@ -1,5 +1,6 @@
 using Silk.NET.OpenGL;
 using StbImageSharp;
+using System.IO;
 
 namespace BEngineCore
 {
@@ -12,13 +13,9 @@ namespace BEngineCore
 
 		public uint ID => _handle;
 
-		public unsafe Texture(string path, GL gl)
+		public unsafe Texture(byte[] data, GL gl)
 		{
-			ImageResult image;
-			using (var stream = File.OpenRead(path))
-			{
-				image = ImageResult.FromStream(stream, ColorComponents.RedGreenBlueAlpha);
-			}
+			ImageResult image = ImageResult.FromMemory(data, ColorComponents.RedGreenBlueAlpha);
 
 			int properWidth = image.Width;
 			int properHeight = image.Height;

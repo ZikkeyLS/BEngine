@@ -101,29 +101,12 @@ namespace BEngineCore
 			if (meta == null)
 				return null;
 
-			T? assetData = null;
+			string? text = project.AssetsReader.GetAssetText(meta);
 
-			if (meta.AssetType == AssetType.File)
+			if (text != null)
 			{
-				string path = meta.GetAssetPath();
-				assetData = JsonUtils.Deserialize<T>(File.ReadAllText(path));
-			}
-			else
-			{
-				if (project.AssetsReader.Packer == null || meta.AdditionalPath == null)
-					return null;
-
-				Stream? data = project.AssetsReader.Packer.ReadFile(meta.Path, meta.GetAssetPath());
-				if (data != null)
-				{
-					assetData = JsonUtils.Deserialize<T>(data);
-				}
-			}
-
-			if (assetData != null)
-			{
-				assetData.SetForceID(guid);
-				assetData.SetForceProject(project);
+				T? assetData = JsonUtils.Deserialize<T>(text);
+				assetData?.SetForceProject(project);
 				return assetData;
 			}
 

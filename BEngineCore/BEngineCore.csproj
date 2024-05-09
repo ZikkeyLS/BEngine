@@ -40,12 +40,12 @@
     <None Remove="EngineData\Assets\Models\Sphere.mtl.meta" />
     <None Remove="EngineData\Assets\Models\Sphere.obj" />
     <None Remove="EngineData\Assets\Models\Sphere.obj.meta" />
+    <None Remove="EngineData\Assets\Shaders\Shader.frag.shader" />
+    <None Remove="EngineData\Assets\Shaders\Shader.frag.shader.meta" />
+    <None Remove="EngineData\Assets\Shaders\Shader.vert.shader" />
+    <None Remove="EngineData\Assets\Shaders\Shader.vert.shader.meta" />
     <None Remove="EngineData\Assets\Textures\Default.jpg" />
     <None Remove="EngineData\Assets\Textures\Default.jpg.meta" />
-    <None Remove="EngineData\Shaders\PointLight.frag" />
-    <None Remove="EngineData\Shaders\PointLight.vert" />
-    <None Remove="EngineData\Shaders\Shader.frag" />
-    <None Remove="EngineData\Shaders\Shader.vert" />
   </ItemGroup>
 
   <ItemGroup>
@@ -85,22 +85,22 @@
     <Content Include="EngineData\Assets\Models\Sphere.obj.meta">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="EngineData\Assets\Shaders\Shader.frag.shader.meta">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EngineData\Assets\Shaders\Shader.vert.shader.meta">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="EngineData\Assets\Textures\Default.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="EngineData\Assets\Textures\Default.jpg.meta">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="EngineData\Shaders\PointLight.frag">
+    <Content Include="EngineData\Assets\Shaders\Shader.frag.shader">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="EngineData\Shaders\PointLight.vert">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EngineData\Shaders\Shader.frag">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EngineData\Shaders\Shader.vert">
+    <Content Include="EngineData\Assets\Shaders\Shader.vert.shader">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

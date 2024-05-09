@@ -62,9 +62,12 @@ namespace BEngineCore
 			gl.ClearColor(Color.CornflowerBlue);
 
 			_camera = new Camera();
-			_shader = new Shader("EngineData/Shaders/Shader.vert", "EngineData/Shaders/Shader.frag", gl);
+		}
 
-			// For debug usage: gl.PolygonMode(GLEnum.FrontAndBack, GLEnum.Line);
+		public unsafe void SetMainShader(string vertData, string fragData)
+		{
+			Logger.Main?.LogFile("Main shader loaded!");
+			_shader = new Shader(vertData, fragData, gl);
 		}
 
 		private Vector2? _lastMousePosition = null;
@@ -74,6 +77,9 @@ namespace BEngineCore
 
 		public unsafe void Render(float time, bool forceRender = false)
 		{
+			if (_shader == null)
+				return;
+
 			gl.ClearColor(0f, 0f, 0f, 1.0f);
 			gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 

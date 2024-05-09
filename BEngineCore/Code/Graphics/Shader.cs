@@ -11,12 +11,12 @@ namespace BEngineCore
 		protected GL gl;
 
 
-		public Shader(string vertPath, string fragPath, GL gl)
+		public Shader(string vertData, string fragData, GL gl)
 		{
 			this.gl = gl;
 
 			uint vertexShader = gl.CreateShader(GLEnum.VertexShader);
-			gl.ShaderSource(vertexShader, File.ReadAllText(vertPath));
+			gl.ShaderSource(vertexShader, vertData);
 			gl.CompileShader(vertexShader);
 
 			gl.GetShader(vertexShader, ShaderParameterName.CompileStatus, out int vStatus);
@@ -24,7 +24,7 @@ namespace BEngineCore
 				Console.WriteLine("Vertex shader failed to compile: " + gl.GetShaderInfoLog(vertexShader));
 
 			uint fragmentShader = gl.CreateShader(GLEnum.FragmentShader);
-			gl.ShaderSource(fragmentShader, File.ReadAllText(fragPath));
+			gl.ShaderSource(fragmentShader, fragData);
 			gl.CompileShader(fragmentShader);
 
 			gl.GetShader(fragmentShader, ShaderParameterName.CompileStatus, out int fStatus);
