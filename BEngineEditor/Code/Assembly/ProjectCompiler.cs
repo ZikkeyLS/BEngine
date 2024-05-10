@@ -133,6 +133,8 @@ namespace BEngineEditor
 				return;
 			}
 
+			_project.SaveCurrentScene();
+
 			_runOnBuild = run;
 			BuildStartTime = DateTime.Now;
 			BuildingGame = true;
