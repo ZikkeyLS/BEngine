@@ -47,8 +47,6 @@ namespace BEngineCore
 		private CameraHandler _handler = new();
 		public List<CameraHandlerRequest> _requests = new();
 
-		public bool EditorCamera => _handler.GUID == string.Empty;
-
 		public void Recalculate()
 		{
 			RecalculateCameraHandlers();

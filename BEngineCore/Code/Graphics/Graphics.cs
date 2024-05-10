@@ -107,7 +107,7 @@ namespace BEngineCore
 				fill = !fill;
 			}
 
-			if (_camera.EditorCamera && EditorCameraEnabled)
+			if (EditorCameraEnabled)
 			{
 				ProcessCameraMovement(_window, time);
 			}
