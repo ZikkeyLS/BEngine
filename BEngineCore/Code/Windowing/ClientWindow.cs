@@ -23,6 +23,7 @@ namespace BEngineCore
 
 			if (_project.Pause == false)
 			{
+				_project.Time.RawDeltaTime = (float)time;
 				_project.LoadedScene?.CallEvent(EventID.Update);
 			}
 		}

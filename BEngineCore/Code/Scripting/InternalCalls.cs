@@ -192,7 +192,7 @@ namespace BEngineCore
 		#endregion
 
 		#region Physics
-		public static string PhysicsCreateCube(Vector3 position, Quaternion rotation, Vector3 scale)
+		public static string PhysicsCreateCube(Vector3 position, Vector3 rotation, Vector3 scale)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
 
@@ -201,11 +201,11 @@ namespace BEngineCore
 
 			return loadedProject.Physics.CreateStaticCube(
 				(System.Numerics.Vector3)position,
-				(System.Numerics.Quaternion)rotation,
+				(System.Numerics.Vector3)rotation,
 				(System.Numerics.Vector3)scale);
 		}
 
-		public static string PhysicsCreateSphere(Vector3 position, Quaternion rotation, float radius)
+		public static string PhysicsCreateSphere(Vector3 position, Vector3 rotation, float radius)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
 
@@ -214,10 +214,10 @@ namespace BEngineCore
 
 			return loadedProject.Physics.CreateStaticSphere(
 				(System.Numerics.Vector3)position,
-				(System.Numerics.Quaternion)rotation, radius);
+				(System.Numerics.Vector3)rotation, radius);
 		}
 
-		public static string PhysicsCreatePlane(Vector3 position, Quaternion rotation, Vector2 size)
+		public static string PhysicsCreatePlane(Vector3 position, Vector3 rotation, Vector2 size)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
 
@@ -226,11 +226,11 @@ namespace BEngineCore
 
 			return loadedProject.Physics.CreateStaticPlane(
 				(System.Numerics.Vector3)position,
-				(System.Numerics.Quaternion)rotation,
+				(System.Numerics.Vector3)rotation,
 				(System.Numerics.Vector2)size);
 		}
 
-		public static string PhysicsCreateCapsule(Vector3 position, Quaternion rotation, float halfHeight, float radius)
+		public static string PhysicsCreateCapsule(Vector3 position, Vector3 rotation, float halfHeight, float radius)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
 
@@ -239,7 +239,7 @@ namespace BEngineCore
 
 			return loadedProject.Physics.CreateStaticCapsule(
 				(System.Numerics.Vector3)position,
-				(System.Numerics.Quaternion)rotation, halfHeight, radius);
+				(System.Numerics.Vector3)rotation, halfHeight, radius);
 		}
 
 		public static PhysicsEntryData PhysicsGetActorData(string physicsID)
@@ -312,14 +312,19 @@ namespace BEngineCore
 			loadedProject.Physics.ChangeDynamic(physicsID, dynamic);
 		}
 
-		public static void PhysicsApplyTransform(string physicsID, Vector3 position, Quaternion rotation)
+		public static void PhysicsApplyTransform(string physicsID, Vector3 position, Vector3 rotation)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
 
 			if (loadedProject == null)
 				return;
 
-			loadedProject.Physics.ApplyTransform(physicsID, (System.Numerics.Vector3)position, (System.Numerics.Quaternion)rotation);
+			System.Numerics.Quaternion rot = System.Numerics.Quaternion.CreateFromYawPitchRoll(
+				float.DegreesToRadians(rotation.y),
+				float.DegreesToRadians(rotation.x),
+				float.DegreesToRadians(rotation.z));
+
+			loadedProject.Physics.ApplyTransform(physicsID, (System.Numerics.Vector3)position, rot);
 		}
 
 		public static void PhysicsApplyLock(string physicsID, Vector3Bool lockLinear, Vector3Bool lockAngular)
@@ -374,7 +379,7 @@ namespace BEngineCore
 		#endregion
 
 		#region Camera
-		public static void CameraCreateRequest(string GUID, uint priority, Vector3 position, Quaternion rotation)
+		public static void CameraCreateRequest(string GUID, uint priority, Vector3 position, Vector3 rotation)
 		{
 			ProjectAbstraction? loadedProject = ProjectAbstraction.LoadedProject;
 
@@ -382,7 +387,7 @@ namespace BEngineCore
 			{
 				loadedProject.Graphics.AddCameraRequest(new CameraHandlerRequest() { GUID = GUID, Priority = priority, 
 					Position = (System.Numerics.Vector3)position, 
-					Rotation = (System.Numerics.Quaternion)rotation });
+					Rotation = (System.Numerics.Vector3)rotation });
 			}
 		}
 		#endregion

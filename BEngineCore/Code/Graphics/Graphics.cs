@@ -133,8 +133,13 @@ namespace BEngineCore
 				{
 					Transform transform = ModelsToRender[i].Transform;
 
+					Vector3 eulerAngles = (Vector3)transform.Rotation;
+
 					Matrix4x4 model = Matrix4x4.CreateScale((Vector3)transform.Scale);
-					model *= Matrix4x4.CreateFromQuaternion((Quaternion)transform.Rotation);
+					model *= Matrix4x4.CreateFromQuaternion(Quaternion.CreateFromYawPitchRoll(
+						float.DegreesToRadians(eulerAngles.Y),
+						float.DegreesToRadians(eulerAngles.X),
+						float.DegreesToRadians(eulerAngles.Z)));
 					Vector3 invertXPosition = new Vector3(transform.Position.x, transform.Position.y, transform.Position.z);
 					model *= Matrix4x4.CreateTranslation(invertXPosition);
 					_shader.SetMatrix4("model", model);
@@ -212,8 +217,9 @@ namespace BEngineCore
 
 					float senstivity = 0.1f;
 					difference *= senstivity;
-					_camera.editorRotation = (Quaternion)BEngine.Quaternion.FromEuler(BEngine.Quaternion.ToEuler(_camera.editorRotation) + new Vector3(difference.Y, -difference.X, 0));
 
+					_camera.SetEditorRotation(_camera.editorEulerRotation + new Vector3(difference.Y, -difference.X, 0));
+					
 					_lastMousePosition = mouseMove;
 				}
 			}

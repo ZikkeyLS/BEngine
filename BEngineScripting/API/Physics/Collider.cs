@@ -17,8 +17,7 @@ namespace BEngine
 			Rigidbody
 		}
 
-		private Vector3? _lastPosition;
-		private Quaternion? _lastRotation;
+		private PhysicsEntryData? _lastPhysicsEntryData;
 		private Vector3? _lastScale;
 
 		protected Transform transform;
@@ -28,6 +27,7 @@ namespace BEngine
 		[EditorIgnore] public bool Prepared { get; protected set; } = false;
 
 		[EditorIgnore] public string PhysicsID => physicsID;
+		[EditorIgnore] public PhysicsEntryData? LastPhysicsEntryData => _lastPhysicsEntryData;
 
 		public override void OnStart()
 		{
@@ -42,14 +42,12 @@ namespace BEngine
 				return;
 			}
 
-			if (_lastPosition != transform.Position || _lastRotation != transform.Rotation)
+			if (_lastPhysicsEntryData?.Position != transform.Position || _lastPhysicsEntryData?.Rotation != transform.Rotation)
 			{
 				InternalCalls.PhysicsApplyTransform(physicsID, transform.Position, transform.Rotation);
 			}
 
 			PhysicsEntryData data = InternalCalls.PhysicsGetActorData(physicsID);
-			transform.Position = data.Position;
-			transform.Rotation = data.Rotation;
 
 			if (RequiresRescale())
 			{
@@ -57,8 +55,13 @@ namespace BEngine
 				OnRescale();
 			}
 
-			_lastPosition = data.Position;
-			_lastRotation = data.Rotation;
+			if (GetScript<Rigidbody>() != null)
+			{
+				transform.Position = data.Position;
+				transform.Rotation = data.Rotation;
+			}
+
+			_lastPhysicsEntryData = data;
 		}
 
 		public override void OnDestroy()

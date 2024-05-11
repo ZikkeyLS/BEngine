@@ -305,6 +305,11 @@ namespace BEngine
             return System.Numerics.Vector3.Subtract((System.Numerics.Vector3)left, (System.Numerics.Vector3)right);
         }
 
+        public static Vector3 Round(Vector3 value, int digits)
+        {
+            return new Vector3(Math.Round(value.x, digits), Math.Round(value.y, digits), Math.Round(value.z, digits));
+        }
+
         public override string ToString()
         {
             return $"Vector3 ({x};{y};{z})";
@@ -670,51 +675,35 @@ namespace BEngine
             return FromEuler(euler.x, euler.y, euler.z);
         }
 
-        public static Vector3 ToEuler(Quaternion q)
-        {
-            float sqw = q.w * q.w;
-            float sqx = q.x * q.x;
-            float sqy = q.y * q.y;
-            float sqz = q.z * q.z;
-            float unit = sqx + sqy + sqz + sqw; // if normalised is one, otherwise is correction factor
-            float test = q.x * q.w - q.y * q.z;
-            Vector3 v = Vector3.zero;
+		public static Vector3 ToEuler(Quaternion q)
+		{
+			Vector3 angles = new();
 
-            if (test > 0.4995f * unit)
-            { // singularity at north pole
-                v.y = 2f * Math.Atan2(q.y, q.x);
-                v.x = Math.PI / 2;
-                v.z = 0;
+			// roll / x
+			float sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+			float cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+			angles.x = float.RadiansToDegrees(Math.Atan2(sinr_cosp, cosr_cosp));
 
-                v.x = float.RadiansToDegrees(v.x);
-                v.y = float.RadiansToDegrees(v.y);
-                v.z = float.RadiansToDegrees(v.z);
-                return NormalizeAngles(v);
-            }
-            if (test < -0.4995f * unit)
-            { // singularity at south pole
-                v.y = -2f * Math.Atan2(q.y, q.x);
-                v.x = -Math.PI / 2;
-                v.z = 0;
+			// pitch / y
+			float sinp = 2 * (q.w * q.y - q.z * q.x);
+			if (Math.Abs(sinp) >= 1)
+			{
+				angles.y = float.RadiansToDegrees((float)Math.CopySign(Math.PI / 2, sinp));
+			}
+			else
+			{
+				angles.y = float.RadiansToDegrees((float)Math.Asin(sinp));
+			}
 
-                v.x = float.RadiansToDegrees(v.x);
-                v.y = float.RadiansToDegrees(v.y);
-                v.z = float.RadiansToDegrees(v.z);
-                return NormalizeAngles(v);
-            }
+			// yaw / z
+		    float siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+		    float cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+			angles.z = float.RadiansToDegrees((float)Math.Atan2(siny_cosp, cosy_cosp));
 
-            Quaternion q1 = new Quaternion(q.w, q.z, q.x, q.y);
-            v.y = Math.Atan2(2f * q1.x * q1.w + 2f * q1.y * q1.z, 1 - 2f * (q1.z * q1.z + q1.w * q1.w));     // Yaw
-            v.x = Math.Asin(2f * (q1.x * q1.z - q1.w * q1.y));                             // Pitch
-            v.z = Math.Atan2(2f * q1.x * q1.y + 2f * q1.z * q1.w, 1 - 2f * (q1.y * q1.y + q1.z * q1.z));      // Roll
+			return angles;
+		}
 
-            v.x = float.RadiansToDegrees(v.x);
-            v.y = float.RadiansToDegrees(v.y);
-            v.z = float.RadiansToDegrees(v.z);
-            return NormalizeAngles(v);
-        }
-
-        static Vector3 NormalizeAngles(Vector3 angles)
+		static Vector3 NormalizeAngles(Vector3 angles)
         {
             angles.x = NormalizeAngle(angles.x);
             angles.y = NormalizeAngle(angles.y);
@@ -848,7 +837,7 @@ namespace BEngine
             return System.Math.Clamp(a, b, c);
         }
 
-        public static float CopySing(float a, float b)
+        public static float CopySign(float a, float b)
         {
             return (float)System.Math.CopySign(a, b);
         }

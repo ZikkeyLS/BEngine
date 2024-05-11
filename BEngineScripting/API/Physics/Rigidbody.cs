@@ -4,7 +4,7 @@ namespace BEngine
 	public struct PhysicsEntryData
 	{
 		public Vector3 Position;
-		public Quaternion Rotation;
+		public Vector3 Rotation;
 	}
 
 	public enum ForceMode : int
@@ -119,7 +119,6 @@ namespace BEngine
 			_collider = GetScript<Collider>();
 			if (_collider == null || _collider.Prepared == false)
 			{
-				_collider = null;
 				return;
 			}
 

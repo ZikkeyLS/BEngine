@@ -19,7 +19,7 @@ namespace BEngineCore
 		public string GUID;
 		public uint Priority;
 		public Vector3 Position;
-		public Quaternion Rotation;
+		public Vector3 Rotation;
 	}
 
 	internal class Camera
@@ -27,10 +27,13 @@ namespace BEngineCore
 		// This looks like base for transform sort of things
 
 		public Vector3 editorPosition = Vector3.Zero;
-		public Quaternion editorRotation = Quaternion.Identity;
+		public Quaternion editorRotation { get; private set; } = Quaternion.Identity;
+		public Vector3 editorEulerRotation { get; private set; } = Vector3.Zero;
+
 
 		public Vector3 position = Vector3.Zero;
-		public Quaternion rotation = Quaternion.Identity;
+		public Quaternion rotation { get; private set; } = Quaternion.Identity;
+		public Vector3 eulerRotation { get; private set; } = Vector3.Zero;
 
 		public Vector3 editorForward { get; private set; }
 		public Vector3 editorUp { get; private set; }
@@ -58,6 +61,24 @@ namespace BEngineCore
 			forward = Vector3.Transform(Vector3.UnitZ, rotation);
 			up = Vector3.Transform(Vector3.UnitY, rotation);
 			right = Vector3.Transform(Vector3.UnitX, rotation);
+		}
+
+		public void SetRotation(Vector3 rotation)
+		{
+			eulerRotation = rotation;
+			this.rotation = Quaternion.CreateFromYawPitchRoll(
+				float.DegreesToRadians(rotation.Y), 
+				float.DegreesToRadians(rotation.X), 
+				float.DegreesToRadians(rotation.Z));
+		}
+
+		public void SetEditorRotation(Vector3 rotation)
+		{
+			editorEulerRotation = rotation;
+			editorRotation = Quaternion.CreateFromYawPitchRoll(
+				float.DegreesToRadians(rotation.Y),
+				float.DegreesToRadians(rotation.X),
+				float.DegreesToRadians(rotation.Z));
 		}
 
 		public Matrix4x4 CalculateViewMatrix(bool editor)
@@ -118,7 +139,7 @@ namespace BEngineCore
 			_handler.Priority = request.Priority;
 
 			position = request.Position;
-			rotation = request.Rotation;
+			SetRotation(request.Rotation);
 		}
 	}
 }

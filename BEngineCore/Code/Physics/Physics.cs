@@ -101,11 +101,11 @@ namespace BEngineCore
 				bool connect = pvd->ConnectMut(transport, PxPvdInstrumentationFlags.All);
 				if (connect == false)
 				{
-					Console.WriteLine("PVD connection error");
+					Logger.Main?.LogFile("PVD connection error");
 				}
 				else
 				{
-					Console.WriteLine("PVD connected successfully!");
+					Logger.Main?.LogFile("PVD connected successfully!");
 				}
 			}
 
@@ -463,33 +463,38 @@ namespace BEngineCore
 			_applyAngularVelocity.Add(new ChangeActorVelocity() { Entity = actor, Velocity = velocity });
 		}
 
-		public unsafe string CreateStaticCube(Vector3 position, Quaternion rotation, Vector3 scale)
+		public unsafe string CreateStaticCube(Vector3 position, Vector3 rotation, Vector3 scale)
 		{
 			var geometry = PxBoxGeometry_new_1(scale);
 			return CreateStaticObject(position, rotation, (PxGeometry*)&geometry, ColliderType.Cube);
 		}
 
-		public unsafe string CreateStaticSphere(Vector3 position, Quaternion rotation, float radius)
+		public unsafe string CreateStaticSphere(Vector3 position, Vector3 rotation, float radius)
 		{
 			var geometry = PxSphereGeometry_new(radius);
 			return CreateStaticObject(position, rotation, (PxGeometry*)&geometry, ColliderType.Sphere);
 		}
 
-		public unsafe string CreateStaticPlane(Vector3 position, Quaternion rotation, Vector2 size)
+		public unsafe string CreateStaticPlane(Vector3 position, Vector3 rotation, Vector2 size)
 		{
 			var geometry = PxPlaneGeometry_new();
 			return CreateStaticObject(position, rotation, (PxGeometry*)&geometry, ColliderType.Plane);
 		}
 
-		public unsafe string CreateStaticCapsule(Vector3 position, Quaternion rotation, float halfHeight, float radius)
+		public unsafe string CreateStaticCapsule(Vector3 position, Vector3 rotation, float halfHeight, float radius)
 		{
 			var geometry = PxCapsuleGeometry_new(radius, halfHeight);
 			return CreateStaticObject(position, rotation, (PxGeometry*)&geometry, ColliderType.Capsule);
 		}
 
-		public unsafe string CreateStaticObject(Vector3 position, Quaternion rotation, PxGeometry* geometry, ColliderType type)
+		public unsafe string CreateStaticObject(Vector3 position, Vector3 rotation, PxGeometry* geometry, ColliderType type)
 		{
-			var transform = CreateTransform(position, rotation);
+			Quaternion rot = Quaternion.CreateFromYawPitchRoll(
+				float.DegreesToRadians(rotation.Y), 
+				float.DegreesToRadians(rotation.X), 
+				float.DegreesToRadians(rotation.Z));
+
+			var transform = CreateTransform(position, rot);
 			var shape = CreateShape(geometry, material);
 
 			if (type == ColliderType.Capsule)
@@ -586,7 +591,10 @@ namespace BEngineCore
 
 			PxTransform transform = Actors[physicsID].Transform;
 
-			return new PhysicsEntryData() { Position = (Vector3)transform.p, Rotation = (Quaternion)transform.q };
+			Quaternion rotation = (Quaternion)transform.q;
+			Vector3 eulerRotation = (Vector3)BEngine.Quaternion.ToEuler(rotation);
+
+			return new PhysicsEntryData() { Position = (Vector3)transform.p, Rotation = eulerRotation };
 		}
 
 		public unsafe Vector3 GetVelocity(string physicsID)

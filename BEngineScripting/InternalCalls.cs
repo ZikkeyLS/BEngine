@@ -243,22 +243,22 @@ namespace BEngine
 			_physicsGetAngularVelocity = GetMethod("PhysicsGetAngularVelocity");
 		}
 
-		public static string PhysicsCreateCube(Vector3 position, Quaternion rotation, Vector3 scale)
+		public static string PhysicsCreateCube(Vector3 position, Vector3 rotation, Vector3 scale)
 		{
 			return (string)(_physicsCreateCube?.Invoke(null, new object[] { position, rotation, scale }));
 		}
 
-		public static string PhysicsCreateSphere(Vector3 position, Quaternion rotation, float radius)
+		public static string PhysicsCreateSphere(Vector3 position, Vector3 rotation, float radius)
 		{
 			return (string)(_physicsCreateSphere?.Invoke(null, new object[] { position, rotation, radius }));
 		}
 
-		public static string PhysicsCreatePlane(Vector3 position, Quaternion rotation, Vector2 size)
+		public static string PhysicsCreatePlane(Vector3 position, Vector3 rotation, Vector2 size)
 		{
 			return (string)(_physicsCreatePlane?.Invoke(null, new object[] { position, rotation, size }));
 		}
 
-		public static string PhysicsCreateCapsule(Vector3 position, Quaternion rotation, float halfHeight, float radius)
+		public static string PhysicsCreateCapsule(Vector3 position, Vector3 rotation, float halfHeight, float radius)
 		{
 			return (string)(_physicsCreateCapsule?.Invoke(null, new object[] { position, rotation, halfHeight, radius }));
 		}
@@ -288,7 +288,7 @@ namespace BEngine
 			_physicsChangeDynamic?.Invoke(null, new object[] { physicsID, dynamic });
 		}
 
-		public static void PhysicsApplyTransform(string physicsID, Vector3 position, Quaternion rotation)
+		public static void PhysicsApplyTransform(string physicsID, Vector3 position, Vector3 rotation)
 		{
 			_physicsApplyTransform?.Invoke(null, new object[] { physicsID, position, rotation });
 		}
@@ -338,7 +338,7 @@ namespace BEngine
 			_cameraCreateRequest = GetMethod("CameraCreateRequest");
 		}
 
-		public static void CameraCreateRequest(string GUID, uint priority, Vector3 position, Quaternion rotation)
+		public static void CameraCreateRequest(string GUID, uint priority, Vector3 position, Vector3 rotation)
 		{
 			_cameraCreateRequest?.Invoke(null, new object[] { GUID, priority, position, rotation });
 		}
