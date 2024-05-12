@@ -106,7 +106,7 @@ namespace BEngineEditor
 		public override void OnSceneLoaded()
 		{
 			base.OnSceneLoaded();
-			LoadedScene?.CallEvent(EventID.EditorStart);
+			LoadedScene?.CallEvent(EventID.EditorStart, LoadedScene.Project.Scripting.Scripts);
 		}
 
 		public void SaveCurrentScene()

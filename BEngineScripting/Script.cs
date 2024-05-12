@@ -40,27 +40,6 @@ namespace BEngine
 
 		}
 
-
-		public virtual void OnEditorStart()
-		{
-
-		}
-
-		public virtual void OnEditorFixedUpdate()
-		{
-
-		}
-
-		public virtual void OnEditorUpdate()
-		{
-
-		}
-
-		public virtual void OnEditorDestroy()
-		{
-
-		}
-
 		public virtual void OnEditorSelected()
 		{
 

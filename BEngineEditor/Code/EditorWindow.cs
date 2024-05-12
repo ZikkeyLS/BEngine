@@ -97,7 +97,7 @@ namespace BEngineEditor
 			if (ProjectContext.CurrentProject != null)
 			{
 				ProjectContext.CurrentProject.Time.RawDeltaTime = (float)time;
-				ProjectContext.CurrentProject.LoadedScene?.CallEvent(EventID.EditorUpdate);
+				ProjectContext.CurrentProject.LoadedScene?.CallEvent(EventID.EditorUpdate, ProjectContext.CurrentProject.Scripting.Scripts);
 				if (ProjectContext.CurrentProject.Runtime && ProjectContext.CurrentProject.Pause == false)
 				{
 					ProjectContext.CurrentProject.LoadedScene?.CallEvent(EventID.Update);

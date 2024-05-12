@@ -175,7 +175,7 @@ namespace BEngineEditor
 			{
 				_project.Scripting.ReadScriptAssembly(_project.AssemblyBinaryPath);
 				_project.LoadedScene?.ReloadScripts();
-				_project.LoadedScene?.CallEvent(EventID.EditorStart);
+				_project.LoadedScene?.CallEvent(EventID.EditorStart, _project.Scripting.Scripts);
 
 				_project.Logger.LogMessage($"Working clear, no errors found! (Build in " +
 					$"{AssemblyBuildEndTime.ToString("HH:mm:ss")}, " +

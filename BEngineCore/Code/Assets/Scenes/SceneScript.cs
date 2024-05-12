@@ -1,4 +1,5 @@
 ﻿using BEngine;
+using BEngineScripting;
 using static BEngineCore.Scripting;
 
 namespace BEngineCore

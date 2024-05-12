@@ -1,4 +1,5 @@
 ﻿using BEngine;
+using BEngineScripting;
 using System.Reflection;
 
 namespace BEngineCore
@@ -88,21 +89,27 @@ namespace BEngineCore
 			}
 		}
 
-		public void CallEvent(EventID id)
+		public void CallEvent(EventID id, List<CachedScript>? cachedScripts = null)
 		{
 			lock (Entities)
 			{
 				foreach (SceneEntity entity in Entities)
 				{
-					entity.Entity.CallEvent(id);
+					entity.Entity.CallEvent(id, cachedScripts);
 				}
 			}
 		}
 
 		public void RemoveEntity(SceneEntity entity)
 		{
-			entity.Entity.CallEvent(EventID.Destroy);
-			entity.Entity.CallEvent(EventID.EditorDestroy);
+			if (BEngine.Project.IsEditor && BEngine.Project.IsRuntime == false)
+			{
+				entity.Entity.CallEvent(EventID.EditorDestroy);
+			}
+			if (BEngine.Project.IsRuntime)
+			{
+				entity.Entity.CallEvent(EventID.Destroy);
+			}
 
 			lock (Entities)
 			{
@@ -170,7 +177,7 @@ namespace BEngineCore
 
 			for (int i = 0; i < sceneEntity.Scripts.Count; i++)
 			{
-				Scripting.CachedScript? cachedScript = Project.Scripting.Scripts.Find((cached) => 
+				CachedScript? cachedScript = Project.Scripting.Scripts.Find((cached) => 
 					cached.Name == sceneEntity.Scripts[i].Name 
 					&& cached.Namespace == sceneEntity.Scripts[i].Namespace);
 				if (cachedScript != null)

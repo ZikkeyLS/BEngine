@@ -156,7 +156,7 @@ namespace BEngineCore
 			return false;
 		}
 
-		public SceneScript AddScript(Scripting.CachedScript script)
+		public SceneScript AddScript(CachedScript script)
 		{
 			SceneScript newScript = new SceneScript() { Name = script.Name, Namespace = script.Namespace };
 			newScript.GUID = Guid.NewGuid().ToString();
@@ -166,7 +166,7 @@ namespace BEngineCore
 			return newScript;
 		}
 
-		public bool RenameScript(SceneScript sceneScript, Scripting.CachedScript script)
+		public bool RenameScript(SceneScript sceneScript, CachedScript script)
 		{
 			bool success = true;
 
@@ -270,8 +270,14 @@ namespace BEngineCore
 
 			if (removeRuntime != null)
 			{
-				Entity.CallEventLocal(EventID.Destroy, removeRuntime);
-				Entity.CallEventLocal(EventID.EditorDestroy, removeRuntime);
+				if (Project.IsEditor && Project.IsRuntime == false)
+				{
+					Entity.CallEventLocal(EventID.EditorDestroy, removeRuntime);
+				}
+				if (Project.IsRuntime)
+				{
+					Entity.CallEventLocal(EventID.Destroy, removeRuntime);
+				}
 
 				Entity.Scripts.Remove(removeRuntime);
 				removeRuntime.Dispose();
@@ -308,7 +314,7 @@ namespace BEngineCore
 			{
 				for (int j = 0; j < scripting.Scripts.Count; j++)
 				{
-					Scripting.CachedScript currentScript = scripting.Scripts[j];
+					CachedScript currentScript = scripting.Scripts[j];
 					if (currentScript.Name == Scripts[i].Name && currentScript.Namespace == Scripts[i].Namespace)
 					{
 						Script script = CreateInstanseOf(currentScript, Scripts[i]);
@@ -341,7 +347,7 @@ namespace BEngineCore
 			}
 		}
 
-		private Script CreateInstanseOf(Scripting.CachedScript script, SceneScript sceneScript)
+		private Script CreateInstanseOf(CachedScript script, SceneScript sceneScript)
 		{
 			Script instance = script.CreateInstance<Script>();
 			instance.GetType().GetField("Entity")?.SetValue(instance, Entity);

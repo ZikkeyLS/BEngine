@@ -221,7 +221,7 @@ namespace BEngineCore
 						project.LoadedScene.CallEvent(EventID.FixedUpdate);
 					}
 
-					project.LoadedScene.CallEvent(EventID.EditorFixedUpdate);
+					project.LoadedScene.CallEvent(EventID.EditorFixedUpdate, project.Scripting.Scripts);
 				}
 
 				Thread.Sleep((int)(1f / FixedFrames * 1000));

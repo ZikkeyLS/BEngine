@@ -1,5 +1,6 @@
 ﻿using BEngine;
 using BEngineCore;
+using BEngineScripting;
 using ImGuiNET;
 using System.Reflection;
 
@@ -226,7 +227,7 @@ namespace BEngineEditor
 				{
 					for (int i = 0; i < _scripting.Scripts.Count; i++)
 					{
-						Scripting.CachedScript currentScript = _scripting.Scripts[i];
+						CachedScript currentScript = _scripting.Scripts[i];
 
 						if (selectedEntity.Scripts.Find((script) => script.Namespace == currentScript.Namespace
 							&& script.Name == currentScript.Name) != null)
@@ -390,7 +391,7 @@ namespace BEngineEditor
 				{
 					for (int j = 0; j < _scripting.Scripts.Count; j++)
 					{
-						Scripting.CachedScript currentScript = _scripting.Scripts[j];
+						CachedScript currentScript = _scripting.Scripts[j];
 
 						if (selectedEntity.Scripts.Find((script) => script.Namespace == currentScript.Namespace
 							&& script.Name == currentScript.Name) != null)
@@ -416,7 +417,7 @@ namespace BEngineEditor
 				{
 					for (int j = 0; j < _scripting.Scripts.Count; j++)
 					{
-						Scripting.CachedScript currentScript = _scripting.Scripts[j];
+						CachedScript currentScript = _scripting.Scripts[j];
 
 						if (selectedEntity.Scripts.Find((script) => script.Namespace == currentScript.Namespace
 							&& script.Name == currentScript.Name) != null)

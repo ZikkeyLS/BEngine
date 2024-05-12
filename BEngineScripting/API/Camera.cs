@@ -7,26 +7,9 @@ namespace BEngine
 
 		private Transform _transform;
 
+		[RunInAny]
 		public override void OnUpdate()
 		{
-			if (Project.IsEditor)
-				return;
-
-			if (_transform == null)
-			{
-				_transform = GetScript<Transform>();
-				return;
-			}
-
-			InternalCalls.CameraCreateRequest(GUID, priority, _transform.Position, _transform.Rotation);
-		}
-
-
-		public override void OnEditorUpdate()
-		{
-			if (Project.IsEditor == false)
-				return;
-
 			if (_transform == null)
 			{
 				_transform = GetScript<Transform>();
