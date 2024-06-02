@@ -1,12 +1,7 @@
 ﻿using BEngineCore;
 using Silk.NET.Assimp;
-using Silk.NET.Assimp.Tests;
 using Silk.NET.OpenGL;
-using System.IO.Compression;
 using System.Numerics;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
 
 public struct AdditionalData
 {
