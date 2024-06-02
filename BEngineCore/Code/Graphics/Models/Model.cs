@@ -1,7 +1,20 @@
-﻿using Silk.NET.Assimp;
+﻿using BEngineCore;
+using Silk.NET.Assimp;
+using Silk.NET.Assimp.Tests;
 using Silk.NET.OpenGL;
-using System.IO;
+using System.IO.Compression;
 using System.Numerics;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+
+public struct AdditionalData
+{
+	public string Path;
+	public string AdditionalPath;
+	public AssetType AssetType;
+
+}
 
 namespace BEngineCore
 {
@@ -39,9 +52,45 @@ namespace BEngineCore
 
 			fixed (byte* fileData = data)
 			{
-				Silk.NET.Assimp.Scene* scene = assimp.ImportFileFromMemory(fileData, (uint)data.Length, (uint)(PostProcessSteps.Triangulate
+				using var io = new CustomFileIO
+				(
+					(file, access, mode) =>
+					{
+						Stream? compressed = null;
+						if (asset.AssetType == AssetType.ArchieveFile)
+						{
+							AssetMetaData? findAsset = ProjectAbstraction.LoadedProject.AssetsReader.GetAssetByPath(file.ToString());
+							if (findAsset != null)
+							{
+								compressed = ProjectAbstraction.LoadedProject.AssetsReader.GetAssetStream(findAsset);
+							}
+						}
+						else
+						{
+							AssetMetaData? findAsset = ProjectAbstraction.LoadedProject.AssetsReader.GetAssetByPath(file.ToString());
+							if (findAsset != null)
+							{
+								compressed = ProjectAbstraction.LoadedProject.AssetsReader.GetAssetStream(findAsset);
+							}
+						}
+
+						var ms = new MemoryStream();
+
+						if (compressed == null)
+						{
+							Logger.Main?.LogMessage("Something went wrong");
+							return ms;
+						}
+						compressed.CopyTo(ms);
+						ms.Seek(0, SeekOrigin.Begin);
+						compressed.Close();
+						return ms;
+					}
+				);
+
+				Silk.NET.Assimp.Scene* scene = assimp.ImportFileEx(asset.GetAssetPath(), (uint)(PostProcessSteps.Triangulate
 					| PostProcessSteps.FlipUVs | PostProcessSteps.JoinIdenticalVertices
-					| PostProcessSteps.CalculateTangentSpace | PostProcessSteps.GenerateSmoothNormals), (byte*)null);
+					| PostProcessSteps.CalculateTangentSpace | PostProcessSteps.GenerateSmoothNormals), ref io.FileIO);
 
 				if (scene == null || scene->MFlags == (uint)SceneFlags.Incomplete || scene->MRootNode == null)
 				{
@@ -119,13 +168,19 @@ namespace BEngineCore
 			{
 				Material* material = scene->MMaterials[mesh->MMaterialIndex];
 
+				//for (int i = 0; i < material->MNumProperties; i++)
+				//{
+				//	Console.WriteLine(material->MProperties[i]->MKey.AsString);
+				//	Console.WriteLine(material->MProperties[i]->MIndex);
+				//	Console.WriteLine(material->MProperties[i]->MSemantic);
+				//	Console.WriteLine(material->MProperties[i]->MType);
+				//}
+
 				List<TextureMesh> diffuseMaps = GetTextures(material, TextureType.Diffuse, "texture_diffuse");
 				if (diffuseMaps.Count == 0)
 				{
 					diffuseMaps.Add(GetDefaultTexture("texture_diffuse"));
 				}
-				if (diffuseMaps.Count > 1)
-					Console.WriteLine("EE");
 				textures.AddRange(diffuseMaps);
 
 				List<TextureMesh> specularMaps = GetTextures(material, TextureType.Specular, "texture_specular");
@@ -204,22 +259,32 @@ namespace BEngineCore
 				string resultPath = _directory + path.AsString;
 				if (resultPath.Contains(".fbm"))
 				{
-					resultPath = _directory + "Textures\\" + resultPath.Substring(resultPath.IndexOf(".fbm") + 5).Replace(".tif", ".png");
-					if (Path.Exists(resultPath) == false)
-						resultPath = _directory + "Textures\\" + resultPath.Substring(resultPath.IndexOf(".fbm") + 5).Replace(".tif", ".jpg");
-					if (Path.Exists(resultPath) == false)
-						resultPath = _directory + "Textures\\" + resultPath.Substring(resultPath.IndexOf(".fbm") + 5).Replace(".tif", ".jpeg");
+					skip = true;
 				}
 
-				if (skip == false && Path.Exists(resultPath))
+				if (skip == false && ProjectAbstraction.LoadedProject.AssetsReader.HasAsset(resultPath))
 				{
-					TextureMesh texture = new TextureMesh();
-					texture.Texture = new Texture(System.IO.File.ReadAllBytes(resultPath), gl);
-					texture.ID = texture.Texture.ID;
-					texture.Type = typeName;
-					texture.Path = path.AsString;
-					textures.Add(texture);
-					_texturesLoaded.Add(texture);
+					AssetMetaData? asset = ProjectAbstraction.LoadedProject.AssetsReader.GetAssetByPath(resultPath);
+
+					if (asset == null)
+					{
+						string modelPath = path.AsString;
+						modelPath = "t" + modelPath.Substring(1);
+						resultPath = _directory + modelPath;
+
+						asset = ProjectAbstraction.LoadedProject.AssetsReader.GetAssetByPath(resultPath);
+					}
+
+					if (asset != null)
+					{
+						TextureMesh texture = new TextureMesh();
+						texture.Texture = new Texture(ProjectAbstraction.LoadedProject.AssetsReader.GetAssetBytes(asset), gl);
+						texture.ID = texture.Texture.ID;
+						texture.Type = typeName;
+						texture.Path = path.AsString;
+						textures.Add(texture);
+						_texturesLoaded.Add(texture);
+					}
 				}
 			}
 

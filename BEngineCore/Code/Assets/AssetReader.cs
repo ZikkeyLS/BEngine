@@ -1,4 +1,5 @@
 ﻿using BEngine;
+using ImGuiNET;
 using System.Text;
 using System.Xml;
 
@@ -56,7 +57,9 @@ namespace BEngineCore
 
 			for (int i = 0; i < PackerDirectories.Count; i++)
 			{
-				guidArchieve = GetMetaArchieveID(PackerDirectories[i], path);
+				string guidArchiveTemp = GetMetaArchieveID(PackerDirectories[i], path);
+				if (guidArchiveTemp != string.Empty)
+					guidArchieve = guidArchiveTemp;
 			}
 
 			return guid != string.Empty || guidArchieve != string.Empty;
@@ -116,7 +119,7 @@ namespace BEngineCore
 				{
 					scene.SetForceProject(ProjectAbstraction.LoadedProject);
 					scene.SetForceID(asset.GUID);
-					SceneContext.Add(asset.GUID, scene);
+					SceneContext.TryAdd(asset.GUID, scene);
 				}
 			}
 			else if (assetPath.EndsWith(".shader"))
@@ -200,6 +203,24 @@ namespace BEngineCore
 			return string.Empty;
 		}
 
+		public static bool FileExistsWithDifferentCase(string fileName)
+		{
+			bool result = false;
+			if (File.Exists(fileName))
+			{
+				result = false;
+				string? directory = Path.GetDirectoryName(fileName);
+				string fileTitle = Path.GetFileName(fileName);
+				if (directory != null)
+				{
+					string[] files = Directory.GetFiles(directory, fileTitle);
+					if (String.Compare(files[0], fileName, false) != 0)
+						result = true;
+				}
+			}
+			return result;
+		}
+
 		public string GetMetaArchieveID(string archievePath, string relativePath, bool includeXMLEnd = true)
 		{
 			if (_packer == null)
@@ -238,7 +259,8 @@ namespace BEngineCore
 			foreach (var asset in LoadedAssets)
 			{
 				path = path.Replace("/", "\\");
-				if (asset.GetAssetPath().Contains(path))
+				string assetPath = asset.GetAssetPath();
+				if (assetPath.Contains(path))
 				{
 					return asset;
 				}
@@ -269,7 +291,7 @@ namespace BEngineCore
 			return null;
 		}
 
-		public byte[]? GetAssetBytes(AssetMetaData asset)
+		public byte[] GetAssetBytes(AssetMetaData asset)
 		{
 			if (asset.AssetType == AssetType.File)
 			{
@@ -279,7 +301,7 @@ namespace BEngineCore
 			else
 			{
 				if (Packer == null)
-					return null;
+					throw new Exception("Packer isn't initialized!");
 
 				Stream? data = Packer.ReadFile(asset.Path, asset.GetAssetPath());
 				if (data != null)
@@ -288,7 +310,7 @@ namespace BEngineCore
 				}
 			}
 
-			return null;
+			return Array.Empty<byte>();
 		}
 
 		public string[]? GetAssetLines(AssetMetaData asset)
