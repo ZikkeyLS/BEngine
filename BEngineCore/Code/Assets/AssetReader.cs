@@ -57,9 +57,7 @@ namespace BEngineCore
 
 			for (int i = 0; i < PackerDirectories.Count; i++)
 			{
-				string guidArchiveTemp = GetMetaArchieveID(PackerDirectories[i], path);
-				if (guidArchiveTemp != string.Empty)
-					guidArchieve = guidArchiveTemp;
+				guidArchieve = GetMetaArchieveID(PackerDirectories[i], path);
 			}
 
 			return guid != string.Empty || guidArchieve != string.Empty;
@@ -201,24 +199,6 @@ namespace BEngineCore
 			}
 
 			return string.Empty;
-		}
-
-		public static bool FileExistsWithDifferentCase(string fileName)
-		{
-			bool result = false;
-			if (File.Exists(fileName))
-			{
-				result = false;
-				string? directory = Path.GetDirectoryName(fileName);
-				string fileTitle = Path.GetFileName(fileName);
-				if (directory != null)
-				{
-					string[] files = Directory.GetFiles(directory, fileTitle);
-					if (String.Compare(files[0], fileName, false) != 0)
-						result = true;
-				}
-			}
-			return result;
 		}
 
 		public string GetMetaArchieveID(string archievePath, string relativePath, bool includeXMLEnd = true)
