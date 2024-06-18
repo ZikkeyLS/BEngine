@@ -1,6 +1,4 @@
-﻿using BEngine;
-using ImGuiNET;
-using System.Text;
+﻿using System.Text;
 using System.Xml;
 
 namespace BEngineCore
@@ -38,7 +36,7 @@ namespace BEngineCore
 
 				foreach (string packerDirectory in packerDirectories)
 				{
-					_packer.ReadAllFiles(packerDirectory, (relativePath) => 
+					_packer.ReadAllFiles(packerDirectory, (relativePath) =>
 					{
 						if (relativePath.EndsWith(".meta") == false)
 							AddAsset(packerDirectory, relativePath);
@@ -236,7 +234,9 @@ namespace BEngineCore
 
 		public AssetMetaData? GetAssetByPath(string path)
 		{
-			foreach (var asset in LoadedAssets)
+			var loadedAssetsCopy = new List<AssetMetaData>();
+			loadedAssetsCopy.AddRange(LoadedAssets);
+			foreach (var asset in loadedAssetsCopy)
 			{
 				path = path.Replace("/", "\\");
 				string assetPath = asset.GetAssetPath();

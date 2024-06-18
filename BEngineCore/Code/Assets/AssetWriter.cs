@@ -50,6 +50,13 @@ namespace BEngineCore
 			string guid = _assetReader.GetMetaID(path);
 
 			if (guid == string.Empty)
+			{
+				AssetMetaData? asset = _assetReader.GetAssetByPath(path);
+				if (asset != null)
+					guid = asset.GUID;
+			}
+
+			if (guid == string.Empty)
 				return;
 
 			AssetMetaData? foundAsset = _assetReader.LoadedAssets.Find((asset) => asset.GUID == guid);
@@ -70,7 +77,9 @@ namespace BEngineCore
 				}
 
 				_assetReader.LoadedAssets.Remove(foundAsset);
-				File.Delete(path + @".meta");
+
+				if (File.Exists(path + @".meta"))
+					File.Delete(path + @".meta");
 			}
 		}
 

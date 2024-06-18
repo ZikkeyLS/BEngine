@@ -45,33 +45,20 @@ namespace BEngineCore
 
 			int channels = (int)image.Comp;
 
-			if (properWidth != image.Width || properHeight != image.Height)
+			fixed (byte* buff = image.Data)
 			{
-				fixed (byte* buff = image.Data)
+				if (properWidth != image.Width || properHeight != image.Height)
 				{
 					StbImageResizeSharp.StbImageResize.stbir_resize_uint8(buff, image.Width, image.Height,
 						image.Width * channels, buff, properWidth, properHeight, properWidth * channels, channels);
 				}
-			}
 
-			fixed (void* buff = image.Data)
-			{
 				Load(gl, buff, (uint)properWidth, (uint)properHeight);
 			}
 
 			image.Dispose();
-			image = null;
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
-		}
-
-		public unsafe Texture(GL gl, Span<byte> data, uint width, uint height)
-		{
-			//We want the ability to create a texture using data generated from code aswell.
-			fixed (void* d = &data[0])
-			{
-				Load(gl, d, width, height);
-			}
 		}
 
 		private unsafe void Load(GL gl, void* data, uint width, uint height)
@@ -104,7 +91,8 @@ namespace BEngineCore
 
 		public void Dispose()
 		{
-			ProjectAbstraction.LoadedProject.Graphics.TexturesToDelete.Add(_handle);
+			if (ProjectAbstraction.LoadedProject != null)
+				ProjectAbstraction.LoadedProject.Graphics.TexturesToDelete.Add(_handle);
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
 		}
