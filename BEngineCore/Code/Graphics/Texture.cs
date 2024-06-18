@@ -44,17 +44,13 @@ namespace BEngineCore
 			}
 
 			int channels = (int)image.Comp;
-
-			fixed (byte* buff = image.Data)
+			if (properWidth != image.Width || properHeight != image.Height)
 			{
-				if (properWidth != image.Width || properHeight != image.Height)
-				{
-					StbImageResizeSharp.StbImageResize.stbir_resize_uint8(buff, image.Width, image.Height,
-						image.Width * channels, buff, properWidth, properHeight, properWidth * channels, channels);
-				}
-
-				Load(gl, buff, (uint)properWidth, (uint)properHeight);
+				StbImageResizeSharp.StbImageResize.stbir_resize_uint8(image.DataPtr, image.Width, image.Height,
+					image.Width * channels, image.DataPtr, properWidth, properHeight, properWidth * channels, channels);
 			}
+
+			Load(gl, image.DataPtr, (uint)properWidth, (uint)properHeight);
 
 			image.Dispose();
 			GC.Collect();
