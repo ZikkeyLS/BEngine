@@ -34,7 +34,8 @@ namespace BEngineCore
 			{
 				Model? model = loadedProject.AssetsReader.ModelContext.GetModel(renderModel.Model.GUID);
 				if (model != null)
-					loadedProject.Graphics.ModelsToRender.Add(new ModelRenderContext { Model = model, Transform = renderModel.Transform });
+					loadedProject.Graphics.ModelsToRender.Add(new ModelRenderContext { Model = model, Position = (System.Numerics.Vector3)renderModel.Position, 
+						Rotation = (System.Numerics.Vector3)renderModel.Rotation, Scale = (System.Numerics.Vector3)renderModel.Scale });
 			}
 		}
 		#endregion

@@ -1,5 +1,4 @@
-﻿
-using BEngineScripting;
+﻿using BEngineScripting;
 
 namespace BEngine
 {
@@ -7,6 +6,8 @@ namespace BEngine
 	public class Entity : IDisposable
 	{
 		public readonly string GUID;
+		public readonly Entity Parent;
+		public readonly IReadOnlyList<Entity> Chilren;
 
 		public string Name;
 		internal List<Script> Scripts = new();

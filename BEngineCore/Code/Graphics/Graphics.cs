@@ -11,7 +11,9 @@ namespace BEngineCore
 	public struct ModelRenderContext
 	{
 		public Model Model;
-		public Transform Transform;
+		public Vector3 Position;
+		public Vector3 Rotation;
+		public Vector3 Scale;
 	}
 
 	public class Graphics
@@ -131,16 +133,12 @@ namespace BEngineCore
 
 				for (int i = 0; i < ModelsToRender.Count; i++)
 				{
-					Transform transform = ModelsToRender[i].Transform;
-
-					Vector3 eulerAngles = (Vector3)transform.Rotation;
-
-					Matrix4x4 model = Matrix4x4.CreateScale((Vector3)transform.Scale);
+					Matrix4x4 model = Matrix4x4.CreateScale(ModelsToRender[i].Scale);
 					model *= Matrix4x4.CreateFromQuaternion(Quaternion.CreateFromYawPitchRoll(
-						float.DegreesToRadians(eulerAngles.Y),
-						float.DegreesToRadians(eulerAngles.X),
-						float.DegreesToRadians(eulerAngles.Z)));
-					Vector3 invertXPosition = new Vector3(transform.Position.x, transform.Position.y, transform.Position.z);
+						float.DegreesToRadians(ModelsToRender[i].Rotation.Y),
+						float.DegreesToRadians(ModelsToRender[i].Rotation.X),
+						float.DegreesToRadians(ModelsToRender[i].Rotation.Z)));
+					Vector3 invertXPosition = new Vector3(ModelsToRender[i].Position.X, ModelsToRender[i].Position.Y, ModelsToRender[i].Position.Z);
 					model *= Matrix4x4.CreateTranslation(invertXPosition);
 					_shader.SetMatrix4("model", model);
 

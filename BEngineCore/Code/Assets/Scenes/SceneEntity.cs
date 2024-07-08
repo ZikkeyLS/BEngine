@@ -1,8 +1,6 @@
 ﻿using BEngine;
 using BEngineScripting;
-using Silk.NET.Vulkan;
 using System.Reflection;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace BEngineCore
@@ -66,6 +64,7 @@ namespace BEngineCore
 			if (ParentBase != null && ParentBase != string.Empty)
 			{
 				Parent = _scene.GetEntity(ParentBase);
+				typeof(Entity).GetField("Parent", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)?.SetValue(Entity, Parent.Entity);
 			}
 
 			foreach (string childBase in ChildrenBase)
@@ -103,17 +102,58 @@ namespace BEngineCore
 
 			Parent = entity;
 			ParentBase = entity.GUID;
+			typeof(Entity).GetField("Parent", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)?.SetValue(Entity, Parent.Entity);
 			entity.AddChildInternal(this);
+
+			Transform ourTransform = Entity.GetScript<Transform>();
+			Transform parentTransform = entity.Entity.GetScript<Transform>();
+			if (ourTransform != null && parentTransform != null)
+			{
+				RenderModel model = new RenderModel();
+				GetInheritedTransform(entity.Entity, ref model);
+				ourTransform.Position -= model.Position;
+				ourTransform.Rotation -= model.Rotation;
+			}
+
 			return true;
+		}
+		private void GetInheritedTransform(Entity entity, ref RenderModel model)
+		{
+			if (entity == null)
+				return;
+
+			Transform entityTransform = entity.GetScript<Transform>();
+
+			if (entityTransform != null)
+			{
+				model.Position += entityTransform.Position;
+				model.Rotation += entityTransform.Rotation;
+			}
+
+			if (entity.Parent != null)
+			{
+				GetInheritedTransform(entity.Parent, ref model);
+			}
 		}
 
 		public void ClearParent()
 		{
 			if (Parent != null)
 			{
+				Transform ourTransform = Entity.GetScript<Transform>();
+				Transform parentTransform = Parent.Entity.GetScript<Transform>();
+				if (ourTransform != null && parentTransform != null)
+				{
+					RenderModel model = new RenderModel();
+					GetInheritedTransform(Parent.Entity, ref model);
+					ourTransform.Position += model.Position;
+					ourTransform.Rotation += model.Rotation;
+				}
+
 				Parent.RemoveChild(this);
 				Parent = null;
 				ParentBase = null;
+				typeof(Entity).GetField("Parent", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)?.SetValue(Entity, null);
 			}
 		}
 
@@ -242,7 +282,10 @@ namespace BEngineCore
 							((FieldInfo)field.Value.Info).SetValue(scriptRuntime, field.Value.Data);
 							break;
 						case MemberTypes.Property:
-							((PropertyInfo)field.Value.Info).SetValue(scriptRuntime, field.Value.Data);
+							if (((PropertyInfo)field.Value.Info).CanWrite)
+							{
+								((PropertyInfo)field.Value.Info).SetValue(scriptRuntime, field.Value.Data);
+							}
 							break;
 					}
 				}
